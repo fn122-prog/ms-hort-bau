@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Temporary and swap files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Local environment / IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace

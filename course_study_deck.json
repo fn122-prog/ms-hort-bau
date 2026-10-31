@@ -1,0 +1,254 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-10-31",
+  "courses": [
+    {
+      "id": "HORT501",
+      "code": "Hort. 501",
+      "name": "Advanced Fruit Production",
+      "semester": 1,
+      "type": "Compulsory",
+      "subfields": [
+        "Pomology",
+        "Plant Propagation",
+        "Fruit Crop Physiology",
+        "Orchard Management"
+      ]
+    },
+    {
+      "id": "HORT502",
+      "code": "Hort. 502",
+      "name": "Methods in Advanced Research",
+      "semester": 1,
+      "type": "Compulsory",
+      "subfields": [
+        "Experimental Design",
+        "Field Techniques",
+        "Laboratory Instrumentation"
+      ]
+    },
+    {
+      "id": "HORT503",
+      "code": "Hort. 503",
+      "name": "Advanced Vegetable Production",
+      "semester": 1,
+      "type": "Compulsory",
+      "subfields": [
+        "Olericulture",
+        "Vegetable Physiology",
+        "Protected Cultivation",
+        "Seed Production"
+      ]
+    },
+    {
+      "id": "HORT505",
+      "code": "Hort. 505",
+      "name": "Advanced Research Methodology",
+      "semester": 1,
+      "type": "Compulsory",
+      "subfields": [
+        "Statistical Analysis",
+        "Biometrical Genetics",
+        "Scientific Sampling",
+        "Manuscript Preparation"
+      ]
+    },
+    {
+      "id": "HORT507",
+      "code": "Hort. 507",
+      "name": "Ornamental and Landscape Hort.",
+      "semester": 1,
+      "type": "Compulsory",
+      "subfields": [
+        "Floriculture",
+        "Landscape Architecture",
+        "Turfgrass Management",
+        "Postharvest Floriculture"
+      ]
+    },
+    {
+      "id": "HORT519",
+      "code": "Hort. 519",
+      "name": "Horticultural Seed Physiology",
+      "semester": 1,
+      "type": "Elective",
+      "subfields": [
+        "Seed Physiology",
+        "Dormancy & Germination",
+        "Seed Storage",
+        "Chilling & Vernalization"
+      ]
+    },
+    {
+      "id": "HORT521",
+      "code": "Hort. 521",
+      "name": "Horticultural Plant Biotechnology",
+      "semester": 1,
+      "type": "Elective",
+      "subfields": [
+        "Plant Biotechnology",
+        "Tissue Culture",
+        "Plant Breeding",
+        "Molecular Markers",
+        "Genetic Engineering"
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "id": "card_air_layering",
+      "term": "Air Layering",
+      "course_id": "HORT501",
+      "course_code": "Hort. 501",
+      "subfield": "Plant Propagation / Pomology",
+      "biological_mechanism": "Complete girdling interrupts basipetal phloem transport of photosynthates and polar auxin (IAA). Auxin and carbohydrate accumulation at the upper girdle margin triggers dedifferentiation of phloem/cambial parenchyma into adventitious root primordia under darkness, moisture, and aeration.",
+      "horticultural_practice": "Practiced during the humid monsoon season on woody branches. A 2.5-4 cm ring of bark and cambium is scraped clean, treated with rooting powder (IBA 1000-2500 ppm), enclosed in moist sphagnum moss, and tightly sealed with 200-gauge polyethylene film tied at both ends.",
+      "exam_trap": "Do NOT confuse with ground layering: air layering is performed in situ on upright, elevated, rigid woody branches that cannot be bent to ground level. Girdling must thoroughly scrape the cambium to prevent healing callus from bridging the wound instead of rooting.",
+      "key_crops": "Litchi (Litchi chinensis), Guava (Psidium guajava), Pomegranate (Punica granatum), Ficus elastica",
+      "mastery": "Needs Review",
+      "notes": "Essential propagation technique for true-to-type litchi cultivars in Bangladesh.",
+      "date_added": "2026-10-31",
+      "last_reviewed": "2026-10-31"
+    },
+    {
+      "id": "card_germplasm",
+      "term": "Germplasm",
+      "course_id": "HORT521",
+      "course_code": "Hort. 521",
+      "subfield": "Plant Biotechnology / Breeding",
+      "biological_mechanism": "The total physical biological repository of genetic material—including hereditary alleles, structural genes, and epigenetic variations—preserved as viable totipotent entities (seeds, meristem cultures, pollen, or cryopreserved shoot tips).",
+      "horticultural_practice": "Ex situ conservation in gene banks at -18°C (orthodox seeds) or in liquid nitrogen (-196°C cryopreservation for recalcitrant horticultural species like mango and jackfruit), systematically evaluated for biotic/abiotic stress alleles for pre-breeding introgression.",
+      "exam_trap": "Distinguish between 'Gene Pool' and 'Germplasm': Gene Pool is an abstract, theoretical concept describing all genes in an interbreeding population; Germplasm refers to the physical, tangible biological samples (accessions) conserved in storage or fields.",
+      "key_crops": "Solanum spp. (wild tomato/potato relatives), Malus domestica, Musa spp., Mangifera indica",
+      "mastery": "Exam Ready",
+      "notes": "Primary source for introgressing Late Blight and Bacterial Wilt resistance genes.",
+      "date_added": "2026-10-31",
+      "last_reviewed": "2026-10-31"
+    },
+    {
+      "id": "card_grafting",
+      "term": "Grafting",
+      "course_id": "HORT501",
+      "course_code": "Hort. 501",
+      "subfield": "Pomology / Nursery Management",
+      "biological_mechanism": "Wound-healing cascade: necrotic cell layer forms and dissolves; unspecialized wound-repair callus proliferates from vascular cambium of both stock and scion, interlocks in the graft zone, and subsequently redifferentiates into continuous vascular cambium, xylem vessels, and phloem sieve elements.",
+      "horticultural_practice": "Whip-and-tongue, veneer, or cleft grafting conducted during active sap movement. Requires intimate cambial alignment, sharp clean incisions, structural binding with grafting tape, and waterproofing with wax to prevent desiccation.",
+      "exam_trap": "Vascular cambium must make direct physical contact along at least one full side. Callus can bridge microscopic gaps, but misaligned or dead cambia result in anatomical rejection or delayed structural failure (delayed incompatibility).",
+      "key_crops": "Mango (Mangifera indica), Apple (Malus domestica), Citrus spp., Grafted Tomato/Eggplant (rootstock resistance)",
+      "mastery": "Needs Review",
+      "notes": "Used widely for dwarfing rootstocks in intensive orchards and nematode resistance in solanaceous vegetables.",
+      "date_added": "2026-10-31",
+      "last_reviewed": "2026-10-31"
+    },
+    {
+      "id": "card_t_budding",
+      "term": "T-Budding (Shield Budding)",
+      "course_id": "HORT501",
+      "course_code": "Hort. 501",
+      "subfield": "Pomology / Nursery Management",
+      "biological_mechanism": "A single scion shield bud containing active meristem and minimal xylem/bark is inserted under the bark flaps of a vigorous rootstock; callus develops from the rootstock cambium and the scion shield, establishing vascular continuity to the bud trace within 2 to 3 weeks.",
+      "horticultural_practice": "Conducted in late summer or spring when rootstock cambium is vigorously dividing and bark 'slips' easily without tearing. A vertical cut (2.5 cm) and horizontal cut form a 'T'; flaps are lifted, shield bud inserted, and bound with budding tape leaving the eye exposed.",
+      "exam_trap": "Prerequisite condition: Bark MUST be 'slipping' (active cambial division). If bark does not slip (dormant season or water stress), T-budding will fail; 'Chip Budding' must be used instead because chip budding does not require bark separation.",
+      "key_crops": "Citrus (Sweet orange, Mandarin on Rangpur lime), Rose (Rosa spp.), Peach and Plum (Prunus spp.)",
+      "mastery": "Needs Review",
+      "notes": "Standard commercial propagation technique for citrus nursery stock in Bangladesh.",
+      "date_added": "2026-10-31",
+      "last_reviewed": "2026-10-31"
+    },
+    {
+      "id": "card_vernalization",
+      "term": "Vernalization",
+      "course_id": "HORT519",
+      "course_code": "Hort. 519",
+      "subfield": "Seed Physiology / Crop Physiology",
+      "biological_mechanism": "Stable epigenetic silencing of floral repressor genes (e.g. FLC - Flowering Locus C in Brassicaceae) via histone modification (H3K27me3) triggered by prolonged non-freezing low temperatures (1°C to 7°C), rendering the shoot apical meristem competent to initiate floral evocation upon subsequent warm/inductive photoperiods.",
+      "horticultural_practice": "Controlled artificial chilling of hydrated seeds or overwintering stecklings of biennial horticultural crops to synchronize uniform bolting and flowering for hybrid seed production.",
+      "exam_trap": "CRITICAL EXAM TRAP: Do NOT confuse vernalization with stratification! Vernalization induces meristematic competence to flower (vegetative-to-reproductive transition); Stratification breaks seed embryo dormancy to allow germination. High temperatures immediately following chilling cause 'de-vernalization'.",
+      "key_crops": "Cabbage (Brassica oleracea var. capitata), Carrot (Daucus carota), Onion (Allium cepa), Beetroot (Beta vulgaris)",
+      "mastery": "Needs Review",
+      "notes": "Crucial concept for winter vegetable seed production in subtropical zones.",
+      "date_added": "2026-10-31",
+      "last_reviewed": "2026-10-31"
+    },
+    {
+      "id": "card_apomixis",
+      "term": "Apomixis",
+      "course_id": "HORT519",
+      "course_code": "Hort. 519",
+      "subfield": "Seed Physiology / Plant Breeding",
+      "biological_mechanism": "Asexual seed formation (agamospermy) bypassing female meiosis (apomeiosis) and egg fertilization (parthenogenesis). Occurs via gametophytic apomixis (diplospory or apospory forming unreduced embryo sacs) or sporophytic adventitious embryony directly from somatic nucellus/integument cells.",
+      "horticultural_practice": "Commercial citrus breeders exploit natural nucellar polyembryony in rootstocks (e.g. Rangpur lime, Rough lemon) to mass-propagate uniform, clonal, virus-free rootstock seedlings from seed, drastically cutting nursery grafting costs.",
+      "exam_trap": "CRITICAL EXAM TRAP: Apomixis produces clonal SEEDS without fertilization; Parthenocarpy produces SEEDLESS FRUIT without fertilization. Furthermore, apospory is only one sub-pathway of apomixis, not a synonym.",
+      "key_crops": "Citrus spp. (Rangpur lime, Sweet orange), Mangifera indica (polyembryonic mangoes), Poa pratensis (Kentucky bluegrass)",
+      "notes": "Natural heterosis fixator in plant breeding.",
+      "pos": "n.",
+      "ipa": "/ˌæp.əˈmɪk.sɪs/",
+      "etymology": "Coined in 1908 by German botanist Hans Winkler from Greek ἀπό ('apo-', without/away from) and μῖξις ('mixis', mingling or sexual union).",
+      "synonyms": "agamospermy",
+      "see_also": "parthenogenesis, apospory, diplospory, adventitious embryony, polyembryony, parthenocarpy",
+      "mastery": "Exam Ready",
+      "date_added": "2026-10-31",
+      "last_reviewed": "2026-10-31"
+    },
+    {
+      "id": "card_orthodox_seed",
+      "term": "Orthodox Seed",
+      "course_id": "HORT519",
+      "course_code": "Hort. 519",
+      "subfield": "Seed Physiology / Gene Bank Conservation",
+      "biological_mechanism": "Capacity to tolerate severe maturation desiccation down to 2–5% moisture content and prolonged storage at sub-zero temperatures (-18°C to -20°C). Mediated by accumulation of Late Embryogenesis Abundant (LEA) proteins, sucrose/raffinose oligosaccharide vitrification (cytoplasmic glass formation), and metabolic arrest preventing membrane collapse.",
+      "horticultural_practice": "Seeds of vegetable crops (tomato, cabbage, onion, carrot) are dried in dehumidified drying rooms (15–20% RH, 15°C–20°C) down to 5–6% moisture content, hermetically sealed in laminated foil packets, and stored in medium-term (4°C) or long-term base collections (-18°C).",
+      "exam_trap": "CRITICAL EXAM TRAP: Orthodox seeds do NOT require dormancy to be orthodox! Many orthodox seeds are non-dormant upon drying (e.g. tomato, pea, onion). Longevity is quantitatively predictable by Roberts' seed viability equations.",
+      "key_crops": "Tomato (Solanum lycopersicum), Onion (Allium cepa), Cabbage (Brassica oleracea), Pea (Pisum sativum)",
+      "notes": "Adheres strictly to Roberts' seed viability equations.",
+      "pos": "n.",
+      "ipa": "/ˈɔːr.θə.dɒks ˌsiːd/",
+      "etymology": "From Greek ὀρθός ('orthos', correct/standard) and δόξα ('doxa', opinion/doctrine); formalized in seed biology by E.H. Roberts in 1973.",
+      "synonyms": "desiccation-tolerant seed",
+      "see_also": "recalcitrant seed, intermediate seed, seed vigor, cryopreservation, Roberts viability equation",
+      "mastery": "Exam Ready",
+      "date_added": "2026-10-31",
+      "last_reviewed": "2026-10-31"
+    },
+    {
+      "id": "card_true_seed",
+      "term": "True Seed",
+      "course_id": "HORT503",
+      "course_code": "Hort. 503",
+      "subfield": "Olericulture / Seed Production",
+      "biological_mechanism": "A botanical seed containing a zygotic embryo and storage tissue (endosperm or cotyledons) enclosed in a protective seed coat (testa), originating from the double fertilization of an ovule in the ovary. Genetically distinct from the maternal vegetative tissues.",
+      "horticultural_practice": "Adoption of True Potato Seed (TPS) in subtropical vegetable farming: 100–150 g of TPS replaces 2–2.5 metric tons of bulky vegetative seed tubers per hectare, eliminating seed-tuber viral degeneration and slashing storage/freight costs.",
+      "exam_trap": "CRITICAL EXAM TRAP: True seed does NOT have to come from 'two parents'—in autogamous crops (tomato, pea), self-pollination produces true seed. The term is specifically used in horticultural production to contrast true botanical seeds with vegetative propagules (potato tubers, garlic cloves, onion sets, bulbils).",
+      "key_crops": "Potato (Solanum tuberosum - TPS), Onion (Allium cepa), Garlic (Allium sativum - true seed breeding lines)",
+      "notes": "Essential distinction in potato and allium production.",
+      "pos": "n.",
+      "ipa": "/ˈtruː ˌsiːd/",
+      "etymology": "Middle English 'trewe' (genuine, authentic) + Old English 'sǣd' (seed, what is sown).",
+      "synonyms": "botanical seed",
+      "see_also": "True Potato Seed (TPS), vegetative propagule, seed tuber, seed piece, apomixis",
+      "mastery": "Exam Ready",
+      "date_added": "2026-10-31",
+      "last_reviewed": "2026-10-31"
+    },
+    {
+      "id": "card_recalcitrant_seed",
+      "term": "Recalcitrant Seed",
+      "course_id": "HORT519",
+      "course_code": "Hort. 519",
+      "subfield": "Seed Physiology / Tropical Pomology",
+      "biological_mechanism": "Desiccation and chilling intolerance: seeds undergo no maturation drying, are shed at high moisture contents (30–60%), remain metabolically active, and lack protective LEA proteins and oligosaccharide glass vitrification, causing lethal membrane rupture, organelle disorganization, and reactive oxygen species (ROS) damage upon dehydration below 15–30%.",
+      "horticultural_practice": "Recalcitrant seeds cannot be stored in standard seed banks. Sown immediately in nursery beds or moist sphagnum moss. Long-term conservation requires in-vitro cryopreservation of excised embryonic axes in liquid nitrogen (-196°C) or living field gene banks.",
+      "exam_trap": "CRITICAL EXAM TRAP: Do NOT freeze or dry recalcitrant seeds—freezing causes intracellular ice crystals, and drying causes mechanical tension collapse. Desiccation sensitivity is due to active metabolism and lack of LEA vitrification, NOT high lipid content!",
+      "key_crops": "Jackfruit (Artocarpus heterophyllus), Mango (Mangifera indica), Litchi (Litchi chinensis), Rubber (Hevea brasiliensis), Cocoa (Theobroma cacao)",
+      "notes": "Must be preserved as living plants or cryopreserved embryonic axes.",
+      "pos": "n.",
+      "ipa": "/rɪˈkæl.sɪ.trənt ˌsiːd/",
+      "etymology": "From Latin 'recalcitrare' (to kick back or rebel, from 're-' back + 'calcitrare' to kick, from 'calx' heel); classified by E.H. Roberts (1973).",
+      "synonyms": "desiccation-sensitive seed, non-orthodox seed",
+      "see_also": "orthodox seed, intermediate seed, embryonic axes, cryopreservation, LEA proteins, chilling injury",
+      "mastery": "Exam Ready",
+      "date_added": "2026-10-31",
+      "last_reviewed": "2026-10-31"
+    }
+  ]
+}
