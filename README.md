@@ -117,8 +117,9 @@ Engineered specifically around the graduate curriculum of the **Department of Ho
 
 ## 🎓 Author & Attribution
 
-**Fahim**  
-*M.S. in Horticulture Candidate*  
+**FNFahim**  
+*B.Sc. in Agriculture (Honours)*  
+*M.Sc. in Horticulture Candidate*  
 Department of Horticulture, Bangladesh Agricultural University (BAU), Mymensingh.  
 
 *Designed and developed as an open-source, offline-first tool for graduate agricultural researchers and plant science students.*
