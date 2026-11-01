@@ -242,32 +242,116 @@ def _query_single_ipa(word):
 
 
 COMMON_HORT_WORDS_IPA = {
+    # Seed biology & embryology
     "seed": "siːd",
     "seeds": "siːdz",
+    "orthodox": "ɔːr.θə.dɒks",
+    "recalcitrant": "rɪˈkæl.sɪ.trənt",
+    "true": "truː",
+    "embryo": "ˈɛm.bri.oʊ",
+    "embryonic": "ˌɛm.briˈɒn.ɪk",
+    "cotyledon": "ˌkɒt.ɪˈliː.dən",
+    "endosperm": "ˈɛn.doʊˌspɜːrm",
+    "testa": "ˈtɛs.tə",
+    "tegmen": "ˈtɛɡ.mən",
+    "plumule": "ˈpluː.mjuːl",
+    "radicle": "ˈræd.ɪ.kəl",
+    "hypocotyl": "ˌhaɪ.pəˈkɒt.əl",
+    "epicotyl": "ˌɛp.ɪˈkɒt.əl",
+    "dormancy": "ˈdɔːr.mən.si",
+    "quiescence": "kwaɪˈɛs.əns",
+    "viability": "ˌvaɪ.əˈbɪl.ə.ti",
+    "vigor": "ˈvɪɡ.ər",
+    "imbibition": "ˌɪm.bɪˈbɪʃ.ən",
+    "desiccation": "ˌdɛs.ɪˈkeɪ.ʃən",
+    "stratification": "ˌstræt.ɪ.fɪˈkeɪ.ʃən",
+    "scarification": "ˌskær.ɪ.fɪˈkeɪ.ʃən",
+    "apomixis": "ˌæp.əˈmɪk.sɪs",
+    "agamospermy": "ˌæɡ.ə.moʊˈspɜːr.mi",
+    "apospory": "eɪˈpɒs.pər.i",
+    "diplospory": "dɪˈplɒs.pər.i",
+    "parthenogenesis": "ˌpɑːr.θɪ.noʊˈdʒɛn.ə.sɪs",
+    "polyembryony": "ˌpɒl.iˈɛm.bri.ə.ni",
+    "parthenocarpy": "ˌpɑːr.θɪ.noʊˈkɑːr.pi",
+
+    # Propagation & nursery management
     "layering": "leɪ.ər.ɪŋ",
     "budding": "bʌd.ɪŋ",
     "grafting": "ɡræf.tɪŋ",
     "cutting": "kʌt.ɪŋ",
     "cuttings": "kʌt.ɪŋz",
     "propagation": "ˌprɒp.əˈɡeɪ.ʃən",
+    "micropropagation": "ˌmaɪ.kroʊˌprɒp.əˈɡeɪ.ʃən",
+    "scion": "saɪ.ən",
+    "rootstock": "ˈruːtˌstɒk",
+    "cambium": "ˈkæm.bi.əm",
+    "callus": "ˈkæl.əs",
+    "incompatibility": "ˌɪn.kəmˌpæt.əˈbɪl.ə.ti",
+    "top-working": "ˈtɒpˌwɜːr.kɪŋ",
+    "marcottage": "mɑːr.kəˈtɑːʒ",
+    "air": "ɛər",
+    "air layering": "ˈɛər ˌleɪ.ər.ɪŋ",
+    "t-budding": "ˈtiːˌbʌd.ɪŋ",
+    "chip budding": "ˈtʃɪp ˌbʌd.ɪŋ",
+
+    # Physiology, growth & phenology
+    "flush": "flʌʃ",
+    "physiology": "ˌfɪz.iˈɑː.lə.dʒi",
+    "ecophysiology": "ˌiː.koʊˌfɪz.iˈɑː.lə.dʒi",
+    "phenology": "fɪˈnɒl.ə.dʒi",
+    "vernalization": "ˌvɜːr.nə.laɪˈzeɪ.ʃən",
+    "photoperiodism": "ˌfoʊ.toʊˈpɪr.i.ə.dɪz.əm",
+    "abscission": "æbˈsɪʒ.ən",
+    "senescence": "sɪˈnɛs.əns",
+    "etiolation": "ˌiː.ti.əˈleɪ.ʃən",
+    "acclimatization": "əˌklaɪ.mə.taɪˈzeɪ.ʃən",
+    "chilling": "ˈtʃɪl.ɪŋ",
+    "bolting": "ˈboʊl.tɪŋ",
+    "stomatal": "stoʊˈmæt.əl",
+    "transpiration": "ˌtræn.spəˈreɪ.ʃən",
+    "conductance": "kənˈdʌk.təns",
+
+    # Genetics & biotechnology
+    "germplasm": "dʒɜːrmˌplæz.əm",
+    "biotechnology": "ˌbaɪ.oʊ.tɛkˈnɒl.ə.dʒi",
+    "somaclonal": "ˌsoʊ.məˈkloʊ.nəl",
+    "totipotency": "ˌtoʊ.tɪˈpoʊ.tən.si",
+    "heterosis": "ˌhɛt.əˈroʊ.sɪs",
+    "landrace": "ˈlænd.reɪs",
+    "accession": "ækˈsɛʃ.ən",
+
+    # Subfields & general terms
+    "pomology": "poʊˈmɒl.ə.dʒi",
+    "olericulture": "ˌɒl.ər.ɪˈkʌl.tʃər",
+    "floriculture": "ˈflɔːr.ɪˌkʌl.tʃər",
+    "pathology": "pəˈθɒl.ə.dʒi",
+    "morphology": "mɔːrˈfɒl.ə.dʒi",
+    "anatomy": "əˈnæt.ə.mi",
     "culture": "kʌl.tʃər",
     "fruit": "fruːt",
     "plant": "plɑːnt",
     "tree": "triː",
     "root": "ruːt",
-    "stock": "stɒk",
-    "scion": "saɪ.ən",
-    "orthodox": "ɔːr.θə.dɒks",
-    "recalcitrant": "rɪˈkæl.sɪ.trənt",
-    "true": "truː",
-    "air": "ɛər",
-    "apomixis": "ˌæp.əˈmɪk.sɪs",
-    "vernalization": "ˌvɜːr.nə.laɪˈzeɪ.ʃən",
-    "germplasm": "dʒɜːrmˌplæz.əm"
+    "stock": "stɒk"
 }
 
+KNOWN_SYNONYMS = {
+    "air layering": "marcottage, Chinese layering, pot layering",
+    "apomixis": "agamospermy",
+    "ecophysiology": "physiological ecology, environmental plant physiology",
+    "flush": "vegetative flush, episodic growth, shoot emergence",
+    "germplasm": "genetic resources, hereditary material, gene pool",
+    "grafting": "graftage, top-working",
+    "orthodox seed": "desiccation-tolerant seed",
+    "recalcitrant seed": "desiccation-sensitive seed, non-orthodox seed",
+    "t-budding": "shield budding, T-grafting",
+    "true seed": "botanical seed",
+    "vernalization": "yarovization (historical), low-temperature floral induction"
+}
+
+
 def clean_ipa_syntax(ipa_str):
-    """Normalize and clean IPA transcription."""
+    """Normalize and clean IPA transcription, fixing common LLM phonetic errors."""
     if not ipa_str:
         return ""
     t = ipa_str.strip()
@@ -279,6 +363,14 @@ def clean_ipa_syntax(ipa_str):
     t = t.replace("ˈˈ", "ˈ").replace("ˌˌ", "ˌ").replace("ˈˌ", "ˈ").replace("ˌˈ", "ˈ")
     while "  " in t:
         t = t.replace("  ", " ")
+
+    # Fix LLM phonetic confusion between -physiology and -psychology/physics
+    if "fɪˈzaɪ" in t or "fɪzaɪ" in t or "fɪˈsaɪ" in t:
+        t = t.replace("fɪˈzaɪ.ə.lə.dʒi", "fɪz.iˈɑː.lə.dʒi")
+        t = t.replace("fɪˈzaɪ.lə.dʒi", "fɪz.iˈɑː.lə.dʒi")
+        t = t.replace("fɪˈzaɪ", "fɪz.iˈɑː")
+        t = t.replace("fɪzaɪ", "fɪz.iˈɑː")
+        t = t.replace("fɪˈsaɪ", "fɪz.iˈɑː")
     return t
 
 
@@ -335,13 +427,62 @@ def sanitize_and_validate_card(card_data):
     elif card_data.get("ipa"):
         card_data["ipa"] = clean_ipa_syntax(card_data["ipa"])
 
-    # Multi-word check: if term ends with 'seed' but IPA does not have 'siːd', append it
-    if term_lower.endswith(" seed") and card_data.get("ipa") and "siːd" not in card_data["ipa"]:
-        raw = card_data["ipa"].strip("/")
-        card_data["ipa"] = clean_ipa_syntax(f"/{raw} ˌsiːd/")
+    # Multi-word check: if term ends with compound suffixes, repair phonetics
+    raw_ipa = card_data.get("ipa", "")
+    if term_lower.endswith(" seed") and raw_ipa and "siːd" not in raw_ipa:
+        card_data["ipa"] = clean_ipa_syntax(f"/{raw_ipa.strip('/')} ˌsiːd/")
+    elif term_lower.endswith(" layering") and raw_ipa and "leɪ.ər.ɪŋ" not in raw_ipa:
+        card_data["ipa"] = clean_ipa_syntax(f"/{raw_ipa.strip('/')} ˌleɪ.ər.ɪŋ/")
+    elif term_lower.endswith(" budding") and raw_ipa and "bʌd.ɪŋ" not in raw_ipa:
+        card_data["ipa"] = clean_ipa_syntax(f"/{raw_ipa.strip('/')} ˌbʌd.ɪŋ/")
+    elif term_lower.endswith(" grafting") and raw_ipa and "ɡræf.tɪŋ" not in raw_ipa:
+        card_data["ipa"] = clean_ipa_syntax(f"/{raw_ipa.strip('/')} ˌɡræf.tɪŋ/")
 
-    # 2. Sub-mechanism / synecdoche correction (e.g. apomixis != only nucellar embryony)
+    # 2. Enforce known technical synonyms and populate fallback
+    if term_lower in KNOWN_SYNONYMS:
+        card_data["synonyms"] = KNOWN_SYNONYMS[term_lower]
+    elif not card_data.get("synonyms") or not card_data["synonyms"].strip():
+        subf = card_data.get("subfield", "Horticulture")
+        card_data["synonyms"] = f"{term} ({subf.lower()} descriptor)"
+
+    # 3. Sub-mechanism / synecdoche correction
     mech = card_data.get("biological_mechanism", "")
+    practice = card_data.get("horticultural_practice", "")
+    crops = card_data.get("key_crops", "")
+
+    # Flush: ensure pomology, subtropical crop phenology, paclobutrazol (eliminate temperate apple error)
+    if "flush" in term_lower:
+        card_data["subfield"] = "Pomology / Fruit Crop Physiology"
+        card_data["course_id"] = "HORT501"
+        card_data["course_code"] = "Hort. 501"
+        card_data["ipa"] = "/flʌʃ/"
+        card_data["synonyms"] = "vegetative flush, episodic growth, shoot emergence"
+        if "apple" in practice.lower() or "apple" in crops.lower() or "temperate" in mech.lower():
+            card_data["biological_mechanism"] = (
+                "A synchronized, episodic wave of rapid shoot elongation and leaf expansion or panicle bud emergence "
+                "originating from previously quiescent or resting terminal meristems, alternating with intervals of apical bud quiescence "
+                "in woody perennial plants. Regulated by endogenous hormonal balances—specifically root-derived cytokinin surges and declining gibberellin levels signaling bud burst."
+            )
+            card_data["horticultural_practice"] = (
+                "In commercial mango (Mangifera indica) and litchi (Litchi chinensis) orchards, growers stimulate 1-2 vegetative flushes "
+                "immediately post-harvest through canopy pruning and nitrogenous fertilization. Subsequent autumn vegetative flushes are "
+                "chemically suppressed using paclobutrazol (Cultar - a gibberellin inhibitor) alongside deficit irrigation to ensure synchronized floral flushes."
+            )
+            card_data["key_crops"] = "Mango (Mangifera indica), Litchi (Litchi chinensis), Citrus spp., Tea (Camellia sinensis)"
+            card_data["exam_trap"] = (
+                "CRITICAL EXAM TRAP: Do NOT confuse tropical rhythmic 'flushing' with continuous temperate spring shoot growth! "
+                "In mango and litchi, late autumn vegetative flushes directly antagonize floral evocation ('flush-flower antagonism'). Paclobutrazol suppresses vegetative flushes to allow floral flushes to proceed."
+            )
+
+    # Ecophysiology: ensure correct IPA and syllabus mapping
+    if "ecophysiology" in term_lower:
+        card_data["ipa"] = "/ˌiː.koʊˌfɪz.iˈɑː.lə.dʒi/"
+        card_data["course_id"] = "HORT501"
+        card_data["course_code"] = "Hort. 501"
+        card_data["subfield"] = "Fruit Crop Physiology / Pomology"
+        card_data["synonyms"] = "physiological ecology, environmental plant physiology"
+
+    # Apomixis: prevent synecdoche
     if "apomixis" in term_lower:
         if "nucellar" in mech.lower() and "agamospermy" not in mech.lower():
             card_data["biological_mechanism"] = (
@@ -350,7 +491,7 @@ def sanitize_and_validate_card(card_data):
             )
         card_data["synonyms"] = "agamospermy"
 
-    # 3. Seed physiology correction (recalcitrant != high lipids)
+    # Recalcitrant seed: eliminate high lipids hallucination
     if "recalcitrant" in term_lower and "seed" in term_lower:
         if "high lipids" in mech.lower() or "high levels of lipids" in mech.lower():
             card_data["biological_mechanism"] = (
@@ -359,7 +500,7 @@ def sanitize_and_validate_card(card_data):
             )
         card_data["synonyms"] = "desiccation-sensitive seed, non-orthodox seed"
 
-    # 4. True seed autogamy correction (true seed != 'two parents')
+    # True seed: eliminate two-parents hallucination
     if "true seed" in term_lower:
         if "two different parents" in mech.lower() or "two parents" in mech.lower():
             card_data["biological_mechanism"] = (
@@ -472,14 +613,17 @@ TARGET COURSE SELECTION:
 
 GOLDEN RULES FOR GRADUATE (M.S.) HORTICULTURAL SYNTHESIS:
 1. COMPOUND COMPLETENESS: If the term has multiple words (e.g. 'recalcitrant seed', 'orthodox seed', 'air layering'), define the FULL compound phrase. Never omit words or analyze only the first adjective.
-2. NO GENERALIZATION OF SUB-MECHANISMS: Do NOT define a broad phenomenon by only one of its subtypes:
+2. CROP & PHENOLOGICAL CONGRUENCE: Match crops and examples to actual biological reality. Tropical/subtropical growth cycles (e.g. episodic flushing, recalcitrant seeds, nucellar embryony, air layering) must feature appropriate species (mango, litchi, citrus, jackfruit). Do NOT cite temperate deciduous crops like apple for tropical flushing dynamics or recalcitrant seed biology.
+3. NO GENERALIZATION OF SUB-MECHANISMS: Do NOT define a broad phenomenon by only one of its subtypes:
    - APOMIXIS is asexual seed formation (agamospermy) bypassing meiosis and fertilization—do NOT define it solely as 'nucellar embryony' (which is only one subtype). Synonyms: 'agamospermy' (NEVER list 'apospory' as a synonym).
    - TRUE SEED is a fertilized botanical embryonated ovule, contrasting with vegetative propagules (potato tubers, garlic cloves, onion sets). NEVER say 'from two parents' because autogamous/self-pollinated crops produce true seed.
-3. ACCURATE SEED PHYSIOLOGY (ROBERTS 1973 & BEWLEY-BLACK):
+4. ACCURATE SEED PHYSIOLOGY (ROBERTS 1973 & BEWLEY-BLACK):
    - Orthodox seeds tolerate desiccation to 2-5% and sub-zero storage (-18°C) obeying Roberts' viability equations; do NOT claim they require dormancy.
    - Recalcitrant seeds die if dried below 15-30% because they lack LEA proteins and oligosaccharide glass vitrification while remaining metabolically active—do NOT claim this is due to 'high lipids'.
-4. AUTHENTIC ETYMOLOGY: Provide genuine Greek/Latin/historical derivations with coining scientists and dates where known (e.g. Hans Winkler 1908, E.H. Roberts 1973, August Weismann 1883).
-5. PROFESSOR EXAM TRAPS: State the exact high-yield distractor examiners test (e.g. Vernalization vs Stratification; Apomixis vs Parthenocarpy; Bark Slipping vs Chip Budding; Orthodox vs Recalcitrant vs Intermediate).
+5. AUTHENTIC ETYMOLOGY: Provide genuine Greek/Latin/historical derivations with coining scientists and dates where known (e.g. Hans Winkler 1908, E.H. Roberts 1973, August Weismann 1883).
+6. PROFESSOR EXAM TRAPS: State the exact high-yield distractor examiners test (e.g. Vernalization vs Stratification; Apomixis vs Parthenocarpy; Bark Slipping vs Chip Budding; Orthodox vs Recalcitrant vs Intermediate).
+7. MANDATORY SYNONYMS: Provide 1 to 3 valid technical synonyms, alternative horticultural terms, or English/Latin equivalents (e.g. 'marcottage' for air layering; 'agamospermy' for apomixis; 'desiccation-tolerant seed' for orthodox seed; 'physiological ecology' for ecophysiology; 'episodic growth' or 'vegetative flush' for flush; 'shield budding' for t-budding; 'genetic resources' for germplasm). DO NOT leave empty.
+8. ACCURATE IPA PHONETICS: For words ending in '-physiology', transcribe strictly as /...ˌfɪz.iˈɑː.lə.dʒi/ (never 'zaɪ'). Cover every word in compound terms.
 
 REQUIRED JSON OUTPUT FORMAT (Strict valid JSON, no markdown outside of JSON):
 {{
@@ -495,7 +639,7 @@ REQUIRED JSON OUTPUT FORMAT (Strict valid JSON, no markdown outside of JSON):
   "pos": "n.",
   "ipa": "/.../",
   "etymology": "Morphological or classical Greek/Latin root origin with coining scientist/year where known.",
-  "synonyms": "Genuine botanical/trade technical synonyms.",
+  "synonyms": "Genuine botanical/trade technical synonyms (MANDATORY, never empty).",
   "see_also": "2 to 4 comma-separated related concepts."
 }}
 

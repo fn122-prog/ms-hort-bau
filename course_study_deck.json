@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-10-31",
+  "last_updated": "2026-11-01",
   "courses": [
     {
       "id": "HORT501",
@@ -105,7 +105,7 @@
       "horticultural_practice": "Practiced during the humid monsoon season on woody branches. A 2.5-4 cm ring of bark and cambium is scraped clean, treated with rooting powder (IBA 1000-2500 ppm), enclosed in moist sphagnum moss, and tightly sealed with 200-gauge polyethylene film tied at both ends.",
       "exam_trap": "Do NOT confuse with ground layering: air layering is performed in situ on upright, elevated, rigid woody branches that cannot be bent to ground level. Girdling must thoroughly scrape the cambium to prevent healing callus from bridging the wound instead of rooting.",
       "key_crops": "Litchi (Litchi chinensis), Guava (Psidium guajava), Pomegranate (Punica granatum), Ficus elastica",
-      "mastery": "Needs Review",
+      "mastery": "Exam Ready",
       "notes": "Essential propagation technique for true-to-type litchi cultivars in Bangladesh.",
       "date_added": "2026-10-31",
       "last_reviewed": "2026-10-31"
@@ -135,7 +135,7 @@
       "horticultural_practice": "Whip-and-tongue, veneer, or cleft grafting conducted during active sap movement. Requires intimate cambial alignment, sharp clean incisions, structural binding with grafting tape, and waterproofing with wax to prevent desiccation.",
       "exam_trap": "Vascular cambium must make direct physical contact along at least one full side. Callus can bridge microscopic gaps, but misaligned or dead cambia result in anatomical rejection or delayed structural failure (delayed incompatibility).",
       "key_crops": "Mango (Mangifera indica), Apple (Malus domestica), Citrus spp., Grafted Tomato/Eggplant (rootstock resistance)",
-      "mastery": "Needs Review",
+      "mastery": "Exam Ready",
       "notes": "Used widely for dwarfing rootstocks in intensive orchards and nematode resistance in solanaceous vegetables.",
       "date_added": "2026-10-31",
       "last_reviewed": "2026-10-31"
@@ -150,7 +150,7 @@
       "horticultural_practice": "Conducted in late summer or spring when rootstock cambium is vigorously dividing and bark 'slips' easily without tearing. A vertical cut (2.5 cm) and horizontal cut form a 'T'; flaps are lifted, shield bud inserted, and bound with budding tape leaving the eye exposed.",
       "exam_trap": "Prerequisite condition: Bark MUST be 'slipping' (active cambial division). If bark does not slip (dormant season or water stress), T-budding will fail; 'Chip Budding' must be used instead because chip budding does not require bark separation.",
       "key_crops": "Citrus (Sweet orange, Mandarin on Rangpur lime), Rose (Rosa spp.), Peach and Plum (Prunus spp.)",
-      "mastery": "Needs Review",
+      "mastery": "Exam Ready",
       "notes": "Standard commercial propagation technique for citrus nursery stock in Bangladesh.",
       "date_added": "2026-10-31",
       "last_reviewed": "2026-10-31"
@@ -165,7 +165,7 @@
       "horticultural_practice": "Controlled artificial chilling of hydrated seeds or overwintering stecklings of biennial horticultural crops to synchronize uniform bolting and flowering for hybrid seed production.",
       "exam_trap": "CRITICAL EXAM TRAP: Do NOT confuse vernalization with stratification! Vernalization induces meristematic competence to flower (vegetative-to-reproductive transition); Stratification breaks seed embryo dormancy to allow germination. High temperatures immediately following chilling cause 'de-vernalization'.",
       "key_crops": "Cabbage (Brassica oleracea var. capitata), Carrot (Daucus carota), Onion (Allium cepa), Beetroot (Beta vulgaris)",
-      "mastery": "Needs Review",
+      "mastery": "Exam Ready",
       "notes": "Crucial concept for winter vegetable seed production in subtropical zones.",
       "date_added": "2026-10-31",
       "last_reviewed": "2026-10-31"
@@ -249,6 +249,46 @@
       "mastery": "Exam Ready",
       "date_added": "2026-10-31",
       "last_reviewed": "2026-10-31"
+    },
+    {
+      "id": "card_ecophysiology",
+      "term": "Ecophysiology",
+      "course_id": "HORT501",
+      "course_code": "Hort. 501",
+      "subfield": "Fruit Crop Physiology / Pomology",
+      "biological_mechanism": "The biological subdiscipline evaluating the physiological, biochemical, and physical mechanisms by which horticultural crops dynamically acclimate and respond to abiotic environmental gradients (solar irradiance, vapor pressure deficit, temperature extremes, drought stress, and soil salinity). Investigates stomatal conductance regulation, leaf gas exchange, water-use efficiency (WUE), and photosynthetic quantum yield (chlorophyll fluorescence Fv/Fm).",
+      "horticultural_practice": "Applied in orchard canopy management and precision deficit irrigation (RDI) for high-density fruit orchards (mango, citrus, guava). Portable infrared gas analyzers (LI-COR) and porometers are used to quantify stomatal conductance and transpiration rates to optimize irrigation intervals and prevent midday photoinhibition.",
+      "exam_trap": "CRITICAL EXAM TRAP: Do NOT confuse phenotypic ecophysiological acclimation (reversible, physiological adjustments like stomatal closure, leaf rolling, or osmoprotectant synthesis occurring within an individual plant's lifespan) with evolutionary adaptation (heritable, genetic changes across generations). Furthermore, high atmospheric vapor pressure deficit (VPD) can induce midday stomatal closure even when soil moisture is at field capacity!",
+      "key_crops": "Mango (Mangifera indica), Citrus spp., Litchi (Litchi chinensis), Guava (Psidium guajava), Protected Tomato (Solanum lycopersicum)",
+      "notes": "Essential for micro-irrigation scheduling and high-density orchard canopy architecture.",
+      "pos": "n.",
+      "ipa": "/ˌiː.koʊˌfɪz.iˈɑː.lə.dʒi/",
+      "etymology": "From Greek οἶκος ('oikos', dwelling/house) + φυσιολογία ('physiologia', natural science, from 'physis' nature + 'logos' discourse); coined by Eugenius Warming (1902) to bridge ecological plant geography with functional botany.",
+      "synonyms": "physiological ecology, environmental plant physiology",
+      "see_also": "stomatal conductance, water-use efficiency, vapor pressure deficit, abiotic stress, photosynthesis, chlorophyll fluorescence",
+      "mastery": "Exam Ready",
+      "date_added": "2026-11-01",
+      "last_reviewed": "2026-11-01"
+    },
+    {
+      "id": "card_flush",
+      "term": "Flush (Vegetative / Floral Flush)",
+      "course_id": "HORT501",
+      "course_code": "Hort. 501",
+      "subfield": "Pomology / Fruit Crop Physiology",
+      "biological_mechanism": "A synchronized, episodic wave of rapid shoot elongation and leaf expansion or panicle bud emergence originating from previously quiescent or resting terminal meristems, alternating with intervals of apical bud quiescence in woody perennial plants. Regulated by endogenous hormonal balances—specifically root-derived cytokinin surges and declining gibberellin levels signaling bud burst.",
+      "horticultural_practice": "In commercial mango (Mangifera indica) and litchi (Litchi chinensis) orchards, growers stimulate 1-2 vegetative flushes immediately post-harvest through canopy pruning and nitrogenous fertilization. Subsequent autumn vegetative flushes are chemically suppressed using paclobutrazol (Cultar - a gibberellin biosynthesis inhibitor) alongside regulated deficit irrigation to ensure synchronized, heavy floral panicle flushes in winter.",
+      "exam_trap": "CRITICAL EXAM TRAP: Do NOT confuse tropical rhythmic 'flushing' with continuous temperate spring shoot growth! In subtropical fruit trees like mango and litchi, late autumn vegetative flushes act as strong gibberellin sinks and sources that directly antagonize floral evocation ('flush-flower antagonism'). Paclobutrazol suppresses vegetative flushes to allow floral flushes to proceed.",
+      "key_crops": "Mango (Mangifera indica), Litchi (Litchi chinensis), Citrus spp., Tea (Camellia sinensis), Cacao (Theobroma cacao)",
+      "notes": "Core physiological determinant of alternate bearing and floral induction in mango and litchi.",
+      "pos": "n.",
+      "ipa": "/flʌʃ/",
+      "etymology": "From Middle English 'flusschen' (to fly up suddenly) and Old French 'flus' (a sudden surge/flow), derived from Latin 'fluere' (to flow); applied to the sudden, visible surge of new green shoots.",
+      "synonyms": "vegetative flush, episodic growth, shoot emergence",
+      "see_also": "bud dormancy, paclobutrazol, panicle initiation, alternate bearing, apical dominance, phenology",
+      "mastery": "Exam Ready",
+      "date_added": "2026-11-01",
+      "last_reviewed": "2026-11-01"
     }
   ]
 }
