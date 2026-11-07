@@ -128,8 +128,22 @@ COMMON_HORT_WORDS_IPA = {
     "stomatal": "stoʊˈmæt.əl",
     "transpiration": "ˌtræn.spəˈreɪ.ʃən",
     "conductance": "kənˈdʌk.təns",
+    "floral": "ˈflɔːr.əl",
+    "induction": "ɪnˈdʌk.ʃən",
+    "floral induction": "ˌflɔːr.əl ɪnˈdʌk.ʃən",
+    "habit": "ˈhæb.ɪt",
+    "floral habit": "ˈflɔːr.əl ˈhæb.ɪt",
+    "phase": "feɪz",
+    "flowering": "ˈflaʊ.ər.ɪŋ",
+    "flowering phase": "ˈflaʊ.ər.ɪŋ ˈfeɪz",
+    "anthesis": "ænˈθiː.sɪs",
+    "overbearing": "ˌoʊ.vərˈbɛr.ɪŋ",
+    "overcropping": "ˌoʊ.vərˈkrɒp.ɪŋ",
+    "thinning": "ˈθɪn.ɪŋ",
+    "natural": "ˈnætʃ.ər.əl",
+    "natural thinning": "ˈnætʃ.ər.əl ˈθɪn.ɪŋ",
 
-    # Genetics & biotechnology
+    # Genetics, biotechnology & pathology
     "germplasm": "dʒɜːrmˌplæz.əm",
     "biotechnology": "ˌbaɪ.oʊ.tɛkˈnɒl.ə.dʒi",
     "somaclonal": "ˌsoʊ.məˈkloʊ.nəl",
@@ -137,6 +151,21 @@ COMMON_HORT_WORDS_IPA = {
     "heterosis": "ˌhɛt.əˈroʊ.sɪs",
     "landrace": "ˈlænd.reɪs",
     "accession": "ækˈsɛʃ.ən",
+    "culture": "kʌl.tʃər",
+    "mother": "ˈmʌð.ər",
+    "mother culture": "ˈmʌð.ər ˌkʌl.tʃər",
+    "spawn": "spɔːn",
+    "spawn culture": "ˈspɔːn ˌkʌl.tʃər",
+    "pure": "pjʊr",
+    "pure culture": "ˈpjʊr ˌkʌl.tʃər",
+    "axenic": "eɪˈzɛn.ɪk",
+    "fruiting": "ˈfruː.tɪŋ",
+    "body": "ˈbɑː.di",
+    "fruiting body": "ˈfruː.tɪŋ ˌbɑː.di",
+    "sporocarp": "ˈspɔːr.oʊˌkɑːrp",
+    "basidiocarp": "bəˈsɪd.i.oʊˌkɑːrp",
+    "surplus": "ˈsɜːr.pləs",
+    "horticulture": "ˈhɔːr.tɪˌkʌl.tʃər",
 
     # Subfields & general terms
     "pomology": "poʊˈmɒl.ə.dʒi",
@@ -145,7 +174,6 @@ COMMON_HORT_WORDS_IPA = {
     "pathology": "pəˈθɒl.ə.dʒi",
     "morphology": "mɔːrˈfɒl.ə.dʒi",
     "anatomy": "əˈnæt.ə.mi",
-    "culture": "kʌl.tʃər",
     "fruit": "fruːt",
     "plant": "plɑːnt",
     "tree": "triː",
@@ -157,11 +185,22 @@ KNOWN_SYNONYMS = {
     "air layering": "marcottage, Chinese layering, pot layering",
     "apomixis": "agamospermy",
     "ecophysiology": "physiological ecology, environmental plant physiology",
+    "floral habit": "flowering habit, bearing habit, bloom pattern, inflorescence habit",
+    "floral induction": "floral evocation, reproductive evocation, flower induction",
+    "flowering phase": "anthesis, bloom stage, floral stage, blooming period",
     "flush": "vegetative flush, episodic growth, shoot emergence",
+    "fruiting body": "sporocarp, basidiocarp, ascocarp, mushroom",
     "germplasm": "genetic resources, hereditary material, gene pool",
     "grafting": "graftage, top-working",
+    "horticulture": "garden cultivation, high-value crop science, intensive horticultural cultivation",
+    "mother culture": "master culture, foundation stock, axenic stock culture, primary culture",
+    "natural thinning": "physiological fruit drop, self-thinning, June drop, fruitlet abscission",
     "orthodox seed": "desiccation-tolerant seed",
+    "overbearing": "overcropping, excessive crop load, biennial bearing trigger",
+    "pure culture": "axenic culture, monoxenic culture, isolated clone",
     "recalcitrant seed": "desiccation-sensitive seed, non-orthodox seed",
+    "spawn culture": "mushroom spawn, grain spawn, vegetative inoculum, planting spawn",
+    "surplus": "buffer units, guard-row surplus, sampling reserve, oversampling allowance",
     "t-budding": "shield budding, T-grafting",
     "true seed": "botanical seed",
     "vernalization": "yarovization (historical), low-temperature floral induction"
@@ -173,6 +212,8 @@ def clean_ipa_syntax(ipa_str):
     if not ipa_str:
         return ""
     t = ipa_str.strip()
+    # Remove non-standard British parenthetical markers like (ɹ)
+    t = t.replace("ə(ɹ)", "ər").replace("(ɹ)", "r").replace("(r)", "r")
     if not t.startswith("/"):
         t = "/" + t
     if not t.endswith("/"):
@@ -189,6 +230,21 @@ def clean_ipa_syntax(ipa_str):
         t = t.replace("fɪˈzaɪ", "fɪz.iˈɑː")
         t = t.replace("fɪzaɪ", "fɪz.iˈɑː")
         t = t.replace("fɪˈsaɪ", "fɪz.iˈɑː")
+
+    # Fix unpunctuated floral induction
+    if "ɪndʌkˈʃən" in t or "ɪndʌkʃən" in t:
+        t = t.replace("ɪndʌkˈʃən", "ɪnˈdʌk.ʃən").replace("ɪndʌkʃən", "ɪnˈdʌk.ʃən")
+    # Fix natural thinning missing syllable breaks
+    if "ˈnætʃrəl" in t:
+        t = t.replace("ˈnætʃrəl", "ˈnætʃ.ər.əl")
+    if "ˈθɪnɪŋ" in t:
+        t = t.replace("ˈθɪnɪŋ", "ˈθɪn.ɪŋ")
+    # Fix floral habit missing syllable breaks
+    if "ˈflɔrəl" in t:
+        t = t.replace("ˈflɔrəl", "ˈflɔːr.əl")
+    if "ˈhæbɪt" in t:
+        t = t.replace("ˈhæbɪt", "ˈhæb.ɪt")
+
     return t
 
 
@@ -240,9 +296,10 @@ def apply_botanical_guardrails(item):
     """
     term = item.get("Word", "").strip()
     term_lower = term.lower()
+    item["Word"] = term_lower  # Standardize all dictionary terms to lowercase
 
     # 1. Phonetics / IPA verification
-    curated_ipa = fetch_verified_ipa(term)
+    curated_ipa = fetch_verified_ipa(term_lower)
     if curated_ipa:
         item["Pronunciation (IPA)"] = curated_ipa
     elif item.get("Pronunciation (IPA)"):
@@ -258,17 +315,116 @@ def apply_botanical_guardrails(item):
         item["Pronunciation (IPA)"] = clean_ipa_syntax(f"/{raw_ipa.strip('/')} ˌbʌd.ɪŋ/")
     elif term_lower.endswith(" grafting") and raw_ipa and "ɡræf.tɪŋ" not in raw_ipa:
         item["Pronunciation (IPA)"] = clean_ipa_syntax(f"/{raw_ipa.strip('/')} ˌɡræf.tɪŋ/")
+    elif term_lower.endswith(" culture") and raw_ipa and "kʌl.tʃər" not in raw_ipa:
+        item["Pronunciation (IPA)"] = clean_ipa_syntax(f"/{raw_ipa.strip('/')} ˌkʌl.tʃər/")
 
     # 2. Known technical synonyms enforcement
     if term_lower in KNOWN_SYNONYMS:
         item["Synonyms"] = KNOWN_SYNONYMS[term_lower]
     elif not item.get("Synonyms") or not item["Synonyms"].strip():
         subf = item.get("Subfield", "Horticulture")
-        item["Synonyms"] = f"{term} ({subf.lower()} descriptor)"
+        item["Synonyms"] = f"{term_lower} ({subf.lower()} descriptor)"
 
     # 3. Botanical / Crop Congruence & Mechanism Guardrails
     defn = item.get("Definition", "")
     example = item.get("Example Sentence", "")
+    etym = item.get("Etymology", "")
+
+    # Fruiting body: prevent confusing fungal sporocarps with orchard fruit trees (apples/peaches)
+    if "fruiting body" in term_lower:
+        item["Subfield"] = "Olericulture"
+        item["Pronunciation (IPA)"] = "/ˈfruː.tɪŋ ˌbɑː.di/"
+        item["Synonyms"] = "sporocarp, basidiocarp, ascocarp, mushroom"
+        if "apple" in defn.lower() or "peach" in defn.lower() or "prun" in defn.lower() or "tree" in defn.lower():
+            item["Definition"] = (
+                "A specialized, macroscopic multicellular reproductive structure (sporocarp) produced by higher fungi "
+                "(Basidiomycota and Ascomycota) that bears, protects, and disseminates meiotic spores. In commercial olericultural "
+                "mushroom production (e.g. Agaricus bisporus, Pleurotus ostreatus), the fruiting body represents the primary harvestable "
+                "economic yield, induced by pinhead trigger conditions (temperature drop, high relative humidity, and CO2 reduction)."
+            )
+            item["Example Sentence"] = (
+                "Commercial button mushroom growers trigger fruiting body primordial initiation (pinning) by casing the "
+                "colonized compost and ventilating the growing room to lower ambient carbon dioxide below 1000 ppm."
+            )
+
+    # Spawn culture: eliminate "grown from fungal spores" error
+    if "spawn culture" in term_lower:
+        item["Subfield"] = "Olericulture"
+        item["Pronunciation (IPA)"] = "/ˈspɔːn ˌkʌl.tʃər/"
+        item["Synonyms"] = "mushroom spawn, grain spawn, vegetative inoculum, planting spawn"
+        if "spore" in defn.lower():
+            item["Definition"] = (
+                "The commercial propagation vehicle wherein a carrier substrate (sterilized cereal grains such as wheat, "
+                "rye, or sorghum, or sawdust) is fully colonized by pure, vegetative dikaryotic mycelium of a selected mushroom strain, "
+                "acting as the biological seed or inoculum for commercial substrate spawning."
+            )
+            item["Example Sentence"] = (
+                "Sterilized wheat grain bags are inoculated with mother mycelium in a laminar airflow chamber to produce "
+                "vigorous grain spawn culture for oyster mushroom (Pleurotus ostreatus) bag production."
+            )
+        if "spawan" in etym.lower():
+            item["Etymology"] = (
+                "From Anglo-French 'espaundre' / Old French 'espandre' (to scatter, pour out, spread, from Latin 'expandere') "
+                "+ Latin 'cultura'; historically applied to fish roe and adopted in horticulture for mycelial propagation units."
+            )
+
+    # Overbearing: eliminate "deficiency of gibberellins" & enforce overcropping synonym
+    if "overbearing" in term_lower:
+        item["Subfield"] = "Pomology"
+        item["Pronunciation (IPA)"] = "/ˌoʊ.vərˈbɛr.ɪŋ/"
+        item["Synonyms"] = "overcropping, excessive crop load, biennial bearing trigger"
+        if "deficiency of gibberellin" in defn.lower() or "excess of cytokinin" in defn.lower():
+            item["Definition"] = (
+                "The physiological condition wherein a fruit tree sets an excessively heavy crop load relative to its canopy "
+                "leaf area and photosynthetic capacity. High seed counts produce excessive gibberellins that basipetally inhibit "
+                "floral induction in adjacent buds, deplete non-structural carbohydrate reserves, cause branch breakage, and trigger "
+                "alternate or biennial bearing in following seasons."
+            )
+            item["Example Sentence"] = (
+                "Apple and mango orchardists prevent overbearing in heavy crop years by performing chemical or hand fruit thinning "
+                "within 30 days of full bloom to protect carbohydrate reserves and ensure floral bud initiation for the next season."
+            )
+
+    # Natural thinning: enforce physiological drop definition and pomology subfield
+    if "natural thinning" in term_lower:
+        item["Subfield"] = "Pomology"
+        item["Pronunciation (IPA)"] = "/ˈnætʃ.ər.əl ˈθɪn.ɪŋ/"
+        item["Synonyms"] = "physiological fruit drop, self-thinning, June drop, fruitlet abscission"
+
+    # Floral induction: enforce plant physiology subfield and evocation synonyms
+    if "floral induction" in term_lower:
+        item["Subfield"] = "Plant Physiology"
+        item["Pronunciation (IPA)"] = "/ˌflɔːr.əl ɪnˈdʌk.ʃən/"
+        item["Synonyms"] = "floral evocation, reproductive evocation, flower induction"
+
+    # Floral habit: enforce floriculture/pomology subfield
+    if "floral habit" in term_lower:
+        item["Subfield"] = "Floriculture"
+        item["Pronunciation (IPA)"] = "/ˈflɔːr.əl ˈhæb.ɪt/"
+        item["Synonyms"] = "flowering habit, bearing habit, bloom pattern, inflorescence habit"
+
+    # Flowering phase: enforce anthesis synonyms
+    if "flowering phase" in term_lower:
+        item["Subfield"] = "Floriculture"
+        item["Pronunciation (IPA)"] = "/ˈflaʊ.ər.ɪŋ ˈfeɪz/"
+        item["Synonyms"] = "anthesis, bloom stage, floral stage, blooming period"
+
+    # Surplus: eliminate supellex hallucination
+    if "surplus" in term_lower:
+        item["Subfield"] = "Experimental Design"
+        item["Pronunciation (IPA)"] = "/ˈsɜːr.pləs/"
+        item["Synonyms"] = "buffer units, guard-row surplus, sampling reserve, oversampling allowance"
+        if "supellex" in etym.lower() or "furniture" in etym.lower():
+            item["Etymology"] = (
+                "From Old French 'surplus' (excess, remainder), from Medieval Latin 'superplus' "
+                "(from Latin 'super', over/above + 'plus', more); unrelated to Latin supellex."
+            )
+
+    # Horticulture: eliminate hypernym/hyponym synonym pollution
+    if term_lower == "horticulture":
+        item["Subfield"] = "Botany"
+        item["Pronunciation (IPA)"] = "/ˈhɔːr.tɪˌkʌl.tʃər/"
+        item["Synonyms"] = "garden cultivation, high-value crop science, intensive horticultural cultivation"
 
     # Flush: ensure pomology / tropical crop phenology (no temperate apple for tropical flushing)
     if "flush" in term_lower:
@@ -280,8 +436,7 @@ def apply_botanical_guardrails(item):
                 "orchardists carefully regulate post-harvest vegetative flushes with paclobutrazol "
                 "and controlled deficit irrigation to ensure synchronized winter floral flushes."
             )
-        if not item.get("Synonyms") or item["Synonyms"].strip() == "":
-            item["Synonyms"] = "vegetative flush, episodic growth, shoot emergence"
+        item["Synonyms"] = "vegetative flush, episodic growth, shoot emergence"
 
     # Apomixis: prevent equating solely to nucellar embryony
     if "apomixis" in term_lower:
@@ -360,15 +515,18 @@ def query_ollama(term, model_name):
         f"graduate-level reference dictionary for an MS in Horticulture.\n"
         f"Provide comprehensive, academically rigorous lexical details for the term: \"{term}\".\n\n"
         f"CRITICAL LEXICOGRAPHICAL GUIDELINES:\n"
-        f"1. Context: Focus strictly on botanical, agricultural, breeding, or physiological meaning.\n"
-        f"2. Compound Completeness: For multi-word terms (e.g. 'recalcitrant seed', 'orthodox seed', 'air layering'), define the FULL compound phrase. Never omit words or define only the adjective.\n"
-        f"3. Crop & Phenological Congruence: Match crop examples to biological reality. For tropical/subtropical phenomena (e.g. rhythmic flushing, recalcitrant seeds, nucellar embryony, marcottage), cite appropriate tropical/subtropical taxa (e.g. Mangifera indica, Litchi chinensis, Citrus spp., Artocarpus heterophyllus, Psidium guajava). Do NOT cite temperate deciduous crops (e.g. apple, pear) for tropical flushing dynamics or recalcitrant seed biology.\n"
-        f"4. No Sub-mechanism Generalization: Do NOT define broad phenomena by only one subtype (e.g. apomixis is asexual seed formation / agamospermy—do NOT define it solely as nucellar embryony; true seed is a fertilized ovule, contrasting with vegetative propagules—never claim it requires 'two parents' since self-pollinated crops also produce true seed).\n"
-        f"5. Physiological Rigor: Adhere strictly to authoritative seed physiology (Roberts 1973, Bewley & Black). Recalcitrant seeds die because they lack LEA proteins/vitrification and remain metabolically active (do NOT claim high lipids); orthodox seeds tolerate desiccation to 2-5% obeying Roberts equations.\n"
-        f"6. Part of Speech: Horticultural processes/techniques ('grafting', 'air layering', 'vernalization') are nouns (n.).\n"
-        f"7. Etymology: State genuine Greek/Latin/historical roots with coining scholar/date where known.\n"
-        f"8. Synonyms: You MUST provide 1 to 3 valid technical synonyms, alternative horticultural terms, or English/Latin equivalents (e.g. 'marcottage' for air layering; 'agamospermy' for apomixis; 'desiccation-tolerant seed' for orthodox seed; 'physiological ecology' for ecophysiology; 'episodic growth' or 'vegetative flush' for flush; 'shield budding' for t-budding; 'genetic resources' for germplasm). DO NOT leave empty.\n"
-        f"9. IPA Transcription: Provide exact, standard phonetic transcription covering EVERY word in the term. Roots ending in '-physiology' are transcribed strictly as /...ˌfɪz.iˈɑː.lə.dʒi/ (never 'zaɪ').\n\n"
+        f"1. Context: Focus strictly on botanical, agricultural, breeding, physiological, or mycological meaning.\n"
+        f"2. Compound Completeness: For multi-word terms (e.g. 'recalcitrant seed', 'fruiting body', 'spawn culture', 'air layering'), define the FULL compound phrase. Never omit words or define only the adjective.\n"
+        f"3. Botanical vs. Mycological Rigor: In botany/pomology, an angiosperm tree bears a 'fruit' (fructus/pericarp); a 'fruiting body' (sporocarp) is strictly a fungal reproductive organ (mushroom cultivation or pathology). NEVER confuse tree fruit with fungal fruiting bodies, and never claim orchardists 'prune the fruiting body'.\n"
+        f"4. Mushroom Spawn Rigor: Commercial mushroom spawn is strictly pure vegetative dikaryotic mycelium grown on sterilized cereal grain (wheat, rye, sorghum); NEVER claim commercial spawn is propagated from sexual spores (which segregate and degenerate).\n"
+        f"5. Crop & Phenological Congruence: Match crop examples to biological reality. For tropical/subtropical phenomena (e.g. rhythmic flushing, recalcitrant seeds, nucellar embryony, marcottage), cite appropriate tropical/subtropical taxa (e.g. Mangifera indica, Litchi chinensis, Citrus spp., Artocarpus heterophyllus, Psidium guajava). Do NOT cite temperate deciduous crops (e.g. apple, pear) for tropical flushing dynamics or recalcitrant seed biology.\n"
+        f"6. Overbearing & Alternate Bearing: Overbearing/overcropping describes excessive crop load on a fruit tree; developing seed embryos produce abundant gibberellins which inhibit flower bud induction for the following season, triggering alternate/biennial bearing.\n"
+        f"7. No Sub-mechanism Generalization: Do NOT define broad phenomena by only one subtype (e.g. apomixis is asexual seed formation / agamospermy—do NOT define it solely as nucellar embryony; true seed is a fertilized ovule, contrasting with vegetative propagules—never claim it requires 'two parents' since self-pollinated crops also produce true seed).\n"
+        f"8. Physiological Rigor: Adhere strictly to authoritative seed physiology (Roberts 1973, Bewley & Black). Recalcitrant seeds die because they lack LEA proteins/vitrification and remain metabolically active (do NOT claim high lipids); orthodox seeds tolerate desiccation to 2-5% obeying Roberts equations.\n"
+        f"9. Part of Speech: Horticultural processes/techniques ('grafting', 'air layering', 'vernalization', 'natural thinning') are nouns (n.).\n"
+        f"10. Accurate Etymology: State genuine Greek/Latin/historical roots with coining scholar/date where known. 'Surplus' is from Latin super + plus, NOT supellex; 'spawn' is from Anglo-Norman espandre, NOT Old English spawan.\n"
+        f"11. Synonyms: You MUST provide 1 to 3 valid technical synonyms, alternative horticultural terms, or English/Latin equivalents (e.g. 'marcottage' for air layering; 'agamospermy' for apomixis; 'sporocarp' for fruiting body; 'grain spawn' for spawn culture; 'overcropping' for overbearing; 'physiological fruit drop' for natural thinning). DO NOT leave empty.\n"
+        f"12. Standard Syllabic IPA: Provide exact phonetic transcription with syllable dots ('.') and stress marks ('ˈ', 'ˌ') covering EVERY word in the term. Roots ending in '-physiology' are transcribed strictly as /...ˌfɪz.iˈɑː.lə.dʒi/ (never 'zaɪ').\n\n"
         f"Return ONLY a valid JSON object (no markdown, no backticks, no introductory text) with these keys:\n"
         f"- \"ipa\": Standard IPA pronunciation enclosed in slashes (e.g. \"/ˈsaɪ.ən/\")\n"
         f"- \"pos\": Abbreviated part of speech (\"n.\", \"v.\", \"adj.\")\n"
