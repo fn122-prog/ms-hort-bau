@@ -1,0 +1,28 @@
+[
+  {
+    "id": "asg_hort503_01",
+    "course_code": "HORT503",
+    "course_name": "Advanced Vegetable Production",
+    "title": "Comparative Analysis of Protected Cultivation Systems",
+    "category": "Group Specific",
+    "scope_type": "Group",
+    "submission_to": "Dr. Md. Harun Ar Rashid",
+    "teacher_initials": "MHrR",
+    "deadline": "2026-12-07T23:59:00",
+    "instructions": "Prepare a comprehensive group technical report comparing net-house vs greenhouse microclimate management for high-value solanaceous vegetables.",
+    "status": "upcoming"
+  },
+  {
+    "id": "asg_hort501_01",
+    "course_code": "HORT501",
+    "course_name": "Advanced Fruit Production",
+    "title": "Physiological Mechanisms of Stress Tolerance in Tropical Fruits",
+    "category": "General Title",
+    "scope_type": "Individual",
+    "submission_to": "Dr. Md. Azizur Rahman",
+    "teacher_initials": "MAR",
+    "deadline": "2026-12-15T23:59:00",
+    "instructions": "Individual literature synthesis on drought and salinity stress adaptations in mango and citrus.",
+    "status": "upcoming"
+  }
+]

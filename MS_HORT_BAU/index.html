@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MS Horticulture Hub • BAU</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
+  
+  <!-- Modern Clean Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            botanical: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#0f3d21',
+              950: '#062814',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #f1f4f8;
+      color: #09090b;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    .day-tab-selected {
+      background-color: #0f3d21 !important;
+      color: #ffffff !important;
+      border-color: #0f3d21 !important;
+      box-shadow: 0 4px 12px rgba(15, 61, 33, 0.25);
+    }
+
+    .custom-scroll::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #e2e8f0;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans pb-16 sm:pb-12 text-slate-900">
+
+  <!-- TOP HEADER (App-like sticky bar) -->
+  <header class="border-b-2 border-slate-200/80 bg-white/95 backdrop-blur-md sticky top-0 z-40 shadow-xs">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+      
+      <!-- Brand -->
+      <div class="flex items-center space-x-3">
+        <div class="w-11 h-11 rounded-2xl bg-botanical-900 text-white flex items-center justify-center text-2xl shadow-sm shrink-0">
+          🌿
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="font-serif text-xl sm:text-2xl font-black text-slate-950 tracking-tight leading-none">MS Horticulture</h1>
+            <span class="px-2 py-0.5 rounded-md text-xs font-black bg-botanical-100 text-botanical-900 border border-botanical-300">BAU</span>
+          </div>
+          <p class="text-xs sm:text-sm font-bold text-slate-700 mt-0.5">Bangladesh Agricultural University</p>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center space-x-2">
+        <button onclick="toggleFacultyModal()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 border-2 border-slate-300 text-xs sm:text-sm font-extrabold transition flex items-center space-x-1.5 shadow-2xs">
+          <span>👨‍🏫</span>
+          <span class="hidden sm:inline">Faculty</span>
+        </button>
+
+        <a href="https://drive.google.com/drive/folders/1VonkTL2XPoKiQ5Z4_qZnUFbNMuunMhbW" target="_blank" rel="noopener" class="px-3.5 py-2 rounded-xl bg-botanical-900 hover:bg-botanical-950 text-white text-xs sm:text-sm font-extrabold transition flex items-center space-x-1.5 shadow-sm">
+          <span>📁</span>
+          <span>Drive</span>
+        </a>
+
+        <button onclick="toggleSheetModal()" title="Google Sheet Backend" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 border-2 border-slate-300 text-slate-900 transition">
+          <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Anchor Bar -->
+    <nav class="flex sm:hidden overflow-x-auto custom-scroll border-t border-slate-200 px-4 py-2 bg-slate-50 space-x-2 text-xs font-black">
+      <a href="#routine-section" class="px-3 py-1.5 rounded-lg bg-white border-2 border-slate-300 text-slate-900 shrink-0 shadow-2xs">Weekly Routine</a>
+      <a href="#deadlines-section" class="px-3 py-1.5 rounded-lg bg-white border-2 border-slate-300 text-slate-900 shrink-0 shadow-2xs">Deadlines</a>
+      <a href="#vault-section" class="px-3 py-1.5 rounded-lg bg-white border-2 border-slate-300 text-slate-900 shrink-0 shadow-2xs">Books & Materials</a>
+    </nav>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="flex-grow max-w-4xl w-full mx-auto px-3.5 sm:px-6 py-5 sm:py-7 space-y-7">
+
+    <!-- HERO HEADER CARD -->
+    <div class="bg-gradient-to-br from-botanical-950 via-botanical-900 to-slate-950 text-white rounded-3xl p-5 sm:p-7 shadow-lg relative overflow-hidden">
+      <div class="absolute -right-6 -bottom-8 opacity-10 text-9xl pointer-events-none select-none font-serif">🌱</div>
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative z-10">
+        <div>
+          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/15 border border-white/20 text-xs sm:text-sm font-extrabold tracking-wide uppercase text-botanical-200 mb-2">
+            <span>📅 Winter Semester 2026–27</span>
+          </div>
+          <h2 class="font-serif text-2xl sm:text-3xl font-black tracking-tight text-white leading-tight">Master of Science Portal</h2>
+          <p class="text-xs sm:text-sm font-medium text-slate-300 mt-1">Syllabus, class routines, teaching documents & deadlines in one place</p>
+        </div>
+
+        <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-3 sm:p-4 text-center sm:text-right shrink-0">
+          <div class="text-[11px] font-black uppercase tracking-wider text-botanical-200" id="liveDayText">Tuesday</div>
+          <div class="font-mono text-xl sm:text-2xl font-black text-white" id="liveClockText">09:00 PM</div>
+          <span class="inline-block mt-1 text-[11px] font-black bg-emerald-400 text-slate-950 px-2.5 py-0.5 rounded-full">Routine: Active</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 1: WEEKLY CLASS ROUTINE -->
+    <section id="routine-section" class="bg-white border-2 border-slate-300/80 rounded-3xl p-4 sm:p-6 shadow-sm space-y-5">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b-2 border-slate-100">
+        <div>
+          <h3 class="font-serif text-xl sm:text-2xl font-black text-slate-950">Weekly Class Routine</h3>
+          <p class="text-xs sm:text-sm font-bold text-slate-600">Select any day to preview timetable</p>
+        </div>
+
+        <!-- View Switcher -->
+        <div class="flex items-center space-x-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-300 self-start sm:self-auto text-xs sm:text-sm font-extrabold">
+          <button id="btnViewDaily" onclick="setRoutineView('daily')" class="px-3.5 py-1.5 rounded-xl bg-white text-slate-950 shadow-xs border border-slate-300">Day View</button>
+          <button id="btnViewGrid" onclick="setRoutineView('grid')" class="px-3.5 py-1.5 rounded-xl text-slate-700 hover:text-slate-950">Full Grid</button>
+        </div>
+      </div>
+
+      <!-- DAY TABS (Bold, Thumb-Friendly Chips) -->
+      <div id="dayTabsContainer" class="grid grid-cols-5 gap-2 sm:gap-3">
+        <button onclick="selectRoutineDay('Sunday')" id="tab_Sunday" class="day-tab py-2.5 sm:py-3 px-2 rounded-2xl border-2 border-slate-300 bg-slate-50 text-slate-900 font-black text-xs sm:text-sm transition flex flex-col items-center justify-center">
+          <span class="text-sm sm:text-base">Sun</span>
+          <span class="text-[10px] sm:text-xs font-bold text-slate-600 mt-0.5">5 Classes</span>
+        </button>
+        <button onclick="selectRoutineDay('Monday')" id="tab_Monday" class="day-tab py-2.5 sm:py-3 px-2 rounded-2xl border-2 border-slate-300 bg-slate-50 text-slate-900 font-black text-xs sm:text-sm transition flex flex-col items-center justify-center">
+          <span class="text-sm sm:text-base">Mon</span>
+          <span class="text-[10px] sm:text-xs font-bold text-slate-600 mt-0.5">5 Classes</span>
+        </button>
+        <button onclick="selectRoutineDay('Tuesday')" id="tab_Tuesday" class="day-tab py-2.5 sm:py-3 px-2 rounded-2xl border-2 border-slate-300 bg-slate-50 text-slate-900 font-black text-xs sm:text-sm transition flex flex-col items-center justify-center">
+          <span class="text-sm sm:text-base">Tue</span>
+          <span class="text-[10px] sm:text-xs font-bold text-slate-600 mt-0.5">5 Classes</span>
+        </button>
+        <button onclick="selectRoutineDay('Wednesday')" id="tab_Wednesday" class="day-tab py-2.5 sm:py-3 px-2 rounded-2xl border-2 border-slate-300 bg-slate-50 text-slate-900 font-black text-xs sm:text-sm transition flex flex-col items-center justify-center">
+          <span class="text-sm sm:text-base">Wed</span>
+          <span class="text-[10px] sm:text-xs font-bold text-slate-600 mt-0.5">4 Classes</span>
+        </button>
+        <button onclick="selectRoutineDay('Thursday')" id="tab_Thursday" class="day-tab py-2.5 sm:py-3 px-2 rounded-2xl border-2 border-amber-300 bg-amber-50 text-amber-950 font-black text-xs sm:text-sm transition flex flex-col items-center justify-center">
+          <span class="text-sm sm:text-base">Thu</span>
+          <span class="text-[10px] sm:text-xs font-bold text-amber-800 mt-0.5">Seminar</span>
+        </button>
+      </div>
+
+      <!-- VIEW 1: DAY-BY-DAY TIMELINE CARDS (Clean Hero Course Cards) -->
+      <div id="dailyRoutineView" class="space-y-3 pt-1">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- VIEW 2: FULL TABLE GRID -->
+      <div id="gridRoutineView" class="hidden overflow-x-auto custom-scroll border-2 border-slate-300 rounded-2xl">
+        <table class="w-full text-center border-collapse min-w-[620px]">
+          <thead>
+            <tr class="bg-slate-100 text-slate-950 text-sm font-black border-b-2 border-slate-300">
+              <th class="py-3 px-3 text-left w-32 bg-slate-200/80">Time</th>
+              <th class="py-3 px-3 w-1/5" id="th_grid_Sun">Sun</th>
+              <th class="py-3 px-3 w-1/5" id="th_grid_Mon">Mon</th>
+              <th class="py-3 px-3 w-1/5" id="th_grid_Tue">Tue</th>
+              <th class="py-3 px-3 w-1/5" id="th_grid_Wed">Wed</th>
+              <th class="py-3 px-3 w-1/5" id="th_grid_Thu">Thu</th>
+            </tr>
+          </thead>
+          <tbody id="gridRoutineTableBody" class="text-xs sm:text-sm divide-y-2 divide-slate-200 font-bold">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between text-xs sm:text-sm font-black pt-3 border-t-2 border-slate-100 text-slate-700 gap-2">
+        <div class="flex items-center space-x-4">
+          <span class="inline-flex items-center space-x-1.5">
+            <span class="w-3.5 h-3.5 rounded-full bg-botanical-800"></span>
+            <span>Compulsory Course</span>
+          </span>
+          <span class="inline-flex items-center space-x-1.5">
+            <span class="w-3.5 h-3.5 rounded-full bg-amber-500"></span>
+            <span>Elective Course</span>
+          </span>
+        </div>
+        <span class="text-xs font-mono font-bold text-slate-500">Effective: 29 Oct 2026</span>
+      </div>
+    </section>
+
+    <!-- SECTION 3: ASSIGNMENTS & DEADLINES (HERO ON COURSE CODE & COURSE TITLE) -->
+    <section id="deadlines-section" class="bg-white border-2 border-slate-300/80 rounded-3xl p-4 sm:p-6 shadow-sm space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b-2 border-slate-100">
+        <div>
+          <h3 class="font-serif text-xl sm:text-2xl font-black text-slate-950">Assignments & Deadlines</h3>
+          <p class="text-xs sm:text-sm font-bold text-slate-600">Track deadlines and set 1-click reminders</p>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="flex items-center space-x-2 text-xs sm:text-sm font-black text-slate-800 self-start sm:self-auto">
+          <button onclick="filterDeadlines('all')" class="deadline-btn px-3.5 py-1.5 rounded-xl bg-botanical-900 text-white font-black shadow-xs">All</button>
+          <button onclick="filterDeadlines('Group Specific')" class="deadline-btn px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 border-2 border-slate-300 text-slate-900">Group Specific</button>
+          <button onclick="filterDeadlines('General Title')" class="deadline-btn px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 border-2 border-slate-300 text-slate-900">General Title</button>
+        </div>
+      </div>
+
+      <div id="deadlinesContainer" class="space-y-4">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- SECTION 4: COURSE MATERIALS VAULT & BOOKS -->
+    <section id="vault-section" class="bg-white border-2 border-slate-300/80 rounded-3xl p-4 sm:p-6 shadow-sm space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b-2 border-slate-100">
+        <div>
+          <h3 class="font-serif text-xl sm:text-2xl font-black text-slate-950">Materials Vault & Books</h3>
+          <p class="text-xs sm:text-sm font-bold text-slate-600">Direct Google Drive folders for lectures, syllabus & past exams</p>
+        </div>
+        <a href="https://drive.google.com/drive/folders/1VonkTL2XPoKiQ5Z4_qZnUFbNMuunMhbW" target="_blank" class="px-3.5 py-2 bg-botanical-900 hover:bg-botanical-950 text-white rounded-xl text-xs sm:text-sm font-black transition flex items-center space-x-1.5 shadow-sm">
+          <span>Open All Drive</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+      </div>
+
+      <div id="materialsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t-2 border-slate-200 bg-white py-6 text-center text-xs sm:text-sm font-bold text-slate-600">
+    <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p>🌱 Department of Horticulture • Bangladesh Agricultural University (BAU)</p>
+      <div class="flex items-center space-x-3 text-slate-700">
+        <a href="https://drive.google.com/drive/folders/1VonkTL2XPoKiQ5Z4_qZnUFbNMuunMhbW" target="_blank" class="hover:text-botanical-900 underline font-extrabold">Google Drive</a>
+        <span>•</span>
+        <button onclick="toggleFacultyModal()" class="hover:text-botanical-900 underline font-extrabold">Faculty Directory</button>
+        <span>•</span>
+        <button onclick="toggleSheetModal()" class="hover:text-botanical-900 underline font-extrabold">Sheet Backend</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL: FACULTY MEMBERS DIRECTORY -->
+  <div id="facultyModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 border-2 border-slate-300 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b-2 border-slate-100">
+        <div>
+          <h3 class="font-serif font-black text-xl text-slate-950">Faculty Members & Initials</h3>
+          <p class="text-xs sm:text-sm font-bold text-slate-600">MS in Horticulture Teaching Panel</p>
+        </div>
+        <button onclick="toggleFacultyModal()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 text-xl font-black flex items-center justify-center">&times;</button>
+      </div>
+
+      <div id="facultyModalList" class="divide-y-2 divide-slate-100 max-h-96 overflow-y-auto custom-scroll space-y-2">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="pt-3 border-t border-slate-200 flex justify-end">
+        <button onclick="toggleFacultyModal()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-950 text-white rounded-xl text-sm font-extrabold">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: GOOGLE SHEET BACKEND SETTINGS -->
+  <div id="sheetModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 sm:p-6 border-2 border-slate-300 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b-2 border-slate-100">
+        <div>
+          <h3 class="font-serif font-black text-xl text-slate-950">Google Sheet Backend</h3>
+          <p class="text-xs font-bold text-slate-600">Zero-code live routine editing</p>
+        </div>
+        <button onclick="toggleSheetModal()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 text-xl font-black flex items-center justify-center">&times;</button>
+      </div>
+
+      <div class="space-y-3 text-xs sm:text-sm">
+        <div>
+          <label class="block font-black text-slate-900 mb-1.5">Google Sheet Link or ID:</label>
+          <input type="text" id="sheetUrlInput" placeholder="Paste Google Sheet URL" class="w-full px-3.5 py-2.5 border-2 border-slate-300 rounded-xl focus:outline-none focus:border-botanical-800 font-mono font-bold text-slate-900">
+          <p class="text-xs font-semibold text-slate-500 mt-1">Make sure General Access is set to "Anyone with the link can view".</p>
+        </div>
+
+        <div class="bg-slate-50 p-3.5 rounded-2xl border-2 border-slate-200 space-y-1">
+          <p class="font-extrabold text-slate-900">How to edit routine on your phone:</p>
+          <p class="text-xs text-slate-700">Open your Google Sheet, change any time slot or teacher, and refresh this website. Changes reflect instantly.</p>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-3 border-t border-slate-200 text-xs sm:text-sm">
+        <button onclick="resetToLocalData()" class="text-rose-700 hover:text-rose-900 font-black underline">Reset to Local Backup</button>
+        <div class="flex space-x-2">
+          <button onclick="toggleSheetModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl font-bold">Cancel</button>
+          <button onclick="saveSheetConfig()" class="px-4 py-2 bg-botanical-900 hover:bg-botanical-950 text-white rounded-xl font-extrabold">Save & Sync</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATION SCRIPTS -->
+  <script>
+    // State
+    let ROUTINE = null;
+    let DEADLINES = [];
+    let selectedDay = 'Sunday';
+    let currentRoutineView = 'daily';
+    let activeDeadlineFilter = 'all';
+
+    // Faculty Mapping
+    const facultyMap = {
+      "MHR": { name: "Dr. Md. Habibur Rahman", role: "Professor" },
+      "MKH": { name: "Dr. Md. Kamrul Hassan", role: "Professor" },
+      "MAR": { name: "Dr. Md. Azizur Rahman", role: "Professor" },
+      "MMH": { name: "Dr. Md. Mokter Hossain", role: "Professor" },
+      "MRK": { name: "Dr. Md. Rezaul Karim", role: "Professor" },
+      "TH":  { name: "Dr. Tamanna Haque", role: "Professor" },
+      "MAI": { name: "Dr. Md. Ashraful Islam", role: "Professor" },
+      "MHrR":{ name: "Dr. Md. Harun Ar Rashid", role: "Professor" }
+    };
+
+    // Course Mapping
+    const courseMap = {
+      "Hort. 501": { title: "Advanced Fruit Production", type: "Compulsory", drive: "https://drive.google.com/drive/folders/1zkjLqFRqK58BfzfnIBUmUGhRYlfGuSNF", icon: "🍎" },
+      "Hort. 502": { title: "Methods in Advanced Research", type: "Compulsory", drive: "https://drive.google.com/drive/folders/1z3551sLTsEM5_eK7oUgTHpzEHEDnC-pA", icon: "🔬" },
+      "Hort. 503": { title: "Advanced Vegetable Production", type: "Compulsory", drive: "https://drive.google.com/drive/folders/1TPKRsT1LgVrK4G9lum6Rl92rOEEqLB00", icon: "🥦" },
+      "Hort. 505": { title: "Advanced Research Methodology", type: "Compulsory", drive: "https://drive.google.com/drive/folders/1B32He9FJwIszWacXcUx8YMrI93WvAxK3", icon: "📊" },
+      "Hort. 507": { title: "Ornamental & Landscape Hort.", type: "Compulsory", drive: "https://drive.google.com/drive/folders/1VHPHXaDl86VpDL9_jWaX1ORdcws7C02b", icon: "🌸" },
+      "Hort. 517": { title: "Homestead Agroforestry", type: "Elective", drive: "https://drive.google.com/drive/folders/1VonkTL2XPoKiQ5Z4_qZnUFbNMuunMhbW", icon: "🏡" },
+      "Hort. 519": { title: "Horticultural Seed Physiology", type: "Elective", drive: "https://drive.google.com/drive/folders/1VonkTL2XPoKiQ5Z4_qZnUFbNMuunMhbW", icon: "🌱" },
+      "Hort. 521": { title: "Horticultural Plant Biotechnology", type: "Elective", drive: "https://drive.google.com/drive/folders/1VonkTL2XPoKiQ5Z4_qZnUFbNMuunMhbW", icon: "🧬" },
+      "Hort. 523": { title: "Advanced Nursery Management", type: "Elective", drive: "https://drive.google.com/drive/folders/1GG_LEQi-agAJ-bcxuGHM9zGVWZqeYjkh", icon: "🪴" },
+      "Hort. 525": { title: "Storage Mgmt. of Hort. Crops", type: "Elective", drive: "https://drive.google.com/drive/folders/1vBIclR6XVoB5U9BBQ95x9zPf9h5-zutR", icon: "📦" }
+    };
+
+    // Slot Labels
+    const slotTimes = {
+      "slot_1": "09:00 – 09:55 AM",
+      "slot_2": "10:00 – 10:55 AM",
+      "slot_3": "11:00 – 11:55 AM",
+      "slot_4": "12:00 – 12:55 PM",
+      "recess": "12:55 – 01:30 PM",
+      "slot_5": "01:30 – 02:25 PM",
+      "slot_6": "02:30 – 03:25 PM",
+      "slot_5_6": "01:30 – 03:25 PM"
+    };
+
+    // Startup
+    document.addEventListener("DOMContentLoaded", async () => {
+      initClock();
+      await loadData();
+      selectRoutineDay(selectedDay);
+      renderGridTable();
+      renderDeadlines();
+      renderCourseVault();
+      renderFacultyModal();
+    });
+
+    // Clock and Day Resolver
+    function initClock() {
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const now = new Date();
+      const currentDay = days[now.getDay()];
+      selectedDay = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(currentDay) ? currentDay : 'Sunday';
+
+      const update = () => {
+        const d = new Date();
+        const dayStr = days[d.getDay()];
+        const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        const dayEl = document.getElementById('liveDayText');
+        const clockEl = document.getElementById('liveClockText');
+
+        if (dayEl) dayEl.textContent = dayStr;
+        if (clockEl) clockEl.textContent = timeStr;
+      };
+      update();
+      setInterval(update, 1000 * 30);
+    }
+
+    // Load Data
+    async function loadData() {
+      try {
+        const [rtnRes, dlnRes] = await Promise.all([
+          fetch('data/routine.json').then(r => r.json()),
+          fetch('data/deadlines.json').then(r => r.json())
+        ]);
+        ROUTINE = rtnRes;
+        DEADLINES = dlnRes;
+
+        const sheetId = localStorage.getItem('hort_google_sheet_id');
+        if (sheetId) {
+          await fetchSheetData(sheetId);
+        }
+      } catch (e) {
+        console.warn("Using fallback local data", e);
+      }
+    }
+
+    // Google Sheets Live CSV Fetcher
+    async function fetchSheetData(sheetId) {
+      try {
+        const routineCsvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Routine`;
+        const deadlinesCsvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Deadlines`;
+
+        const [rRes, dRes] = await Promise.all([
+          fetch(routineCsvUrl),
+          fetch(deadlinesCsvUrl)
+        ]);
+
+        if (rRes.ok) {
+          const csvText = await rRes.text();
+          const rows = parseCsv(csvText);
+          if (rows.length > 1) {
+            const daysMap = { "Sunday": [], "Monday": [], "Tuesday": [], "Wednesday": [], "Thursday": [] };
+            for (let i = 1; i < rows.length; i++) {
+              const [day, slot, course, teacher, type, note] = rows[i];
+              if (day && daysMap[day]) {
+                daysMap[day].push({ slot, course, teacher, type, note: note || "" });
+              }
+            }
+            ROUTINE = { days: daysMap };
+          }
+        }
+
+        if (dRes.ok) {
+          const csvText = await dRes.text();
+          const rows = parseCsv(csvText);
+          if (rows.length > 1) {
+            const newDeadlines = [];
+            for (let i = 1; i < rows.length; i++) {
+              const [course_code, title, category, submission_to, deadline, instructions] = rows[i];
+              if (course_code && title) {
+                newDeadlines.push({
+                  id: "dl_" + i,
+                  course_code,
+                  course_name: courseMap[course_code]?.title || course_code,
+                  title,
+                  category: category || "General Title",
+                  submission_to: submission_to || "Department Faculty",
+                  deadline: deadline || "2026-12-07 23:59",
+                  instructions: instructions || ""
+                });
+              }
+            }
+            if (newDeadlines.length > 0) {
+              DEADLINES = newDeadlines;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Could not fetch Google Sheet data, using local fallback", err);
+      }
+    }
+
+    function parseCsv(text) {
+      const lines = text.trim().split(/\r?\n/);
+      return lines.map(line => {
+        const row = [];
+        let inQuotes = false;
+        let token = '';
+        for (let i = 0; i < line.length; i++) {
+          const c = line[i];
+          if (c === '"') {
+            if (inQuotes && line[i+1] === '"') {
+              token += '"';
+              i++;
+            } else {
+              inQuotes = !inQuotes;
+            }
+          } else if (c === ',' && !inQuotes) {
+            row.push(token.trim());
+            token = '';
+          } else {
+            token += c;
+          }
+        }
+        row.push(token.trim());
+        return row;
+      });
+    }
+
+    // Routine View Switcher
+    function setRoutineView(view) {
+      currentRoutineView = view;
+      const dailyView = document.getElementById('dailyRoutineView');
+      const gridView = document.getElementById('gridRoutineView');
+      const tabs = document.getElementById('dayTabsContainer');
+      const btnDaily = document.getElementById('btnViewDaily');
+      const btnGrid = document.getElementById('btnViewGrid');
+
+      if (view === 'daily') {
+        dailyView.classList.remove('hidden');
+        gridView.classList.add('hidden');
+        tabs.classList.remove('hidden');
+        btnDaily.className = "px-3.5 py-1.5 rounded-xl bg-white text-slate-950 shadow-xs border border-slate-300 font-extrabold";
+        btnGrid.className = "px-3.5 py-1.5 rounded-xl text-slate-700 hover:text-slate-950 font-extrabold";
+      } else {
+        dailyView.classList.add('hidden');
+        gridView.classList.remove('hidden');
+        tabs.classList.add('hidden');
+        btnGrid.className = "px-3.5 py-1.5 rounded-xl bg-white text-slate-950 shadow-xs border border-slate-300 font-extrabold";
+        btnDaily.className = "px-3.5 py-1.5 rounded-xl text-slate-700 hover:text-slate-950 font-extrabold";
+      }
+    }
+
+    // Select Day in Routine
+    function selectRoutineDay(day) {
+      selectedDay = day;
+
+      document.querySelectorAll('.day-tab').forEach(tab => {
+        tab.classList.remove('day-tab-selected');
+      });
+      const activeTab = document.getElementById('tab_' + day);
+      if (activeTab) activeTab.classList.add('day-tab-selected');
+
+      renderDailyCards(day);
+    }
+
+    function renderDailyCards(day) {
+      const container = document.getElementById('dailyRoutineView');
+      if (!container || !ROUTINE) return;
+
+      if (day === 'Thursday') {
+        container.innerHTML = `
+          <div class="p-6 bg-amber-50 border-2 border-amber-300 rounded-3xl flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+              <span class="text-4xl">🎤</span>
+              <div>
+                <h4 class="text-xl font-black text-amber-950 uppercase">Departmental Seminar & Workshop Day</h4>
+                <p class="text-sm font-bold text-amber-800">Weekly presentation & thesis research reviews for all MS students.</p>
+              </div>
+            </div>
+            <span class="px-3.5 py-1.5 bg-amber-200 text-amber-950 rounded-xl text-sm font-mono font-black">09:00 – 03:25</span>
+          </div>
+        `;
+        return;
+      }
+
+      const dayClasses = ROUTINE.days[day] || [];
+      if (dayClasses.length === 0) {
+        container.innerHTML = `<div class="p-6 text-center text-sm font-bold text-slate-500">No classes recorded for ${day}.</div>`;
+        return;
+      }
+
+      container.innerHTML = dayClasses.map(item => {
+        if (!item.course || item.status === 'free') {
+          return `
+            <div class="p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl flex items-center justify-between opacity-70">
+              <span class="text-xs sm:text-sm font-mono font-bold text-slate-600">${slotTimes[item.slot] || item.slot}</span>
+              <span class="text-xs sm:text-sm font-bold text-slate-500 italic">Free Period (Study / Research)</span>
+              <span class="text-slate-400">—</span>
+            </div>
+          `;
+        }
+
+        const isCompulsory = item.type === 'Compulsory';
+        const cInfo = courseMap[item.course] || { title: "", drive: "#", icon: "🌿" };
+        const fInfo = facultyMap[item.teacher] || { name: item.teacher, role: "Professor" };
+
+        return `
+          <div class="bg-white border-2 ${isCompulsory ? 'border-slate-300 hover:border-botanical-800' : 'border-amber-300 hover:border-amber-600'} rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition">
+            
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+              <div class="flex items-center space-x-2">
+                <span class="px-2.5 py-1 rounded-lg text-xs font-mono font-black bg-slate-100 text-slate-900 border border-slate-300">
+                  ⏰ ${slotTimes[item.slot] || item.slot}
+                </span>
+                <span class="px-2.5 py-1 rounded-lg text-xs font-black uppercase tracking-wider ${isCompulsory ? 'bg-botanical-900 text-white' : 'bg-amber-600 text-white'}">
+                  ${item.type}
+                </span>
+                ${item.note ? `<span class="text-xs font-extrabold text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">${item.note}</span>` : ''}
+              </div>
+
+              <a href="${cInfo.drive}" target="_blank" rel="noopener" class="px-3 py-1 bg-slate-100 hover:bg-botanical-900 hover:text-white border border-slate-300 text-slate-800 text-xs font-black rounded-lg transition flex items-center space-x-1">
+                <span>Drive</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+              </a>
+            </div>
+
+            <!-- HERO FOCUS ON COURSE CODE & TITLE -->
+            <div class="my-1">
+              <div class="flex items-baseline space-x-2">
+                <span class="text-2xl sm:text-3xl font-black text-slate-950 font-mono tracking-tight">${item.course}</span>
+                <span class="text-lg">${cInfo.icon || '🌱'}</span>
+              </div>
+              <h4 class="text-base sm:text-lg font-bold text-slate-800 leading-snug mt-0.5">${cInfo.title}</h4>
+            </div>
+
+            <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs sm:text-sm">
+              <div class="flex items-center space-x-2">
+                <span class="font-black text-slate-900 px-2 py-0.5 rounded bg-slate-100 border border-slate-200">👨‍🏫 ${item.teacher}</span>
+                <span class="font-semibold text-slate-600 truncate">${fInfo.name}</span>
+              </div>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Render Full Grid Matrix Table
+    function renderGridTable() {
+      const tbody = document.getElementById('gridRoutineTableBody');
+      if (!tbody || !ROUTINE) return;
+
+      const slots = [
+        { id: "slot_1", time: "09:00 - 09:55" },
+        { id: "slot_2", time: "10:00 - 10:55" },
+        { id: "slot_3", time: "11:00 - 11:55" },
+        { id: "slot_4", time: "12:00 - 12:55" },
+        { id: "recess", time: "12:55 - 01:30", isBreak: true },
+        { id: "slot_5", time: "01:30 - 02:25" },
+        { id: "slot_6", time: "02:30 - 03:25" }
+      ];
+
+      let html = '';
+
+      slots.forEach((s, idx) => {
+        if (s.isBreak) {
+          html += `
+            <tr class="bg-slate-200/80 text-slate-800 font-extrabold text-xs sm:text-sm">
+              <td class="py-2.5 px-3 font-mono text-left bg-slate-300 font-black">${s.time}</td>
+              <td colspan="4" class="py-2.5 uppercase tracking-wider text-center font-black">Recess / Prayer & Lunch Break</td>
+              <td class="border-l-2 border-slate-300"></td>
+            </tr>
+          `;
+          return;
+        }
+
+        html += `<tr>`;
+        html += `<td class="py-3 px-3 text-left font-mono font-black text-slate-900 bg-slate-100 border-r-2 border-slate-200 whitespace-nowrap">${s.time}</td>`;
+
+        ['Sunday', 'Monday', 'Tuesday', 'Wednesday'].forEach(day => {
+          const dayClasses = ROUTINE.days[day] || [];
+
+          if (day === 'Monday' && s.id === 'slot_6') return;
+
+          if (day === 'Monday' && s.id === 'slot_5') {
+            const doubleClass = dayClasses.find(c => c.slot === 'slot_5_6');
+            if (doubleClass) {
+              html += `
+                <td rowspan="2" class="p-2.5 border-2 border-slate-200 bg-emerald-50 align-middle">
+                  <div class="p-2.5 bg-white rounded-xl border-2 border-botanical-800 shadow-xs">
+                    <span class="text-base font-black text-slate-950 font-mono block">${doubleClass.course}</span>
+                    <span class="text-xs font-black text-botanical-900">${doubleClass.teacher}</span>
+                    <span class="text-[11px] text-slate-600 font-bold block mt-0.5">1:30–3:25 PM</span>
+                  </div>
+                </td>
+              `;
+              return;
+            }
+          }
+
+          const entry = dayClasses.find(c => c.slot === s.id);
+          if (!entry || !entry.course) {
+            html += `<td class="p-2.5 border-2 border-slate-200 text-slate-400 font-bold">—</td>`;
+          } else {
+            const isCompulsory = entry.type === 'Compulsory';
+            html += `
+              <td class="p-2.5 border-2 border-slate-200">
+                <div class="p-2 rounded-xl border-2 ${isCompulsory ? 'border-botanical-800 bg-botanical-50/70' : 'border-amber-600 bg-amber-50/70'}">
+                  <span class="text-sm sm:text-base font-black text-slate-950 font-mono block">${entry.course}</span>
+                  <span class="text-xs font-black text-slate-800">${entry.teacher}</span>
+                </div>
+              </td>
+            `;
+          }
+        });
+
+        if (idx === 0) {
+          html += `
+            <td rowspan="7" class="p-3 border-l-2 border-slate-300 bg-amber-50/80 align-middle">
+              <div class="h-full flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-dashed border-amber-400">
+                <span class="text-3xl mb-2">🎤</span>
+                <span class="text-xs sm:text-sm font-black text-amber-950 uppercase">Seminar / Workshop</span>
+                <span class="text-xs font-bold text-amber-800 text-center mt-1">All MS Faculty & Students</span>
+              </div>
+            </td>
+          `;
+        }
+
+        html += `</tr>`;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    // Render Assignments & Deadlines (HERO FOCUS ON COURSE CODE & TITLE)
+    function renderDeadlines() {
+      const container = document.getElementById('deadlinesContainer');
+      if (!container) return;
+
+      const filtered = DEADLINES.filter(d => {
+        if (activeDeadlineFilter === 'all') return true;
+        return d.category === activeDeadlineFilter;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="p-6 text-center text-sm font-bold text-slate-500">No assignments in this category.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        const dueDate = new Date(item.deadline);
+        const countdown = getCountdown(dueDate);
+        const formattedDate = dueDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        const isGroup = item.category.includes('Group');
+        const cInfo = courseMap[item.course_code] || courseMap[item.course_code.replace('HORT', 'Hort. ')] || { title: item.course_name, icon: "🌱" };
+
+        return `
+          <div class="bg-white border-2 border-slate-300 rounded-2xl p-4 sm:p-5 shadow-xs hover:border-slate-400 transition">
+            
+            <!-- TOP HERO HEADER: COURSE CODE & TITLE (BIGGEST & BOLDEST) -->
+            <div class="flex items-start justify-between gap-3 pb-3 border-b-2 border-slate-100">
+              <div>
+                <div class="flex items-center space-x-2.5">
+                  <span class="text-2xl sm:text-3xl font-black text-slate-950 font-mono tracking-tight">${item.course_code}</span>
+                  <span class="px-2.5 py-0.5 rounded-lg text-xs font-black uppercase ${isGroup ? 'bg-purple-100 text-purple-950 border border-purple-300' : 'bg-blue-100 text-blue-950 border border-blue-300'}">
+                    ${item.category}
+                  </span>
+                </div>
+                <h4 class="text-base sm:text-lg font-bold text-slate-800 mt-1 leading-snug">${cInfo.title || item.course_name}</h4>
+              </div>
+
+              <!-- Urgency Countdown Badge -->
+              <span class="shrink-0 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-black font-mono ${countdown.isNear ? 'bg-rose-100 text-rose-950 border-2 border-rose-300' : 'bg-amber-100 text-amber-950 border-2 border-amber-300'}">
+                ⏰ ${countdown.text}
+              </span>
+            </div>
+
+            <!-- SUBORDINATE BODY: Assignment Details -->
+            <div class="py-3 space-y-1.5">
+              <p class="text-sm sm:text-base font-extrabold text-slate-900 leading-snug">
+                📝 Task: ${item.title}
+              </p>
+              <p class="text-xs sm:text-sm font-semibold text-slate-600 leading-relaxed">
+                ${item.instructions || 'Follow official department instructions.'}
+              </p>
+            </div>
+
+            <!-- SUBORDINATE FOOTER: Teacher Name & Calendar Button -->
+            <div class="pt-3 border-t-2 border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="text-xs sm:text-sm">
+                <span class="font-bold text-slate-500">Submission To: </span>
+                <span class="font-black text-slate-900">${item.submission_to}</span>
+                <span class="font-mono font-bold text-slate-600 block sm:inline sm:ml-2">Due: ${formattedDate}</span>
+              </div>
+
+              <button onclick="downloadIcs('${item.id}')" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 border-2 border-slate-300 text-slate-950 text-xs sm:text-sm font-black flex items-center justify-center space-x-1.5 transition shadow-2xs">
+                <span>📅</span>
+                <span>Add Reminder to Calendar</span>
+              </button>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getCountdown(target) {
+      const now = new Date();
+      const diff = target - now;
+      if (diff <= 0) return { text: "Passed", isNear: true };
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+
+      if (days === 0) return { text: `${hours}h left`, isNear: true };
+      return { text: `${days}d ${hours}h left`, isNear: days < 3 };
+    }
+
+    function filterDeadlines(cat) {
+      activeDeadlineFilter = cat;
+      document.querySelectorAll('.deadline-btn').forEach(btn => {
+        if (btn.innerText.trim().toLowerCase() === cat.toLowerCase() || (cat === 'all' && btn.innerText.trim() === 'All')) {
+          btn.className = "deadline-btn px-3.5 py-1.5 rounded-xl bg-botanical-900 text-white font-black shadow-xs";
+        } else {
+          btn.className = "deadline-btn px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 border-2 border-slate-300 text-slate-900 font-bold";
+        }
+      });
+      renderDeadlines();
+    }
+
+    // Render Course Vault (HERO COURSE CODE & TITLE)
+    function renderCourseVault() {
+      const container = document.getElementById('materialsGrid');
+      if (!container) return;
+
+      const items = [
+        { code: "Syllabus", name: "00_Syllabus_and_Curriculum", desc: "Complete official MS syllabus (marks distribution, credit hours & book list)", link: "https://drive.google.com/drive/folders/1OxVxaM5EzcvV-nPi0nuAMdOIEOgvjq0G", icon: "📑", badge: "Official" },
+        { code: "Past Exams", name: "00_Question_Vault_and_Past_Exams", desc: "Question banks, snapshots & previous semester examination papers", link: "https://drive.google.com/drive/folders/1miIHXSFeyFCKCQz5eEgClaLQ6M67mWgN", icon: "📝", badge: "Question Vault" },
+        { code: "Hort. 501", name: "Advanced Fruit Production", desc: "Fruit crop ecophysiology, stress, growth regulators & breeding", link: "https://drive.google.com/drive/folders/1zkjLqFRqK58BfzfnIBUmUGhRYlfGuSNF", icon: "🍎", badge: "Compulsory" },
+        { code: "Hort. 502", name: "Methods in Advanced Research", desc: "Field layout, statistical packages & research presentation", link: "https://drive.google.com/drive/folders/1z3551sLTsEM5_eK7oUgTHpzEHEDnC-pA", icon: "🔬", badge: "Compulsory" },
+        { code: "Hort. 503", name: "Advanced Vegetable Production", desc: "Olericulture, non-traditional crops & protected cultivation", link: "https://drive.google.com/drive/folders/1TPKRsT1LgVrK4G9lum6Rl92rOEEqLB00", icon: "🥦", badge: "Compulsory" },
+        { code: "Hort. 505", name: "Advanced Research Methodology", desc: "Statistical procedures, experimental design & report writing", link: "https://drive.google.com/drive/folders/1B32He9FJwIszWacXcUx8YMrI93WvAxK3", icon: "📊", badge: "Compulsory" },
+        { code: "Hort. 507", name: "Ornamental & Landscape Hort.", desc: "Commercial cut flowers, turfgrass, landscaping & bonsai", link: "https://drive.google.com/drive/folders/1VHPHXaDl86VpDL9_jWaX1ORdcws7C02b", icon: "🌸", badge: "Compulsory" },
+        { code: "Hort. 523", name: "Advanced Nursery Management", desc: "Modern structures, propagation protocols & clonal rootstocks", link: "https://drive.google.com/drive/folders/1GG_LEQi-agAJ-bcxuGHM9zGVWZqeYjkh", icon: "🌱", badge: "Elective" },
+        { code: "Hort. 525", name: "Storage Mgmt. of Hort. Crops", desc: "Postharvest handling, cooling, CA storage & quality control", link: "https://drive.google.com/drive/folders/1vBIclR6XVoB5U9BBQ95x9zPf9h5-zutR", icon: "📦", badge: "Elective" }
+      ];
+
+      container.innerHTML = items.map(res => `
+        <div class="bg-white border-2 border-slate-300 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-slate-400 transition shadow-xs">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono font-black text-slate-900 bg-slate-100 border border-slate-300 px-2.5 py-0.5 rounded-lg">${res.code}</span>
+              <span class="text-xs font-black uppercase tracking-wider text-slate-700">${res.badge}</span>
+            </div>
+            <h4 class="text-base sm:text-lg font-black text-slate-950 flex items-center space-x-2">
+              <span>${res.icon}</span>
+              <span class="truncate">${res.name}</span>
+            </h4>
+            <p class="text-xs sm:text-sm font-semibold text-slate-600 mt-1 leading-relaxed">${res.desc}</p>
+          </div>
+
+          <div class="mt-4 pt-3 border-t-2 border-slate-100 flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-500">Google Drive</span>
+            <a href="${res.link}" target="_blank" rel="noopener" class="px-3.5 py-2 bg-slate-100 hover:bg-botanical-900 hover:text-white border-2 border-slate-300 text-slate-950 text-xs sm:text-sm font-black rounded-xl transition flex items-center space-x-1.5">
+              <span>Open Folder</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            </a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Render Faculty Directory Modal
+    function renderFacultyModal() {
+      const container = document.getElementById('facultyModalList');
+      if (!container) return;
+
+      container.innerHTML = Object.entries(facultyMap).map(([init, obj]) => `
+        <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition">
+          <div class="flex items-center space-x-3.5">
+            <span class="w-10 h-10 rounded-2xl bg-botanical-900 text-white font-mono font-black text-sm flex items-center justify-center shrink-0 shadow-xs">${init}</span>
+            <div>
+              <p class="text-sm font-black text-slate-950">${obj.name}</p>
+              <p class="text-xs font-bold text-slate-600">${obj.role} • Department of Horticulture, BAU</p>
+            </div>
+          </div>
+          <span class="text-xs font-mono font-black px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-300 text-slate-950">${init}</span>
+        </div>
+      `).join('');
+    }
+
+    // 1-Click .ICS Calendar Generator
+    function downloadIcs(id) {
+      const item = DEADLINES.find(d => d.id === id);
+      if (!item) return;
+
+      const dateObj = new Date(item.deadline);
+      const startStr = dateObj.toISOString().replace(/-|:|\.\d+/g, "");
+      const endStr = new Date(dateObj.getTime() + 60 * 60 * 1000).toISOString().replace(/-|:|\.\d+/g, "");
+
+      const ics = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//BAU Horticulture//MS Academic Portal//EN",
+        "BEGIN:VEVENT",
+        `UID:${item.id}@horticulture.bau.edu.bd`,
+        `DTSTAMP:${startStr}`,
+        `DTSTART:${startStr}`,
+        `DTEND:${endStr}`,
+        `SUMMARY:[DEADLINE] ${item.course_code}: ${item.title}`,
+        `DESCRIPTION:Submission to: ${item.submission_to}\\n\\n${item.instructions || ''}`,
+        "STATUS:CONFIRMED",
+        "BEGIN:VALARM",
+        "TRIGGER:-P1D",
+        "ACTION:DISPLAY",
+        "DESCRIPTION:Reminder: Assignment due tomorrow!",
+        "END:VALARM",
+        "END:VEVENT",
+        "END:VCALENDAR"
+      ].join("\r\n");
+
+      const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${item.course_code}_deadline.ics`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Modals
+    function toggleFacultyModal() {
+      document.getElementById('facultyModal').classList.toggle('hidden');
+    }
+
+    function toggleSheetModal() {
+      const m = document.getElementById('sheetModal');
+      m.classList.toggle('hidden');
+      const input = document.getElementById('sheetUrlInput');
+      if (input) input.value = localStorage.getItem('hort_google_sheet_id') || '';
+    }
+
+    function saveSheetConfig() {
+      const val = document.getElementById('sheetUrlInput').value.trim();
+      let sheetId = val;
+      const match = val.match(/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+      if (match) sheetId = match[1];
+
+      if (sheetId) {
+        localStorage.setItem('hort_google_sheet_id', sheetId);
+        alert("Google Sheet linked! Portal will now refresh live from your sheet.");
+        location.reload();
+      }
+      toggleSheetModal();
+    }
+
+    function resetToLocalData() {
+      localStorage.removeItem('hort_google_sheet_id');
+      alert("Reset to bundled local routine.");
+      toggleSheetModal();
+      location.reload();
+    }
+  </script>
+</body>
+</html>

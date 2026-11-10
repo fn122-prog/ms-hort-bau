@@ -1,0 +1,49 @@
+{
+  "semester": "Winter semester, Oct 2026 to Mar 2027",
+  "effective_date": "29 Oct 2026",
+  "time_slots": [
+    { "id": "slot_1", "start": "09:00", "end": "09:55", "label": "09:00 – 09:55 AM" },
+    { "id": "slot_2", "start": "10:00", "end": "10:55", "label": "10:00 – 10:55 AM" },
+    { "id": "slot_3", "start": "11:00", "end": "11:55", "label": "11:00 – 11:55 AM" },
+    { "id": "slot_4", "start": "12:00", "end": "12:55", "label": "12:00 – 12:55 PM" },
+    { "id": "recess", "start": "12:55", "end": "13:30", "label": "Recess (12:55 – 01:30 PM)", "is_break": true },
+    { "id": "slot_5", "start": "13:30", "end": "14:25", "label": "01:30 – 02:25 PM" },
+    { "id": "slot_6", "start": "14:30", "end": "15:25", "label": "02:30 – 03:25 PM" }
+  ],
+  "days": {
+    "Sunday": [
+      { "slot": "slot_1", "course": "Hort. 503", "type": "Compulsory", "teacher": "MHrR", "status": "active" },
+      { "slot": "slot_2", "course": "Hort. 505", "type": "Compulsory", "teacher": "MKH", "status": "active" },
+      { "slot": "slot_3", "course": "Hort. 501", "type": "Compulsory", "teacher": "TH", "status": "active" },
+      { "slot": "slot_4", "course": "Hort. 523", "type": "Elective", "teacher": "MHrR", "status": "active" },
+      { "slot": "slot_5", "course": "Hort. 517", "type": "Elective", "teacher": "MMH", "status": "active" },
+      { "slot": "slot_6", "course": null, "type": null, "teacher": null, "status": "free" }
+    ],
+    "Monday": [
+      { "slot": "slot_1", "course": "Hort. 503", "type": "Compulsory", "teacher": "MHR", "status": "active" },
+      { "slot": "slot_2", "course": "Hort. 505", "type": "Compulsory", "teacher": "MRK", "status": "active" },
+      { "slot": "slot_3", "course": "Hort. 501", "type": "Compulsory", "teacher": "MAR", "status": "active" },
+      { "slot": "slot_4", "course": "Hort. 507", "type": "Compulsory", "teacher": "MMH", "status": "active" },
+      { "slot": "slot_5_6", "span": 2, "slots": ["slot_5", "slot_6"], "course": "Hort. 502", "type": "Compulsory", "teacher": "MHR/MKH", "status": "active", "note": "1:30 to 3:25 PM (Double slot)" }
+    ],
+    "Tuesday": [
+      { "slot": "slot_1", "course": "Hort. 525", "type": "Elective", "teacher": "MRK", "status": "active" },
+      { "slot": "slot_2", "course": "Hort. 507", "type": "Compulsory", "teacher": "MAI", "status": "active" },
+      { "slot": "slot_3", "course": "Hort. 521", "type": "Elective", "teacher": "MAR", "status": "active" },
+      { "slot": "slot_4", "course": "Hort. 523", "type": "Elective", "teacher": "MKH", "status": "active" },
+      { "slot": "slot_5", "course": "Hort. 519", "type": "Elective", "teacher": "TH", "status": "active" },
+      { "slot": "slot_6", "course": null, "type": null, "teacher": null, "status": "free" }
+    ],
+    "Wednesday": [
+      { "slot": "slot_1", "course": "Hort. 517", "type": "Elective", "teacher": "MAI", "status": "active" },
+      { "slot": "slot_2", "course": "Hort. 519", "type": "Elective", "teacher": "MAR", "status": "active" },
+      { "slot": "slot_3", "course": "Hort. 521", "type": "Elective", "teacher": "MHR", "status": "active" },
+      { "slot": "slot_4", "course": "Hort. 525", "type": "Elective", "teacher": "MMH", "status": "active" },
+      { "slot": "slot_5", "course": null, "type": null, "teacher": null, "status": "free" },
+      { "slot": "slot_6", "course": null, "type": null, "teacher": null, "status": "free" }
+    ],
+    "Thursday": [
+      { "slot": "all_day", "course": "Seminar / Workshop", "type": "Academic", "teacher": "Dept. Faculty", "status": "seminar", "note": "Weekly departmental seminar / workshop session" }
+    ]
+  }
+}

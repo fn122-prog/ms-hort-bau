@@ -1,0 +1,82 @@
+[
+  {
+    "code": "Hort. 501",
+    "name": "Advanced Fruit Production",
+    "type": "Compulsory",
+    "drive_folder": "Hort_501_Advanced_Fruit_Production",
+    "drive_id": "1zkjLqFRqK58BfzfnIBUmUGhRYlfGuSNF",
+    "color": "emerald"
+  },
+  {
+    "code": "Hort. 502",
+    "name": "Methods in Advanced Research",
+    "type": "Compulsory",
+    "drive_folder": "Hort_502_Methods_in_Advanced_Research",
+    "drive_id": "1z3551sLTsEM5_eK7oUgTHpzEHEDnC-pA",
+    "color": "emerald"
+  },
+  {
+    "code": "Hort. 503",
+    "name": "Advanced Vegetable Production",
+    "type": "Compulsory",
+    "drive_folder": "Hort_503_Advanced_Vegetable_Production",
+    "drive_id": "1TPKRsT1LgVrK4G9lum6Rl92rOEEqLB00",
+    "color": "emerald"
+  },
+  {
+    "code": "Hort. 505",
+    "name": "Advanced Research Methodology",
+    "type": "Compulsory",
+    "drive_folder": "Hort_505_Advanced_Research_Methodology",
+    "drive_id": "1B32He9FJwIszWacXcUx8YMrI93WvAxK3",
+    "color": "emerald"
+  },
+  {
+    "code": "Hort. 507",
+    "name": "Ornamental & Landscape Hort.",
+    "type": "Compulsory",
+    "drive_folder": "Hort_507_Ornamental_and_Landscape_Hort",
+    "drive_id": "1VHPHXaDl86VpDL9_jWaX1ORdcws7C02b",
+    "color": "emerald"
+  },
+  {
+    "code": "Hort. 517",
+    "name": "Homestead Agroforestry",
+    "type": "Elective",
+    "drive_folder": "Hort_517_Homestead_Agroforestry",
+    "drive_id": "",
+    "color": "amber"
+  },
+  {
+    "code": "Hort. 519",
+    "name": "Horticultural Seed Physiology",
+    "type": "Elective",
+    "drive_folder": "Hort_519_Horticultural_Seed_Physiology",
+    "drive_id": "",
+    "color": "amber"
+  },
+  {
+    "code": "Hort. 521",
+    "name": "Horticultural Plant Biotechnology",
+    "type": "Elective",
+    "drive_folder": "Hort_521_Horticultural_Plant_Biotechnology",
+    "drive_id": "",
+    "color": "amber"
+  },
+  {
+    "code": "Hort. 523",
+    "name": "Advanced Nursery Management",
+    "type": "Elective",
+    "drive_folder": "Hort_523_Advanced_Nursery_Management",
+    "drive_id": "1GG_LEQi-agAJ-bcxuGHM9zGVWZqeYjkh",
+    "color": "amber"
+  },
+  {
+    "code": "Hort. 525",
+    "name": "Storage Mgmt. of Hort. Crops",
+    "type": "Elective",
+    "drive_folder": "Hort_525_Storage_Management_of_Horticultural_Crops",
+    "drive_id": "1vBIclR6XVoB5U9BBQ95x9zPf9h5-zutR",
+    "color": "amber"
+  }
+]

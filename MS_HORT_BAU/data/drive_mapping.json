@@ -1,0 +1,79 @@
+{
+  "root": {
+    "name": "BAU_MS_Horticulture_Hub",
+    "id": "1VonkTL2XPoKiQ5Z4_qZnUFbNMuunMhbW",
+    "url": "https://drive.google.com/drive/folders/1VonkTL2XPoKiQ5Z4_qZnUFbNMuunMhbW"
+  },
+  "general": [
+    {
+      "name": "00_Syllabus_and_Curriculum",
+      "id": "1OxVxaM5EzcvV-nPi0nuAMdOIEOgvjq0G",
+      "url": "https://drive.google.com/drive/folders/1OxVxaM5EzcvV-nPi0nuAMdOIEOgvjq0G",
+      "contents": ["Syllabus of MS in Horticulture (BAU).pdf"]
+    },
+    {
+      "name": "00_Question_Vault_and_Past_Exams",
+      "id": "1miIHXSFeyFCKCQz5eEgClaLQ6M67mWgN",
+      "url": "https://drive.google.com/drive/folders/1miIHXSFeyFCKCQz5eEgClaLQ6M67mWgN",
+      "contents": ["01_Question_Bank_by_Topic", "02_Exam_Paper_Images", "MS last year ques.pdf"]
+    }
+  ],
+  "courses": [
+    {
+      "code": "Hort. 501",
+      "name": "Advanced Fruit Production",
+      "folder_name": "Hort_501_Advanced_Fruit_Production",
+      "id": "1zkjLqFRqK58BfzfnIBUmUGhRYlfGuSNF",
+      "url": "https://drive.google.com/drive/folders/1zkjLqFRqK58BfzfnIBUmUGhRYlfGuSNF",
+      "subfolders": ["Dr. Aziz", "Dr. Tamanna"]
+    },
+    {
+      "code": "Hort. 502",
+      "name": "Methods in Advanced Research",
+      "folder_name": "Hort_502_Methods_in_Advanced_Research",
+      "id": "1z3551sLTsEM5_eK7oUgTHpzEHEDnC-pA",
+      "url": "https://drive.google.com/drive/folders/1z3551sLTsEM5_eK7oUgTHpzEHEDnC-pA",
+      "subfolders": ["Dr. (Habib+Kamrul) + Accessories"]
+    },
+    {
+      "code": "Hort. 503",
+      "name": "Advanced Vegetable Production",
+      "folder_name": "Hort_503_Advanced_Vegetable_Production",
+      "id": "1TPKRsT1LgVrK4G9lum6Rl92rOEEqLB00",
+      "url": "https://drive.google.com/drive/folders/1TPKRsT1LgVrK4G9lum6Rl92rOEEqLB00",
+      "subfolders": ["Dr. Habib", "Dr. Harun"]
+    },
+    {
+      "code": "Hort. 505",
+      "name": "Advanced Research Methodology",
+      "folder_name": "Hort_505_Advanced_Research_Methodology",
+      "id": "1B32He9FJwIszWacXcUx8YMrI93WvAxK3",
+      "url": "https://drive.google.com/drive/folders/1B32He9FJwIszWacXcUx8YMrI93WvAxK3",
+      "subfolders": ["Accessories", "Dr. Kamrul", "Dr. Rezaul"]
+    },
+    {
+      "code": "Hort. 507",
+      "name": "Ornamental and Landscape Hort.",
+      "folder_name": "Hort_507_Ornamental_and_Landscape_Hort",
+      "id": "1VHPHXaDl86VpDL9_jWaX1ORdcws7C02b",
+      "url": "https://drive.google.com/drive/folders/1VHPHXaDl86VpDL9_jWaX1ORdcws7C02b",
+      "subfolders": ["Accessories", "Dr. Ayasha", "Dr. Mokter"]
+    },
+    {
+      "code": "Hort. 523",
+      "name": "Advanced Nursery Management",
+      "folder_name": "Hort_523_Advanced_Nursery_Management",
+      "id": "1GG_LEQi-agAJ-bcxuGHM9zGVWZqeYjkh",
+      "url": "https://drive.google.com/drive/folders/1GG_LEQi-agAJ-bcxuGHM9zGVWZqeYjkh",
+      "subfolders": ["Dr. Harun", "Dr. Kamrul"]
+    },
+    {
+      "code": "Hort. 525",
+      "name": "Storage Management of Horticultural Crops",
+      "folder_name": "Hort_525_Storage_Management_of_Horticultural_Crops",
+      "id": "1vBIclR6XVoB5U9BBQ95x9zPf9h5-zutR",
+      "url": "https://drive.google.com/drive/folders/1vBIclR6XVoB5U9BBQ95x9zPf9h5-zutR",
+      "subfolders": ["Dr. Mokter", "Dr. Rezaul"]
+    }
+  ]
+}
