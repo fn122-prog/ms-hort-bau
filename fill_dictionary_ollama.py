@@ -25,10 +25,12 @@ HEADERS = [
     "Part of Speech",
     "Subfield",
     "Definition",
+    "Conceptual Exposition",
     "Example Sentence",
     "Etymology",
     "Synonyms",
     "See Also",
+    "Infographic Recommendation",
     "Date Added",
     "Status"
 ]
@@ -472,6 +474,27 @@ def apply_botanical_guardrails(item):
         item["Subfield"] = "Plant Physiology"
         item["Synonyms"] = "physiological ecology, environmental plant physiology"
 
+    # Map and normalize Conceptual Exposition & Infographic Recommendation
+    if "conceptual_exposition" in item and not item.get("Conceptual Exposition"):
+        item["Conceptual Exposition"] = item.pop("conceptual_exposition")
+    if "infographic_recommendation" in item and not item.get("Infographic Recommendation"):
+        item["Infographic Recommendation"] = item.pop("infographic_recommendation")
+
+    if not item.get("Conceptual Exposition") or not item["Conceptual Exposition"].strip():
+        item["Conceptual Exposition"] = item.get("Definition", "")
+    if not item.get("Infographic Recommendation") or not item["Infographic Recommendation"].strip():
+        item["Infographic Recommendation"] = f"Technical schematic illustrating {term_lower} mechanism, anatomical structures, and practical crop context."
+
+    # Guard against casual colloquialisms in Conceptual Exposition
+    exp = item.get("Conceptual Exposition", "")
+    casual_phrases = ["trick a branch", "tricking a branch", "marathon with three passengers", "apple on a tree"]
+    for cp in casual_phrases:
+        if cp in exp.lower():
+            exp = exp.replace("tricking a branch into believing it is underground", "inducing adventitious root formation in situ")
+            exp = exp.replace("trick a branch into believing it is underground", "induce adventitious root formation in situ")
+            exp = exp.replace("Imagine an athlete running a marathon while carrying three passengers on their back", "When a fruit tree carries an excessive crop load beyond its photosynthetic support capacity")
+            item["Conceptual Exposition"] = exp
+
     return item
 
 
@@ -526,16 +549,20 @@ def query_ollama(term, model_name):
         f"9. Part of Speech: Horticultural processes/techniques ('grafting', 'air layering', 'vernalization', 'natural thinning') are nouns (n.).\n"
         f"10. Accurate Etymology: State genuine Greek/Latin/historical roots with coining scholar/date where known. 'Surplus' is from Latin super + plus, NOT supellex; 'spawn' is from Anglo-Norman espandre, NOT Old English spawan.\n"
         f"11. Synonyms: You MUST provide 1 to 3 valid technical synonyms, alternative horticultural terms, or English/Latin equivalents (e.g. 'marcottage' for air layering; 'agamospermy' for apomixis; 'sporocarp' for fruiting body; 'grain spawn' for spawn culture; 'overcropping' for overbearing; 'physiological fruit drop' for natural thinning). DO NOT leave empty.\n"
-        f"12. Standard Syllabic IPA: Provide exact phonetic transcription with syllable dots ('.') and stress marks ('ˈ', 'ˌ') covering EVERY word in the term. Roots ending in '-physiology' are transcribed strictly as /...ˌfɪz.iˈɑː.lə.dʒi/ (never 'zaɪ').\n\n"
+        f"12. Standard Syllabic IPA: Provide exact phonetic transcription with syllable dots ('.') and stress marks ('ˈ', 'ˌ') covering EVERY word in the term. Roots ending in '-physiology' are transcribed strictly as /...ˌfɪz.iˈɑː.lə.dʒi/ (never 'zaɪ').\n"
+        f"13. Balanced Scientific Storytelling (Bains Style): Provide a 'conceptual_exposition' of 2-3 structured paragraphs in lucid, natural, balanced scientific English. Explain: (a) the physical/structural basis; (b) the physiological/cellular/hormonal mechanism; (c) real-world agro-ecological context with Bangladeshi crops (e.g., mango, litchi, guava, brinjal, oyster mushroom, tea). Do NOT use childish or casual metaphors ('trick the plant', 'marathon with people on back'); do NOT use impenetrable, abstruse Ph.D. jargon ('pseudo-parenchymatous hyphal ontogeny'). Strike the golden mean of an articulate university professor.\n"
+        f"14. Infographic Blueprint: Provide an 'infographic_recommendation' containing a multi-step or multi-panel visual blueprint (e.g. 3-panel step-by-step nursery schematic, comparative anatomical cutaway, or hormonal feedback flow chart) suitable for future technical illustration.\n\n"
         f"Return ONLY a valid JSON object (no markdown, no backticks, no introductory text) with these keys:\n"
         f"- \"ipa\": Standard IPA pronunciation enclosed in slashes (e.g. \"/ˈsaɪ.ən/\")\n"
         f"- \"pos\": Abbreviated part of speech (\"n.\", \"v.\", \"adj.\")\n"
         f"- \"subfield\": One of: {', '.join(SUBFIELDS)}\n"
         f"- \"definition\": Rigorous 1-2 sentence academic definition in the botanical/horticultural sense.\n"
+        f"- \"conceptual_exposition\": 2 to 3 paragraphs of balanced scientific storytelling explaining the structural basis, physiological mechanism, and practical crop context.\n"
         f"- \"example\": Realistic sentence demonstrating practical horticultural use (orchard, greenhouse, lab, field trial).\n"
         f"- \"etymology\": True morphological derivation or naming origin.\n"
         f"- \"synonyms\": Comma-separated list of genuine technical/trade synonyms (MANDATORY, never empty).\n"
         f"- \"see_also\": 2 to 4 comma-separated related botanical/horticultural concepts.\n"
+        f"- \"infographic_recommendation\": Multi-step or multi-panel technical figure description.\n"
     )
 
     payload = {

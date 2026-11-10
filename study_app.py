@@ -701,6 +701,17 @@ def sanitize_and_validate_card(card_data):
             )
         card_data["synonyms"] = "botanical seed"
 
+    # Map and normalize Conceptual Exposition & Infographic Recommendation
+    if "Conceptual Exposition" in card_data and not card_data.get("conceptual_exposition"):
+        card_data["conceptual_exposition"] = card_data["Conceptual Exposition"]
+    if "Infographic Recommendation" in card_data and not card_data.get("infographic_recommendation"):
+        card_data["infographic_recommendation"] = card_data["Infographic Recommendation"]
+
+    if not card_data.get("conceptual_exposition"):
+        card_data["conceptual_exposition"] = card_data.get("biological_mechanism", "")
+    if not card_data.get("infographic_recommendation"):
+        card_data["infographic_recommendation"] = f"Technical schematic illustrating {term_lower} mechanism, anatomical structures, and practical crop context."
+
     return card_data
 
 
@@ -715,8 +726,8 @@ def sync_card_to_dictionary(card_data):
 
     headers = [
         "Word", "Pronunciation (IPA)", "Part of Speech", "Subfield",
-        "Definition", "Example Sentence", "Etymology", "Synonyms",
-        "See Also", "Date Added", "Status"
+        "Definition", "Conceptual Exposition", "Example Sentence", "Etymology", "Synonyms",
+        "See Also", "Infographic Recommendation", "Date Added", "Status"
     ]
 
     ipa = card_data.get("ipa", "")
@@ -726,10 +737,12 @@ def sync_card_to_dictionary(card_data):
     pos = card_data.get("pos", "n.")
     subfield = card_data.get("subfield", "Botany")
     definition = card_data.get("definition") or card_data.get("biological_mechanism", "")
+    conceptual_exposition = card_data.get("conceptual_exposition") or card_data.get("Conceptual Exposition") or definition
     example = card_data.get("example_sentence") or card_data.get("horticultural_practice", "")
     etymology = card_data.get("etymology", "")
     synonyms = card_data.get("synonyms", "")
     see_also = card_data.get("see_also", "")
+    infographic_recommendation = card_data.get("infographic_recommendation") or card_data.get("Infographic Recommendation") or "Technical schematic illustrating biological mechanism and field application."
     today_str = str(date.today())
 
     base_term = term.split("(")[0].strip().lower()
@@ -748,6 +761,8 @@ def sync_card_to_dictionary(card_data):
                     row["Part of Speech"] = pos or row.get("Part of Speech", "")
                     row["Subfield"] = subfield or row.get("Subfield", "")
                     row["Definition"] = definition or row.get("Definition", "")
+                    if conceptual_exposition:
+                        row["Conceptual Exposition"] = conceptual_exposition
                     row["Example Sentence"] = example or row.get("Example Sentence", "")
                     if etymology:
                         row["Etymology"] = etymology
@@ -755,6 +770,8 @@ def sync_card_to_dictionary(card_data):
                         row["Synonyms"] = synonyms
                     if see_also:
                         row["See Also"] = see_also
+                    if infographic_recommendation:
+                        row["Infographic Recommendation"] = infographic_recommendation
                     row["Status"] = curr_status
                     found = True
                 rows.append(row)
@@ -766,10 +783,12 @@ def sync_card_to_dictionary(card_data):
             "Part of Speech": pos,
             "Subfield": subfield,
             "Definition": definition,
+            "Conceptual Exposition": conceptual_exposition,
             "Example Sentence": example,
             "Etymology": etymology,
             "Synonyms": synonyms,
             "See Also": see_also,
+            "Infographic Recommendation": infographic_recommendation,
             "Date Added": today_str,
             "Status": "Needs review"
         }
@@ -822,6 +841,8 @@ GOLDEN RULES FOR GRADUATE (M.S.) HORTICULTURAL SYNTHESIS:
 9. PROFESSOR EXAM TRAPS: State the exact high-yield distractor examiners test (e.g. Vernalization vs Stratification; Apomixis vs Parthenocarpy; Bark Slipping vs Chip Budding; Orthodox vs Recalcitrant vs Intermediate; Sporocarp vs Botanical Fruit; Overbearing vs Deficiency).
 10. MANDATORY SYNONYMS: Provide 1 to 3 valid technical synonyms, alternative horticultural terms, or English/Latin equivalents (e.g. 'marcottage' for air layering; 'agamospermy' for apomixis; 'sporocarp' for fruiting body; 'grain spawn' for spawn culture; 'overcropping' for overbearing; 'physiological fruit drop' for natural thinning). DO NOT leave empty.
 11. ACCURATE IPA PHONETICS: Provide exact syllabic phonetic transcription with syllable dots ('.') and stress marks ('ˈ', 'ˌ') covering EVERY word in compound terms. For words ending in '-physiology', transcribe strictly as /...ˌfɪz.iˈɑː.lə.dʒi/ (never 'zaɪ').
+12. BALANCED SCIENTIFIC STORYTELLING (BAINS STYLE): Provide 'conceptual_exposition' containing 2 to 3 paragraphs in lucid, articulate, natural scientific prose (like William Bains). Explain the structural basis, physiological/cellular mechanism, and Bangladesh crop context. Avoid childish metaphors ('trick the plant', 'marathon with passengers') and avoid overly dense impenetrable Ph.D. jargon ('pseudo-parenchymatous ontogeny'). Strike the golden mean of an articulate university professor.
+13. INFOGRAPHIC BLUEPRINT: Provide 'infographic_recommendation' containing a multi-step or multi-panel visual blueprint (e.g. 3-step field nursery schematic, comparative anatomical cutaway, or hormonal feedback flow chart).
 
 REQUIRED JSON OUTPUT FORMAT (Strict valid JSON, no markdown outside of JSON):
 {{
@@ -830,6 +851,7 @@ REQUIRED JSON OUTPUT FORMAT (Strict valid JSON, no markdown outside of JSON):
   "course_code": "Hort. ...",
   "subfield": "Subfield name (e.g. Pomology, Seed Physiology, Plant Biotechnology)",
   "biological_mechanism": "Concise (2-3 sentences), highly scientific explanation of the botanical, physiological, biochemical, anatomical, or genetic mechanism. Use precise terminology (e.g. vascular cambium, gibberellin pathways, epigenetic FLC silencing, IAA basipetal transport).",
+  "conceptual_exposition": "2 to 3 paragraphs of balanced scientific storytelling explaining the structural basis, physiological mechanism, and practical crop context.",
   "horticultural_practice": "Precise nursery, orchard, greenhouse, field, or in-vitro lab protocol. Include timings, hormones/concentrations if applicable, protective measures, or management steps.",
   "exam_trap": "CRITICAL EXAM TRAP / DISTRACTOR: Exactly what professors test to trip up students. Clarify subtle confusions (e.g. stratification vs vernalization, bark slipping vs chip budding, scion vs rootstock polarity, totipotency vs pluripotency).",
   "key_crops": "3 to 5 key horticultural species/crops with scientific names (e.g. Litchi chinensis, Brassica oleracea, Solanum lycopersicum).",
@@ -838,7 +860,8 @@ REQUIRED JSON OUTPUT FORMAT (Strict valid JSON, no markdown outside of JSON):
   "ipa": "/.../",
   "etymology": "Morphological or classical Greek/Latin root origin with coining scientist/year where known.",
   "synonyms": "Genuine botanical/trade technical synonyms (MANDATORY, never empty).",
-  "see_also": "2 to 4 comma-separated related concepts."
+  "see_also": "2 to 4 comma-separated related concepts.",
+  "infographic_recommendation": "Multi-step or multi-panel technical figure description."
 }}
 
 Output ONLY the JSON object. Do not include markdown code fence formatting if possible."""
@@ -1722,6 +1745,16 @@ INDEX_HTML = """<!DOCTYPE html>
               <div class="answer-title">🌿 Key Crops & Families</div>
               <div class="answer-body" id="drillCrops" style="color: var(--accent-hover); font-style: italic;"></div>
             </div>
+
+            <div class="answer-section" style="margin-top: 14px;">
+              <div class="answer-title">📖 Conceptual Exposition (Bains Narrative)</div>
+              <div class="answer-body" id="drillConceptualExposition" style="line-height: 1.5; white-space: pre-line; color: #e2e8f0; font-size: 0.85rem;"></div>
+            </div>
+
+            <div class="answer-section" style="margin-top: 12px;">
+              <div class="answer-title">🎨 Recommended Infographic Blueprint</div>
+              <div class="answer-body" id="drillInfographic" style="color: #5eead4; background: rgba(20, 184, 166, 0.1); border-left: 3px solid #14b8a6; padding: 8px 12px; border-radius: 4px; font-size: 0.82rem; line-height: 1.45;"></div>
+            </div>
           </div>
         </div>
 
@@ -2067,6 +2100,8 @@ INDEX_HTML = """<!DOCTYPE html>
       document.getElementById('drillPractice').textContent = card.horticultural_practice || '';
       document.getElementById('drillExamTrap').textContent = card.exam_trap || '';
       document.getElementById('drillCrops').textContent = card.key_crops || '';
+      document.getElementById('drillConceptualExposition').textContent = card.conceptual_exposition || card.biological_mechanism || '';
+      document.getElementById('drillInfographic').textContent = card.infographic_recommendation || 'Technical schematic illustrating biological mechanism and field application.';
 
       // Reset state to hidden
       state.drillRevealed = false;

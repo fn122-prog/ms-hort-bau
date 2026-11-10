@@ -26,10 +26,12 @@ HEADERS = [
     "Part of Speech",
     "Subfield",
     "Definition",
+    "Conceptual Exposition",
     "Example Sentence",
     "Etymology",
     "Synonyms",
     "See Also",
+    "Infographic Recommendation",
     "Date Added",
     "Status"
 ]
@@ -496,15 +498,37 @@ def apply_botanical_guardrails(item):
         item["Subfield"] = "Plant Physiology"
         item["Synonyms"] = "physiological ecology, environmental plant physiology"
 
+    # Map and normalize Conceptual Exposition & Infographic Recommendation
+    if "conceptual_exposition" in item and not item.get("Conceptual Exposition"):
+        item["Conceptual Exposition"] = item.pop("conceptual_exposition")
+    if "infographic_recommendation" in item and not item.get("Infographic Recommendation"):
+        item["Infographic Recommendation"] = item.pop("infographic_recommendation")
+
+    if not item.get("Conceptual Exposition") or not item["Conceptual Exposition"].strip():
+        item["Conceptual Exposition"] = item.get("Definition", "")
+    if not item.get("Infographic Recommendation") or not item["Infographic Recommendation"].strip():
+        item["Infographic Recommendation"] = f"Technical schematic illustrating {term_lower} mechanism, anatomical structures, and practical crop context."
+
+    # Guard against casual colloquialisms in Conceptual Exposition
+    exp = item.get("Conceptual Exposition", "")
+    casual_phrases = ["trick a branch", "tricking a branch", "marathon with three passengers", "apple on a tree"]
+    for cp in casual_phrases:
+        if cp in exp.lower():
+            # Clean casual colloquialism
+            exp = exp.replace("tricking a branch into believing it is underground", "inducing adventitious root formation in situ")
+            exp = exp.replace("trick a branch into believing it is underground", "induce adventitious root formation in situ")
+            exp = exp.replace("Imagine an athlete running a marathon while carrying three passengers on their back", "When a fruit tree carries an excessive crop load beyond its photosynthetic support capacity")
+            item["Conceptual Exposition"] = exp
+
     return item
 
 
 def query_ollama(term, model_name):
-    """Queries local Ollama instance with strict graduate-level lexicographical prompt and guardrails."""
+    """Queries local Ollama instance with balanced Bains-style scientific prompt and guardrails."""
     prompt = (
         f"You are an authoritative botanical and horticultural lexicographer building a specialized, "
-        f"graduate-level reference dictionary for an MS in Horticulture.\n"
-        f"Provide comprehensive, academically rigorous lexical details for the term: \"{term}\".\n\n"
+        f"university-level reference dictionary for an MS/BS in Horticulture.\n"
+        f"Provide comprehensive, academically rigorous yet accessible lexical details for the term: \"{term}\".\n\n"
         f"CRITICAL LEXICOGRAPHICAL GUIDELINES:\n"
         f"1. Context: Focus strictly on botanical, agricultural, breeding, physiological, or mycological meaning.\n"
         f"2. Compound Completeness: For multi-word terms (e.g. 'recalcitrant seed', 'fruiting body', 'spawn culture', 'air layering'), define the FULL compound phrase. Never omit words or define only the adjective.\n"
@@ -517,16 +541,20 @@ def query_ollama(term, model_name):
         f"9. Part of Speech: Horticultural processes/techniques ('grafting', 'air layering', 'vernalization', 'natural thinning') are nouns (n.).\n"
         f"10. Accurate Etymology: State genuine Greek/Latin/historical roots with coining scholar/date where known. 'Surplus' is from Latin super + plus, NOT supellex; 'spawn' is from Anglo-Norman espandre, NOT Old English spawan.\n"
         f"11. Synonyms: You MUST provide 1 to 3 valid technical synonyms, alternative horticultural terms, or English/Latin equivalents (e.g. 'marcottage' for air layering; 'agamospermy' for apomixis; 'sporocarp' for fruiting body; 'grain spawn' for spawn culture; 'overcropping' for overbearing; 'physiological fruit drop' for natural thinning). DO NOT leave empty.\n"
-        f"12. Standard Syllabic IPA: Provide exact phonetic transcription with syllable dots ('.') and stress marks ('ˈ', 'ˌ') covering EVERY word in the term. Roots ending in '-physiology' are transcribed strictly as /...ˌfɪz.iˈɑː.lə.dʒi/ (never 'zaɪ').\n\n"
+        f"12. Standard Syllabic IPA: Provide exact phonetic transcription with syllable dots ('.') and stress marks ('ˈ', 'ˌ') covering EVERY word in the term. Roots ending in '-physiology' are transcribed strictly as /...ˌfɪz.iˈɑː.lə.dʒi/ (never 'zaɪ').\n"
+        f"13. Balanced Scientific Storytelling (Bains Style): Provide a 'conceptual_exposition' of 2-3 structured paragraphs in lucid, natural, balanced scientific English. Explain: (a) the physical/structural basis; (b) the physiological/cellular/hormonal mechanism; (c) real-world agro-ecological context with Bangladeshi crops (e.g., mango, litchi, guava, brinjal, oyster mushroom, tea). Do NOT use childish or casual metaphors ('trick the plant', 'marathon with people on back'); do NOT use impenetrable, abstruse Ph.D. jargon ('pseudo-parenchymatous hyphal ontogeny'). Strike the golden mean of an articulate university professor.\n"
+        f"14. Infographic Blueprint: Provide an 'infographic_recommendation' containing a multi-step or multi-panel visual blueprint (e.g. 3-panel step-by-step nursery schematic, comparative anatomical cutaway, or hormonal feedback flow chart) suitable for future technical illustration.\n\n"
         f"Return ONLY a valid JSON object (no markdown, no backticks, no introductory text) with these keys:\n"
         f"- \"ipa\": Standard IPA pronunciation enclosed in slashes (e.g. \"/ˈsaɪ.ən/\")\n"
         f"- \"pos\": Abbreviated part of speech (\"n.\", \"v.\", \"adj.\")\n"
         f"- \"subfield\": One of: {', '.join(SUBFIELDS)}\n"
         f"- \"definition\": Rigorous 1-2 sentence academic definition in the botanical/horticultural sense.\n"
+        f"- \"conceptual_exposition\": 2 to 3 paragraphs of balanced scientific storytelling explaining the structural basis, physiological mechanism, and practical crop context.\n"
         f"- \"example\": Realistic sentence demonstrating practical horticultural use (orchard, greenhouse, lab, field trial).\n"
         f"- \"etymology\": True morphological derivation or naming origin.\n"
         f"- \"synonyms\": Comma-separated list of genuine technical/trade synonyms (MANDATORY, never empty).\n"
         f"- \"see_also\": 2 to 4 comma-separated related botanical/horticultural concepts.\n"
+        f"- \"infographic_recommendation\": Multi-step or multi-panel technical figure description.\n"
     )
 
     payload = {
@@ -788,6 +816,8 @@ HTML_PAGE = """<!DOCTYPE html>
     .cell-pos { font-style: italic; color: #64748b; white-space: nowrap; width: 60px; }
     .cell-subfield { font-weight: 500; color: #0284c7; white-space: nowrap; width: 140px; }
     .cell-def { min-width: 280px; max-width: 380px; line-height: 1.45; }
+    .cell-exp { min-width: 320px; max-width: 440px; line-height: 1.45; font-size: 12px; color: #334155; }
+    .cell-info { min-width: 240px; max-width: 320px; font-size: 12px; color: #047857; background: #ecfdf5; border-radius: 4px; padding: 4px; }
     .cell-ex { min-width: 240px; max-width: 320px; font-style: italic; color: #334155; }
     .cell-ety { min-width: 200px; max-width: 260px; font-size: 12px; color: #475569; }
     .cell-syn { min-width: 130px; font-size: 12px; }
@@ -925,10 +955,12 @@ HTML_PAGE = """<!DOCTYPE html>
           <th>POS</th>
           <th>Subfield</th>
           <th>Definition</th>
+          <th>Conceptual Exposition</th>
           <th>Example Sentence</th>
           <th>Etymology</th>
           <th>Synonyms</th>
           <th>See Also</th>
+          <th>Infographic Blueprint</th>
           <th>Date Added</th>
           <th>Status</th>
           <th></th>
@@ -995,10 +1027,12 @@ HTML_PAGE = """<!DOCTYPE html>
           <td class="cell-pos editable" contenteditable="true" onblur="updateField(${idx}, 'Part of Speech', this.innerText)">${escapeHtml(t['Part of Speech'])}</td>
           <td class="cell-subfield editable" contenteditable="true" onblur="updateField(${idx}, 'Subfield', this.innerText)">${escapeHtml(t.Subfield)}</td>
           <td class="cell-def editable" contenteditable="true" onblur="updateField(${idx}, 'Definition', this.innerText)">${escapeHtml(t.Definition)}</td>
+          <td class="cell-exp editable" contenteditable="true" onblur="updateField(${idx}, 'Conceptual Exposition', this.innerText)">${escapeHtml(t['Conceptual Exposition'] || '')}</td>
           <td class="cell-ex editable" contenteditable="true" onblur="updateField(${idx}, 'Example Sentence', this.innerText)">${escapeHtml(t['Example Sentence'])}</td>
           <td class="cell-ety editable" contenteditable="true" onblur="updateField(${idx}, 'Etymology', this.innerText)">${escapeHtml(t.Etymology)}</td>
           <td class="cell-syn editable" contenteditable="true" onblur="updateField(${idx}, 'Synonyms', this.innerText)">${escapeHtml(t.Synonyms)}</td>
           <td class="cell-see editable" contenteditable="true" onblur="updateField(${idx}, 'See Also', this.innerText)">${escapeHtml(t['See Also'])}</td>
+          <td class="cell-info editable" contenteditable="true" onblur="updateField(${idx}, 'Infographic Recommendation', this.innerText)">${escapeHtml(t['Infographic Recommendation'] || '')}</td>
           <td class="cell-date">${escapeHtml(t['Date Added'])}</td>
           <td>
             <select class="status-select ${getStatusClass(t.Status)}" onchange="updateStatus(${idx}, this.value)">
