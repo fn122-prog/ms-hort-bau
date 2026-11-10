@@ -333,7 +333,7 @@
     let selectedDay = 'Sunday';
     let currentRoutineView = 'daily';
     let activeDeadlineFilter = 'all';
-    let DEFAULT_SHEET_ID = "";
+    let DEFAULT_SHEET_ID = "1VSTzdOkCTSTRnIwS6kTJ1rLDnNaJAyAYAMBCl3Zf8s8";
 
     // Faculty Mapping
     const facultyMap = {
@@ -497,13 +497,13 @@
               inQuotes = !inQuotes;
             }
           } else if (c === ',' && !inQuotes) {
-            row.push(token.trim());
+            row.push(token.trim().replace(/^"|"$/g, ''));
             token = '';
           } else {
             token += c;
           }
         }
-        row.push(token.trim());
+        row.push(token.trim().replace(/^"|"$/g, ''));
         return row;
       });
     }
@@ -732,7 +732,7 @@
       }
 
       container.innerHTML = filtered.map(item => {
-        const dueDate = new Date(item.deadline);
+        const dueDate = parseDeadlineDate(item.deadline);
         const countdown = getCountdown(dueDate);
         const formattedDate = dueDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
         const isGroup = item.category.includes('Group');
@@ -786,6 +786,24 @@
           </div>
         `;
       }).join('');
+    }
+
+    function parseDeadlineDate(dateStr) {
+      if (!dateStr) return new Date();
+      if (dateStr instanceof Date) return dateStr;
+      const str = String(dateStr).trim();
+      const dmyMatch = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
+      if (dmyMatch) {
+        const day = parseInt(dmyMatch[1], 10);
+        const month = parseInt(dmyMatch[2], 10) - 1;
+        const year = parseInt(dmyMatch[3], 10);
+        const hour = dmyMatch[4] ? parseInt(dmyMatch[4], 10) : 23;
+        const min = dmyMatch[5] ? parseInt(dmyMatch[5], 10) : 59;
+        const sec = dmyMatch[6] ? parseInt(dmyMatch[6], 10) : 0;
+        return new Date(year, month, day, hour, min, sec);
+      }
+      const d = new Date(str);
+      return isNaN(d) ? new Date() : d;
     }
 
     function getCountdown(target) {
@@ -878,7 +896,7 @@
       const item = DEADLINES.find(d => d.id === id);
       if (!item) return;
 
-      const dateObj = new Date(item.deadline);
+      const dateObj = parseDeadlineDate(item.deadline);
       const startStr = dateObj.toISOString().replace(/-|:|\.\d+/g, "");
       const endStr = new Date(dateObj.getTime() + 60 * 60 * 1000).toISOString().replace(/-|:|\.\d+/g, "");
 
