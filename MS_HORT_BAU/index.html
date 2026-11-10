@@ -333,6 +333,7 @@
     let selectedDay = 'Sunday';
     let currentRoutineView = 'daily';
     let activeDeadlineFilter = 'all';
+    let DEFAULT_SHEET_ID = "";
 
     // Faculty Mapping
     const facultyMap = {
@@ -415,7 +416,7 @@
         ROUTINE = rtnRes;
         DEADLINES = dlnRes;
 
-        const sheetId = localStorage.getItem('hort_google_sheet_id');
+        const sheetId = localStorage.getItem('hort_google_sheet_id') || DEFAULT_SHEET_ID;
         if (sheetId) {
           await fetchSheetData(sheetId);
         }
@@ -571,11 +572,12 @@
       }
 
       container.innerHTML = dayClasses.map(item => {
-        if (!item.course || item.status === 'free') {
+        const isFree = !item.course || item.status === 'free' || item.course === '(empty)' || (typeof item.course === 'string' && item.course.toLowerCase() === 'free');
+        if (isFree) {
           return `
             <div class="p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl flex items-center justify-between opacity-70">
               <span class="text-xs sm:text-sm font-mono font-bold text-slate-600">${slotTimes[item.slot] || item.slot}</span>
-              <span class="text-xs sm:text-sm font-bold text-slate-500 italic">Free Period (Study / Research)</span>
+              <span class="text-xs sm:text-sm font-bold text-slate-500 italic">${item.note || 'Free Period (Study / Research)'}</span>
               <span class="text-slate-400">—</span>
             </div>
           `;
@@ -680,7 +682,8 @@
           }
 
           const entry = dayClasses.find(c => c.slot === s.id);
-          if (!entry || !entry.course) {
+          const isEntryFree = !entry || !entry.course || entry.status === 'free' || entry.course === '(empty)' || (typeof entry.course === 'string' && entry.course.toLowerCase() === 'free');
+          if (isEntryFree) {
             html += `<td class="p-2.5 border-2 border-slate-200 text-slate-400 font-bold">—</td>`;
           } else {
             const isCompulsory = entry.type === 'Compulsory';
