@@ -89,6 +89,11 @@
 
       <!-- Quick Action Buttons -->
       <div class="flex items-center space-x-2">
+        <button onclick="toggleUploadModal()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 border-2 border-slate-300 text-xs sm:text-sm font-extrabold transition flex items-center space-x-1.5 shadow-2xs">
+          <span>📤</span>
+          <span class="hidden sm:inline">Upload</span>
+        </button>
+
         <button onclick="toggleFacultyModal()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 border-2 border-slate-300 text-xs sm:text-sm font-extrabold transition flex items-center space-x-1.5 shadow-2xs">
           <span>👨‍🏫</span>
           <span class="hidden sm:inline">Faculty</span>
@@ -249,11 +254,17 @@
           <h3 class="font-serif text-xl sm:text-2xl font-black text-slate-950">Materials Vault & Books</h3>
           <p class="text-xs sm:text-sm font-bold text-sky-900/80">Direct Google Drive folders for syllabus, lectures, slides & past exams</p>
         </div>
-        <a href="https://drive.google.com/drive/folders/1VonkTL2XPoKiQ5Z4_qZnUFbNMuunMhbW" target="_blank" class="self-start sm:self-auto px-4 py-2 bg-sky-800 hover:bg-sky-900 text-white rounded-xl text-xs sm:text-sm font-black transition flex items-center space-x-2 shadow-sm">
-          <svg class="w-4 h-4 shrink-0 inline-block" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg"><path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/><path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44c-.8 1.4-1.2 2.95-1.2 4.5h27.5z" fill="#00ac47"/><path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/><path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/><path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/><path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/></svg>
-          <span>Open All Drive</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-        </a>
+        <div class="flex items-center space-x-2 self-start sm:self-auto flex-wrap gap-2">
+          <button onclick="toggleUploadModal()" class="px-3.5 py-2 bg-botanical-900 hover:bg-botanical-950 text-white rounded-xl text-xs sm:text-sm font-black transition flex items-center space-x-2 shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            <span>Upload Material</span>
+          </button>
+          <a href="https://drive.google.com/drive/folders/1VonkTL2XPoKiQ5Z4_qZnUFbNMuunMhbW" target="_blank" class="px-3.5 py-2 bg-sky-800 hover:bg-sky-900 text-white rounded-xl text-xs sm:text-sm font-black transition flex items-center space-x-2 shadow-sm">
+            <svg class="w-4 h-4 shrink-0 inline-block" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg"><path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/><path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44c-.8 1.4-1.2 2.95-1.2 4.5h27.5z" fill="#00ac47"/><path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/><path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/><path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/><path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/></svg>
+            <span>Open All Drive</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          </a>
+        </div>
       </div>
 
       <div id="materialsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -335,6 +346,127 @@
     </div>
   </div>
 
+  <!-- MODAL: GOOGLE DRIVE AUTO-UPLOADER -->
+  <div id="uploadModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 border-2 border-slate-300 shadow-2xl space-y-4 my-auto max-h-[95vh] overflow-y-auto custom-scroll">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-3 border-b-2 border-slate-100">
+        <div class="flex items-center space-x-2.5">
+          <span class="w-10 h-10 rounded-2xl bg-botanical-900 text-white flex items-center justify-center text-xl shrink-0 shadow-xs">📤</span>
+          <div>
+            <h3 class="font-serif font-black text-lg sm:text-xl text-slate-950">Upload Study Material</h3>
+            <p class="text-xs font-bold text-slate-600">Auto-renamed & filed to Google Drive</p>
+          </div>
+        </div>
+        <button onclick="toggleUploadModal()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 text-xl font-black flex items-center justify-center">&times;</button>
+      </div>
+
+      <!-- Upload Form -->
+      <form id="driveUploadForm" onsubmit="handleDriveUpload(event)" class="space-y-3.5 text-xs sm:text-sm">
+        
+        <!-- Step 1: Destination Course Folder -->
+        <div>
+          <label class="block font-black text-slate-900 mb-1">1. Destination Course / Folder:</label>
+          <select id="uploadCourseSelect" onchange="onUploadCourseChange()" class="w-full px-3 py-2 border-2 border-slate-300 rounded-xl font-bold text-slate-900 focus:outline-none focus:border-botanical-800 bg-white">
+            <!-- Populated dynamically via JS -->
+          </select>
+        </div>
+
+        <!-- Step 2: Subfolder Selection & Creation -->
+        <div class="p-3 bg-slate-50 border-2 border-slate-200 rounded-2xl space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="font-black text-slate-900">2. Folder Location:</label>
+            <button type="button" onclick="toggleNewSubfolderInput()" id="btnToggleSubfolder" class="text-xs font-black text-botanical-900 hover:underline">
+              ➕ Create New Folder
+            </button>
+          </div>
+
+          <!-- Existing Subfolders Dropdown -->
+          <select id="uploadSubfolderSelect" onchange="updateUploadRenamePreview()" class="w-full px-3 py-2 border-2 border-slate-300 rounded-xl font-bold text-slate-900 focus:outline-none focus:border-botanical-800 bg-white">
+            <option value="">(Root folder of this course)</option>
+          </select>
+
+          <!-- New Subfolder Input (revealed when clicked) -->
+          <div id="newSubfolderContainer" class="hidden space-y-1 pt-1">
+            <input type="text" id="newSubfolderInput" oninput="updateUploadRenamePreview()" placeholder="Enter folder name (e.g. Lectures, Lab Manuals)" class="w-full px-3 py-2 border-2 border-botanical-600 rounded-xl font-bold text-slate-900 focus:outline-none text-xs sm:text-sm bg-white">
+            <p class="text-[11px] font-semibold text-slate-500">Will be created inside this course folder in Google Drive.</p>
+          </div>
+        </div>
+
+        <!-- Step 3: Material Type & Custom Title -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label class="block font-black text-slate-900 mb-1">3. Material Type:</label>
+            <select id="uploadTypeSelect" onchange="updateUploadRenamePreview()" class="w-full px-3 py-2 border-2 border-slate-300 rounded-xl font-bold text-slate-900 focus:outline-none focus:border-botanical-800 bg-white">
+              <option value="Lecture">Lecture Slides / Notes</option>
+              <option value="Book">Reference Book / PDF</option>
+              <option value="PastQues">Past Question / Exam</option>
+              <option value="Assignment">Assignment Guide</option>
+              <option value="Lab">Lab Manual / Practical</option>
+              <option value="Paper">Research Paper</option>
+              <option value="Notice">Notice / Syllabus</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-black text-slate-900 mb-1">4. Topic / Title:</label>
+            <input type="text" id="uploadTitleInput" oninput="updateUploadRenamePreview()" placeholder="e.g. Postharvest Ripening" class="w-full px-3 py-2 border-2 border-slate-300 rounded-xl font-bold text-slate-900 focus:outline-none focus:border-botanical-800" required>
+          </div>
+        </div>
+
+        <!-- Step 4: File Selection -->
+        <div>
+          <label class="block font-black text-slate-900 mb-1">5. Attach File (PDF, PPTX, DOCX, ZIP, Images):</label>
+          <input type="file" id="uploadFileInput" onchange="onUploadFilePicked(event)" class="w-full text-xs text-slate-700 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-slate-100 file:text-slate-900 hover:file:bg-slate-200 border-2 border-dashed border-slate-300 rounded-xl p-2 cursor-pointer bg-white" required>
+        </div>
+
+        <!-- Step 5: Live Auto-Renaming Preview -->
+        <div class="p-3 bg-indigo-50 border-2 border-indigo-200 rounded-2xl space-y-1">
+          <div class="flex items-center space-x-1.5 text-xs font-black text-indigo-950 uppercase tracking-wide">
+            <span>✨ Live Auto-Renaming Preview</span>
+          </div>
+          <div id="uploadRenamePreview" class="font-mono font-black text-xs sm:text-sm text-indigo-900 break-all bg-white p-2.5 rounded-xl border border-indigo-200 shadow-2xs">
+            (Select a file to preview auto-renamed name)
+          </div>
+        </div>
+
+        <!-- Webhook & Batch Passcode Settings (Collapsible) -->
+        <div class="pt-1">
+          <details class="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+            <summary class="font-black text-slate-800 cursor-pointer hover:text-slate-950 flex items-center justify-between">
+              <span>⚙️ Webhook Connection Settings</span>
+              <span class="text-[11px] font-normal text-slate-500">Tap to expand</span>
+            </summary>
+            <div class="mt-2.5 space-y-2 pt-2 border-t border-slate-200">
+              <div>
+                <label class="block font-bold text-slate-800 mb-0.5">Google Apps Script Webhook URL:</label>
+                <input type="text" id="uploadWebhookUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-2.5 py-1.5 font-mono text-xs border border-slate-300 rounded-lg bg-white">
+                <p class="text-[11px] text-slate-500 mt-1">See <a href="https://github.com/fn122-prog/ms-hort-bau/tree/main/MS_HORT_BAU/google_apps_script" target="_blank" class="underline font-bold text-botanical-900">1-Minute Setup Guide</a> in repository to deploy your free Google webhook.</p>
+              </div>
+              <div>
+                <label class="block font-bold text-slate-800 mb-0.5">Batch Passcode (Optional):</label>
+                <input type="text" id="uploadPasscodeInput" value="bauhort2026" class="w-full px-2.5 py-1.5 font-mono text-xs border border-slate-300 rounded-lg bg-white">
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <!-- Status Message Box -->
+        <div id="uploadStatusBox" class="hidden p-3 rounded-2xl text-xs sm:text-sm font-bold"></div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-end space-x-2 pt-2 border-t border-slate-200">
+          <button type="button" onclick="toggleUploadModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl font-bold">Cancel</button>
+          <button type="submit" id="btnSubmitUpload" class="px-5 py-2.5 bg-botanical-900 hover:bg-botanical-950 text-white rounded-xl font-black transition flex items-center space-x-2 shadow-sm">
+            <span id="uploadBtnText">Upload to Google Drive</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
   <!-- APPLICATION SCRIPTS -->
   <script>
     // Google Drive Official SVG Icon
@@ -397,6 +529,7 @@
       renderDeadlines();
       renderCourseVault();
       renderFacultyModal();
+      initUploadForm();
     });
 
     // Clock and Day Resolver
@@ -1066,6 +1199,250 @@
       alert("Reset to bundled local routine.");
       toggleSheetModal();
       location.reload();
+    }
+
+    // ==========================================
+    // GOOGLE DRIVE AUTO-UPLOADER & FOLDER MANAGER
+    // ==========================================
+    const driveUploadFolders = [
+      { code: "HORT501", name: "Hort. 501: Advanced Fruit Production", id: "1zkjLqFRqK58BfzfnIBUmUGhRYlfGuSNF", subfolders: ["Dr. Aziz", "Dr. Tamanna"] },
+      { code: "HORT502", name: "Hort. 502: Methods in Advanced Research", id: "1z3551sLTsEM5_eK7oUgTHpzEHEDnC-pA", subfolders: ["Dr. (Habib+Kamrul) + Accessories"] },
+      { code: "HORT503", name: "Hort. 503: Advanced Vegetable Production", id: "1TPKRsT1LgVrK4G9lum6Rl92rOEEqLB00", subfolders: ["Dr. Habib", "Dr. Harun"] },
+      { code: "HORT505", name: "Hort. 505: Advanced Research Methodology", id: "1B32He9FJwIszWacXcUx8YMrI93WvAxK3", subfolders: ["Accessories", "Dr. Kamrul", "Dr. Rezaul"] },
+      { code: "HORT507", name: "Hort. 507: Ornamental & Landscape Hort.", id: "1VHPHXaDl86VpDL9_jWaX1ORdcws7C02b", subfolders: ["Accessories", "Dr. Ayasha", "Dr. Mokter"] },
+      { code: "HORT523", name: "Hort. 523: Advanced Nursery Management", id: "1GG_LEQi-agAJ-bcxuGHM9zGVWZqeYjkh", subfolders: ["Dr. Harun", "Dr. Kamrul"] },
+      { code: "HORT525", name: "Hort. 525: Storage Mgmt. of Hort. Crops", id: "1vBIclR6XVoB5U9BBQ95x9zPf9h5-zutR", subfolders: ["Dr. Mokter", "Dr. Rezaul"] },
+      { code: "SYLLABUS", name: "00_Syllabus_and_Curriculum", id: "1OxVxaM5EzcvV-nPi0nuAMdOIEOgvjq0G", subfolders: [] },
+      { code: "EXAM", name: "00_Question_Vault_and_Past_Exams", id: "1miIHXSFeyFCKCQz5eEgClaLQ6M67mWgN", subfolders: ["01_Question_Bank_by_Topic", "02_Exam_Paper_Images"] },
+      { code: "ROOT", name: "General / Master Drive Root", id: "1VonkTL2XPoKiQ5Z4_qZnUFbNMuunMhbW", subfolders: [] }
+    ];
+
+    function toggleUploadModal() {
+      const modal = document.getElementById('uploadModal');
+      if (!modal) return;
+      modal.classList.toggle('hidden');
+      if (!modal.classList.contains('hidden')) {
+        initUploadForm();
+      }
+    }
+
+    function initUploadForm() {
+      const select = document.getElementById('uploadCourseSelect');
+      if (select && select.children.length === 0) {
+        select.innerHTML = driveUploadFolders.map(f => `
+          <option value="${f.code}" data-folder-id="${f.id}">${f.name}</option>
+        `).join('');
+      }
+
+      const webhookInput = document.getElementById('uploadWebhookUrlInput');
+      if (webhookInput && !webhookInput.value) {
+        webhookInput.value = localStorage.getItem('hort_drive_upload_webhook') || '';
+      }
+
+      onUploadCourseChange();
+    }
+
+    function onUploadCourseChange() {
+      const select = document.getElementById('uploadCourseSelect');
+      if (!select) return;
+      const code = select.value;
+      const folderObj = driveUploadFolders.find(f => f.code === code);
+      const subSelect = document.getElementById('uploadSubfolderSelect');
+      
+      if (subSelect && folderObj) {
+        let opts = `<option value="">(Root folder of this course)</option>`;
+        folderObj.subfolders.forEach(sub => {
+          opts += `<option value="${sub}">📁 ${sub}</option>`;
+        });
+        subSelect.innerHTML = opts;
+      }
+
+      updateUploadRenamePreview();
+    }
+
+    function toggleNewSubfolderInput() {
+      const container = document.getElementById('newSubfolderContainer');
+      const subSelect = document.getElementById('uploadSubfolderSelect');
+      const btn = document.getElementById('btnToggleSubfolder');
+      if (!container) return;
+
+      const isHidden = container.classList.contains('hidden');
+      if (isHidden) {
+        container.classList.remove('hidden');
+        if (subSelect) subSelect.classList.add('hidden');
+        if (btn) btn.innerText = "↩ Choose Existing Folder";
+        document.getElementById('newSubfolderInput')?.focus();
+      } else {
+        container.classList.add('hidden');
+        if (subSelect) subSelect.classList.remove('hidden');
+        if (btn) btn.innerText = "➕ Create New Folder";
+        const newSubInput = document.getElementById('newSubfolderInput');
+        if (newSubInput) newSubInput.value = "";
+      }
+      updateUploadRenamePreview();
+    }
+
+    function onUploadFilePicked(e) {
+      const file = e.target.files?.[0];
+      if (file) {
+        const titleInput = document.getElementById('uploadTitleInput');
+        if (titleInput && !titleInput.value.trim()) {
+          const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]+/g, ' ').trim();
+          titleInput.value = cleanName;
+        }
+      }
+      updateUploadRenamePreview();
+    }
+
+    function computeRenamedFileName() {
+      const courseSelect = document.getElementById('uploadCourseSelect');
+      const courseCode = courseSelect?.value || 'HORT';
+      const type = document.getElementById('uploadTypeSelect')?.value || 'Material';
+      let title = document.getElementById('uploadTitleInput')?.value.trim() || '';
+      const fileInput = document.getElementById('uploadFileInput');
+      const file = fileInput?.files?.[0];
+
+      let ext = 'pdf';
+      if (file && file.name.includes('.')) {
+        ext = file.name.split('.').pop().toLowerCase();
+      }
+
+      if (!title && file) {
+        title = file.name.replace(/\.[^/.]+$/, "");
+      }
+      if (!title) title = "Study_Material";
+
+      const cleanTitle = title.replace(/[^a-zA-Z0-9_-]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const dateStr = `${yyyy}${mm}${dd}`;
+
+      return `${courseCode}_${type}_${cleanTitle}_${dateStr}.${ext}`;
+    }
+
+    function updateUploadRenamePreview() {
+      const preview = document.getElementById('uploadRenamePreview');
+      if (!preview) return;
+      const finalName = computeRenamedFileName();
+      preview.innerText = finalName;
+    }
+
+    async function handleDriveUpload(e) {
+      e.preventDefault();
+      const webhookUrlInput = document.getElementById('uploadWebhookUrlInput');
+      const webhookUrl = (webhookUrlInput ? webhookUrlInput.value.trim() : '') || 
+                         localStorage.getItem('hort_drive_upload_webhook') || '';
+
+      const statusBox = document.getElementById('uploadStatusBox');
+      const submitBtn = document.getElementById('btnSubmitUpload');
+      const btnText = document.getElementById('uploadBtnText');
+
+      if (!webhookUrl) {
+        statusBox.className = "block p-3.5 bg-amber-50 border-2 border-amber-300 text-amber-950 rounded-2xl space-y-1.5";
+        statusBox.innerHTML = `
+          <p class="font-black text-sm">⚠️ Google Apps Script Webhook URL Required</p>
+          <p class="text-xs">To upload directly into your Google Drive, please deploy the free Google Apps Script once. Open the "⚙️ Webhook Connection Settings" above and paste your Web App URL.</p>
+        `;
+        return;
+      }
+
+      localStorage.setItem('hort_drive_upload_webhook', webhookUrl);
+
+      const fileInput = document.getElementById('uploadFileInput');
+      if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        alert("Please select a file to upload.");
+        return;
+      }
+      const file = fileInput.files[0];
+
+      if (file.size > 48 * 1024 * 1024) {
+        alert("File size exceeds 48MB limit for direct Google Apps Script uploads.");
+        return;
+      }
+
+      const courseSelect = document.getElementById('uploadCourseSelect');
+      const selectedOption = courseSelect.selectedOptions[0];
+      const folderId = selectedOption ? selectedOption.getAttribute('data-folder-id') : null;
+
+      const isNewSub = !document.getElementById('newSubfolderContainer')?.classList.contains('hidden');
+      const newSubfolderName = document.getElementById('newSubfolderInput')?.value.trim() || '';
+      const selectedSubfolder = document.getElementById('uploadSubfolderSelect')?.value || '';
+      const finalFileName = computeRenamedFileName();
+      const passcode = document.getElementById('uploadPasscodeInput')?.value.trim() || 'bauhort2026';
+
+      submitBtn.disabled = true;
+      submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+      btnText.innerHTML = `⏳ Encoding & Uploading...`;
+      statusBox.className = "block p-3.5 bg-sky-50 border-2 border-sky-300 text-sky-950 rounded-2xl flex items-center space-x-2";
+      statusBox.innerHTML = `<span>⏳ Uploading "${finalFileName}" to Google Drive...</span>`;
+
+      try {
+        const base64Data = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const res = reader.result;
+            const base64 = res.substring(res.indexOf(',') + 1);
+            resolve(base64);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+
+        const payload = {
+          folderId: folderId,
+          newSubfolder: isNewSub ? newSubfolderName : "",
+          subfolderName: (!isNewSub && selectedSubfolder) ? selectedSubfolder : "",
+          finalFileName: finalFileName,
+          mimeType: file.type || "application/octet-stream",
+          base64: base64Data,
+          passcode: passcode
+        };
+
+        const response = await fetch(webhookUrl, {
+          method: "POST",
+          mode: "cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+          statusBox.className = "block p-4 bg-emerald-50 border-2 border-emerald-400 text-emerald-950 rounded-2xl space-y-2";
+          statusBox.innerHTML = `
+            <div class="flex items-center space-x-2 font-black text-emerald-900">
+              <span>🎉</span>
+              <span>Upload Complete!</span>
+            </div>
+            <p class="text-xs font-bold text-emerald-800">File: <code class="font-mono bg-white px-1.5 py-0.5 rounded border border-emerald-300">${result.fileName}</code></p>
+            <p class="text-xs text-emerald-800">Destination: <strong>${result.folderName}</strong></p>
+            <div class="pt-1">
+              <a href="${result.fileUrl}" target="_blank" rel="noopener" class="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-black shadow-xs">
+                ${driveLogoSvg("w-3.5 h-3.5")}
+                <span>Open in Google Drive ↗</span>
+              </a>
+            </div>
+          `;
+          document.getElementById('uploadTitleInput').value = '';
+          document.getElementById('uploadFileInput').value = '';
+          updateUploadRenamePreview();
+        } else {
+          throw new Error(result.message || "Upload failed from Google Drive.");
+        }
+      } catch (err) {
+        statusBox.className = "block p-3.5 bg-rose-50 border-2 border-rose-300 text-rose-950 rounded-2xl space-y-1";
+        statusBox.innerHTML = `
+          <p class="font-black">❌ Upload Error</p>
+          <p class="text-xs font-semibold">${err.message}</p>
+        `;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+        btnText.innerHTML = `Upload to Google Drive`;
+      }
     }
   </script>
 </body>

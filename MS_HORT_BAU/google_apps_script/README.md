@@ -1,0 +1,48 @@
+# BAU MS Horticulture - Google Drive Upload Webhook Setup
+
+This Google Apps Script enables uploading study materials, lecture slides, books, and past exam papers directly into your official Google Drive folders from the web interface, with **automatic rule-based file renaming** and **subfolder creation**.
+
+---
+
+## ⚡ 1-Minute Setup Guide
+
+### Step 1: Open Google Apps Script
+1. Open your connected Google Sheet:  
+   👉 [BAU MS Horticulture Spreadsheet](https://docs.google.com/spreadsheets/d/1VSTzdOkCTSTRnIwS6kTJ1rLDnNaJAyAYAMBCl3Zf8s8)
+2. In the top menu, click **Extensions** > **Apps Script**.
+
+### Step 2: Paste the Code
+1. Delete any existing code in the editor (`function myFunction() { ... }`).
+2. Copy and paste the entire contents of [`Code.gs`](./Code.gs) into the editor.
+3. Click the **Save** (💾 floppy disk) icon.
+
+### Step 3: Deploy as Web App
+1. At the top right, click **Deploy** > **New deployment**.
+2. Click the gear icon (**Select type**) next to "Select type" and select **Web app**.
+3. Fill in the fields:
+   - **Description**: `BAU MS Hort Drive Uploader`
+   - **Execute as**: `Me (your_email@gmail.com)`
+   - **Who has access**: `Anyone` *(crucial so your web app frontend can send files)*
+4. Click **Deploy**.
+5. When Google asks to authorize permissions:
+   - Click **Authorize access**.
+   - Choose your Google account.
+   - Click **Advanced** > **Go to Untitled project (unsafe)** (standard for personal Apps Scripts).
+   - Click **Allow**.
+
+### Step 4: Copy & Paste the URL
+1. Copy the **Web App URL** (looks like: `https://script.google.com/macros/s/AKfycb.../exec`).
+2. Go to your portal [ms-hort-bau.vercel.app](https://ms-hort-bau.vercel.app) or local.
+3. Click **Upload Material** in the *Materials Vault* section.
+4. Paste the URL into the **Webhook URL** field (it saves automatically to your browser for future uploads).
+
+---
+
+## 🏷️ Auto-Renaming Rule
+When you select a course and type of material, the file automatically gets renamed:
+`[CourseCode]_[Type]_[Title]_[YYYYMMDD].[extension]`
+
+*Examples:*
+* `HORT501_Lecture_Advanced_Fruit_Physiology_20261111.pdf`
+* `HORT505_Book_Statistical_Methods_in_Agriculture.pdf`
+* `EXAM_Questions_Midterm_2025.pdf`
