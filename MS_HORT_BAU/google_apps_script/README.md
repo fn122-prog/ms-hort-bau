@@ -47,10 +47,14 @@ This Google Apps Script enables uploading study materials, lecture slides, books
 ---
 
 ## 🏷️ Auto-Renaming Rule
-When you select a course and type of material, the file automatically gets renamed:
-`[CourseCode]_[Type]_[Title]_[YYYYMMDD].[extension]`
+When you select a course and type of material, each file automatically gets renamed:
+* **Single File:** `[CourseCode]_[Type]_[Title]_[YYYYMMDD].[ext]`
+* **Multiple Files (Batch):** `[CourseCode]_[Type]_[Title]_Part01_[YYYYMMDD].[ext]`, `...Part02...`
+* **If Title is omitted:** Preserves original clean filename: `[CourseCode]_[Type]_[OriginalName]_[YYYYMMDD].[ext]`
 
 *Examples:*
 * `HORT501_Lecture_Advanced_Fruit_Physiology_20261111.pdf`
-* `HORT505_Book_Statistical_Methods_in_Agriculture.pdf`
+* `HORT505_Lecture_Biometrics_Part01_20261111.pdf`
+* `HORT505_Lecture_Biometrics_Part02_20261111.pdf`
+* `EXAM_PastQues_Midterm_2025.pdf`
 * `EXAM_Questions_Midterm_2025.pdf`

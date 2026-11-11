@@ -463,24 +463,32 @@
           </div>
 
           <div>
-            <label class="block font-black text-slate-900 mb-1">4. Topic / Title:</label>
-            <input type="text" id="uploadTitleInput" oninput="updateUploadRenamePreview()" placeholder="e.g. Postharvest Ripening" class="w-full px-3 py-2 border-2 border-slate-300 rounded-xl font-bold text-slate-900 focus:outline-none focus:border-botanical-800" required>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block font-black text-slate-900">4. Topic / Title:</label>
+              <span class="text-[10px] font-semibold text-slate-500">(Optional)</span>
+            </div>
+            <input type="text" id="uploadTitleInput" oninput="updateUploadRenamePreview()" placeholder="e.g. Postharvest Ripening" class="w-full px-3 py-2 border-2 border-slate-300 rounded-xl font-bold text-slate-900 focus:outline-none focus:border-botanical-800 bg-white">
           </div>
         </div>
 
-        <!-- Step 4: File Selection -->
+        <!-- Step 4: File Selection (Supports Multiple Files) -->
         <div>
-          <label class="block font-black text-slate-900 mb-1">5. Attach File (PDF, PPTX, DOCX, ZIP, Images):</label>
-          <input type="file" id="uploadFileInput" onchange="onUploadFilePicked(event)" class="w-full text-xs text-slate-700 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-slate-100 file:text-slate-900 hover:file:bg-slate-200 border-2 border-dashed border-slate-300 rounded-xl p-2 cursor-pointer bg-white" required>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block font-black text-slate-900">5. Attach File(s):</label>
+            <span class="text-[11px] font-bold text-botanical-800 bg-botanical-50 border border-botanical-200 px-2 py-0.5 rounded-full">Batch upload supported</span>
+          </div>
+          <input type="file" id="uploadFileInput" multiple onchange="onUploadFilePicked(event)" class="w-full text-xs text-slate-700 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-slate-100 file:text-slate-900 hover:file:bg-slate-200 border-2 border-dashed border-slate-300 rounded-xl p-2 cursor-pointer bg-white" required>
+          <p class="text-[11px] font-semibold text-slate-500 mt-1">Select one or multiple files together (PDF, PPTX, DOCX, ZIP, Images).</p>
         </div>
 
         <!-- Step 5: Live Auto-Renaming Preview -->
-        <div class="p-3 bg-indigo-50 border-2 border-indigo-200 rounded-2xl space-y-1">
-          <div class="flex items-center space-x-1.5 text-xs font-black text-indigo-950 uppercase tracking-wide">
+        <div class="p-3 bg-indigo-50 border-2 border-indigo-200 rounded-2xl space-y-1.5">
+          <div class="flex items-center justify-between text-xs font-black text-indigo-950 uppercase tracking-wide">
             <span>✨ Live Auto-Renaming Preview</span>
+            <span id="uploadFileCountBadge" class="hidden text-[11px] font-bold text-indigo-800 bg-indigo-100 border border-indigo-300 px-2 py-0.5 rounded-full"></span>
           </div>
-          <div id="uploadRenamePreview" class="font-mono font-black text-xs sm:text-sm text-indigo-900 break-all bg-white p-2.5 rounded-xl border border-indigo-200 shadow-2xs">
-            (Select a file to preview auto-renamed name)
+          <div id="uploadRenamePreview" class="font-mono font-bold text-xs sm:text-sm text-indigo-900 bg-white p-2.5 rounded-xl border border-indigo-200 shadow-2xs max-h-40 overflow-y-auto custom-scroll">
+            (Select file(s) to preview auto-renamed name)
           </div>
         </div>
 
@@ -1342,36 +1350,56 @@
     }
 
     function onUploadFilePicked(e) {
-      const file = e.target.files?.[0];
-      if (file) {
-        const titleInput = document.getElementById('uploadTitleInput');
-        if (titleInput && !titleInput.value.trim()) {
-          const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]+/g, ' ').trim();
-          titleInput.value = cleanName;
+      const files = e.target.files;
+      const titleInput = document.getElementById('uploadTitleInput');
+      const btnText = document.getElementById('uploadBtnText');
+
+      if (files && files.length > 0) {
+        if (btnText) {
+          btnText.innerText = files.length > 1 
+            ? `Upload ${files.length} Files to Google Drive` 
+            : `Upload to Google Drive`;
         }
+        if (titleInput && !titleInput.value.trim()) {
+          if (files.length === 1) {
+            const cleanName = files[0].name.replace(/\.[^/.]+$/, "").replace(/[-_]+/g, ' ').trim();
+            titleInput.placeholder = `e.g. ${cleanName}`;
+          } else {
+            titleInput.placeholder = `e.g. Common topic for ${files.length} files (or leave blank)`;
+          }
+        }
+      } else {
+        if (btnText) btnText.innerText = `Upload to Google Drive`;
       }
       updateUploadRenamePreview();
     }
 
-    function computeRenamedFileName() {
+    function computeRenamedFileName(file, index = 0, totalFiles = 1) {
       const courseSelect = document.getElementById('uploadCourseSelect');
       const courseCode = courseSelect?.value || 'HORT';
       const type = document.getElementById('uploadTypeSelect')?.value || 'Material';
-      let title = document.getElementById('uploadTitleInput')?.value.trim() || '';
-      const fileInput = document.getElementById('uploadFileInput');
-      const file = fileInput?.files?.[0];
+      const topicInput = document.getElementById('uploadTitleInput')?.value.trim() || '';
 
       let ext = 'pdf';
-      if (file && file.name.includes('.')) {
+      if (file && file.name && file.name.includes('.')) {
         ext = file.name.split('.').pop().toLowerCase();
       }
 
-      if (!title && file) {
-        title = file.name.replace(/\.[^/.]+$/, "");
-      }
-      if (!title) title = "Study_Material";
+      const fileBase = file ? file.name.replace(/\.[^/.]+$/, "") : "Study_Material";
+      const cleanFileBase = fileBase.replace(/[^a-zA-Z0-9_-]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '') || 'Material';
 
-      const cleanTitle = title.replace(/[^a-zA-Z0-9_-]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+      let topicPart = "";
+      if (topicInput) {
+        const cleanTopic = topicInput.replace(/[^a-zA-Z0-9_-]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+        if (totalFiles > 1) {
+          const partNum = String(index + 1).padStart(2, '0');
+          topicPart = `${cleanTopic}_Part${partNum}`;
+        } else {
+          topicPart = cleanTopic;
+        }
+      } else {
+        topicPart = cleanFileBase;
+      }
 
       const now = new Date();
       const yyyy = now.getFullYear();
@@ -1379,14 +1407,56 @@
       const dd = String(now.getDate()).padStart(2, '0');
       const dateStr = `${yyyy}${mm}${dd}`;
 
-      return `${courseCode}_${type}_${cleanTitle}_${dateStr}.${ext}`;
+      return `${courseCode}_${type}_${topicPart}_${dateStr}.${ext}`;
     }
 
     function updateUploadRenamePreview() {
       const preview = document.getElementById('uploadRenamePreview');
+      const countBadge = document.getElementById('uploadFileCountBadge');
       if (!preview) return;
-      const finalName = computeRenamedFileName();
-      preview.innerText = finalName;
+
+      const fileInput = document.getElementById('uploadFileInput');
+      const files = fileInput?.files;
+
+      if (!files || files.length === 0) {
+        if (countBadge) countBadge.classList.add('hidden');
+        preview.innerHTML = `<span class="text-slate-400 font-sans italic font-normal text-xs">Select file(s) above to preview auto-renamed names</span>`;
+        return;
+      }
+
+      if (countBadge) {
+        countBadge.classList.remove('hidden');
+        countBadge.innerText = `${files.length} file${files.length > 1 ? 's' : ''}`;
+      }
+
+      if (files.length === 1) {
+        const finalName = computeRenamedFileName(files[0], 0, 1);
+        const sizeMb = (files[0].size / (1024 * 1024)).toFixed(2);
+        preview.innerHTML = `
+          <div class="flex items-center justify-between text-indigo-950 font-mono font-black break-all text-xs sm:text-sm">
+            <span>${finalName}</span>
+            <span class="text-[10px] font-sans font-bold text-slate-500 shrink-0 ml-2">(${sizeMb} MB)</span>
+          </div>
+        `;
+      } else {
+        let html = `<ul class="space-y-1.5 divide-y divide-indigo-100">`;
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const finalName = computeRenamedFileName(file, i, files.length);
+          const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+          html += `
+            <li class="pt-1.5 first:pt-0 flex items-start justify-between space-x-2">
+              <div class="min-w-0 pr-1">
+                <span class="text-[10px] font-sans font-bold text-indigo-600 block truncate">Orig: ${file.name}</span>
+                <span class="font-mono font-black text-indigo-950 text-xs break-all">${finalName}</span>
+              </div>
+              <span class="text-[10px] font-sans font-bold text-slate-500 shrink-0 mt-1">${sizeMb} MB</span>
+            </li>
+          `;
+        }
+        html += `</ul>`;
+        preview.innerHTML = html;
+      }
     }
 
     async function handleDriveUpload(e) {
@@ -1411,15 +1481,17 @@
       localStorage.setItem('hort_drive_upload_webhook', webhookUrl);
 
       const fileInput = document.getElementById('uploadFileInput');
-      if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-        alert("Please select a file to upload.");
+      const files = fileInput?.files;
+      if (!files || files.length === 0) {
+        alert("Please select at least one file to upload.");
         return;
       }
-      const file = fileInput.files[0];
 
-      if (file.size > 48 * 1024 * 1024) {
-        alert("File size exceeds 48MB limit for direct Google Apps Script uploads.");
-        return;
+      for (let i = 0; i < files.length; i++) {
+        if (files[i].size > 48 * 1024 * 1024) {
+          alert(`File "${files[i].name}" exceeds the 48MB limit for direct Google Apps Script uploads.`);
+          return;
+        }
       }
 
       const courseSelect = document.getElementById('uploadCourseSelect');
@@ -1429,7 +1501,6 @@
       const isNewSub = !document.getElementById('newSubfolderContainer')?.classList.contains('hidden');
       const newSubfolderName = document.getElementById('newSubfolderInput')?.value.trim() || '';
       const selectedSubfolder = document.getElementById('uploadSubfolderSelect')?.value || '';
-      const finalFileName = computeRenamedFileName();
       const passcode = document.getElementById('uploadPasscodeInput')?.value.trim() || '';
 
       if (!passcode) {
@@ -1441,63 +1512,119 @@
 
       submitBtn.disabled = true;
       submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
-      btnText.innerHTML = `⏳ Encoding & Uploading...`;
-      statusBox.className = "block p-3.5 bg-sky-50 border-2 border-sky-300 text-sky-950 rounded-2xl flex items-center space-x-2";
-      statusBox.innerHTML = `<span>⏳ Uploading "${finalFileName}" to Google Drive...</span>`;
+
+      const uploadedFiles = [];
+      const failedFiles = [];
 
       try {
-        const base64Data = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            const res = reader.result;
-            const base64 = res.substring(res.indexOf(',') + 1);
-            resolve(base64);
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const finalFileName = computeRenamedFileName(file, i, files.length);
+          const percent = Math.round(((i) / files.length) * 100);
 
-        const payload = {
-          folderId: folderId,
-          newSubfolder: isNewSub ? newSubfolderName : "",
-          subfolderName: (!isNewSub && selectedSubfolder) ? selectedSubfolder : "",
-          finalFileName: finalFileName,
-          mimeType: file.type || "application/octet-stream",
-          base64: base64Data,
-          passcode: passcode
-        };
-
-        const response = await fetch(webhookUrl, {
-          method: "POST",
-          mode: "cors",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
-        });
-
-        const result = await response.json();
-
-        if (result.status === "success") {
-          statusBox.className = "block p-4 bg-emerald-50 border-2 border-emerald-400 text-emerald-950 rounded-2xl space-y-2";
+          btnText.innerHTML = `⏳ Uploading (${i + 1}/${files.length})...`;
+          statusBox.className = "block p-3.5 bg-sky-50 border-2 border-sky-300 text-sky-950 rounded-2xl space-y-2";
           statusBox.innerHTML = `
-            <div class="flex items-center space-x-2 font-black text-emerald-900">
-              <span>🎉</span>
-              <span>Upload Complete!</span>
+            <div class="flex items-center justify-between text-xs font-black text-sky-950">
+              <span>Uploading file ${i + 1} of ${files.length} (${percent}%)</span>
+              <span class="font-mono">${(file.size / (1024 * 1024)).toFixed(1)} MB</span>
             </div>
-            <p class="text-xs font-bold text-emerald-800">File: <code class="font-mono bg-white px-1.5 py-0.5 rounded border border-emerald-300">${result.fileName}</code></p>
-            <p class="text-xs text-emerald-800">Destination: <strong>${result.folderName}</strong></p>
-            <div class="pt-1">
-              <a href="${result.fileUrl}" target="_blank" rel="noopener" class="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-black shadow-xs">
-                ${driveLogoSvg("w-3.5 h-3.5")}
-                <span>Open in Google Drive ↗</span>
-              </a>
+            <div class="w-full bg-sky-200 h-2 rounded-full overflow-hidden">
+              <div class="bg-botanical-800 h-full transition-all duration-300" style="width: ${percent}%"></div>
             </div>
+            <p class="text-xs font-mono font-bold text-sky-900 truncate">➜ ${finalFileName}</p>
           `;
+
+          const base64Data = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const res = reader.result;
+              const base64 = res.substring(res.indexOf(',') + 1);
+              resolve(base64);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+
+          const payload = {
+            folderId: folderId,
+            newSubfolder: isNewSub ? newSubfolderName : "",
+            subfolderName: (!isNewSub && selectedSubfolder) ? selectedSubfolder : "",
+            finalFileName: finalFileName,
+            mimeType: file.type || "application/octet-stream",
+            base64: base64Data,
+            passcode: passcode
+          };
+
+          const response = await fetch(webhookUrl, {
+            method: "POST",
+            mode: "cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(payload)
+          });
+
+          const result = await response.json();
+
+          if (result.status === "success") {
+            uploadedFiles.push({
+              name: result.fileName,
+              url: result.fileUrl,
+              folder: result.folderName,
+              folderUrl: result.folderUrl
+            });
+          } else {
+            failedFiles.push({ name: file.name, error: result.message || "Upload failed." });
+          }
+        }
+
+        // Completion UI
+        if (failedFiles.length === 0 && uploadedFiles.length > 0) {
+          statusBox.className = "block p-4 bg-emerald-50 border-2 border-emerald-400 text-emerald-950 rounded-2xl space-y-2.5";
+          let successHtml = `
+            <div class="flex items-center space-x-2 font-black text-emerald-900">
+              <span class="text-lg">🎉</span>
+              <span class="text-sm sm:text-base">${uploadedFiles.length} File${uploadedFiles.length > 1 ? 's' : ''} Uploaded Successfully!</span>
+            </div>
+            <div class="space-y-1.5 max-h-48 overflow-y-auto custom-scroll pr-1">
+          `;
+          uploadedFiles.forEach(f => {
+            successHtml += `
+              <div class="p-2 bg-white rounded-xl border border-emerald-200 flex items-center justify-between text-xs space-x-2">
+                <span class="font-mono font-bold text-emerald-950 truncate">${f.name}</span>
+                <a href="${f.url}" target="_blank" rel="noopener" class="shrink-0 inline-flex items-center space-x-1 px-2.5 py-1 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-black text-[11px] shadow-2xs">
+                  ${driveLogoSvg("w-3 h-3")}
+                  <span>Drive ↗</span>
+                </a>
+              </div>
+            `;
+          });
+          successHtml += `</div>`;
+          if (uploadedFiles[0]?.folderUrl) {
+            successHtml += `
+              <div class="pt-1 flex items-center justify-between border-t border-emerald-200 text-xs">
+                <span class="text-emerald-800 font-bold">Saved in: <strong>${uploadedFiles[0].folder}</strong></span>
+                <a href="${uploadedFiles[0].folderUrl}" target="_blank" rel="noopener" class="underline font-black text-emerald-900">Open Destination Folder ↗</a>
+              </div>
+            `;
+          }
+          statusBox.innerHTML = successHtml;
+
+          // Clear inputs
           document.getElementById('uploadTitleInput').value = '';
           document.getElementById('uploadFileInput').value = '';
           updateUploadRenamePreview();
+
+        } else if (uploadedFiles.length > 0 && failedFiles.length > 0) {
+          statusBox.className = "block p-4 bg-amber-50 border-2 border-amber-400 text-amber-950 rounded-2xl space-y-2";
+          statusBox.innerHTML = `
+            <div class="font-black text-amber-900">⚠️ Partial Upload (${uploadedFiles.length} succeeded, ${failedFiles.length} failed)</div>
+            <p class="text-xs text-amber-800">${failedFiles.map(f => `<strong>${f.name}</strong>: ${f.error}`).join('<br>')}</p>
+          `;
         } else {
-          throw new Error(result.message || "Upload failed from Google Drive.");
+          const errMsg = failedFiles[0]?.error || "All uploads failed.";
+          throw new Error(errMsg);
         }
+
       } catch (err) {
         statusBox.className = "block p-3.5 bg-rose-50 border-2 border-rose-300 text-rose-950 rounded-2xl space-y-1";
         statusBox.innerHTML = `
