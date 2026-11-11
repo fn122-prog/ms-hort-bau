@@ -35,7 +35,7 @@ This Google Apps Script enables uploading study materials, lecture slides, books
 2. Go to your portal [ms-hort-bau.vercel.app](https://ms-hort-bau.vercel.app) or local.
 3. Click **Upload Material** in the *Materials Vault* section.
 4. Paste the URL into the **Webhook URL** field (under *⚙️ Webhook Connection Settings* - it saves automatically to your browser for all future uploads).
-5. Enter the **Batch PIN**: `262020` to verify your upload.
+5. Enter the **Batch Passcode** (the first 6 digits of MS ID) to verify your upload.
 
 ---
 
@@ -46,10 +46,10 @@ This Google Apps Script enables uploading study materials, lecture slides, books
 
 ---
 
-## 🔒 Batch Upload PIN: `262020`
-* Only classmates who know the PIN `262020` can upload files.
+## 🔒 Batch Upload Passcode
+* Only classmates who know the passcode (first 6 digits of MS ID) can upload files.
 * This prevents unauthorized internet traffic or web scrapers from adding spam to your Drive.
-* If you ever wish to change or remove the PIN, simply edit `const SECRET_PASSCODE = "262020";` at line 24 of `Code.gs` and re-deploy.
+* If you ever wish to change or remove the passcode, simply edit `const SECRET_PASSCODE = "262020";` at line 24 of `Code.gs` and re-deploy.
 
 ---
 

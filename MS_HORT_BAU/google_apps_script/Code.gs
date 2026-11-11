@@ -34,11 +34,11 @@ function doPost(e) {
 
     const data = JSON.parse(e.postData.contents);
 
-    // 1. Security passcode check (Batch PIN)
+    // 1. Security passcode check (Batch Passcode: first 6 digits of MS ID)
     if (SECRET_PASSCODE && (!data.passcode || data.passcode.toString().trim() !== SECRET_PASSCODE)) {
       return responseJson({ 
         status: "error", 
-        message: "Invalid batch PIN. Please enter the correct Batch PIN (262020) to upload." 
+        message: "Invalid passcode. The passcode is the first six digits of your MS ID." 
       });
     }
 
