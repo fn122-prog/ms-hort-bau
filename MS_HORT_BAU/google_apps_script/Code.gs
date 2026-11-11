@@ -96,6 +96,44 @@ function doPost(e) {
 }
 
 function doGet(e) {
+  try {
+    const action = e && e.parameter && e.parameter.action;
+    
+    // Live subfolder retrieval for portal dropdowns
+    if (action === "getSubfolders") {
+      const folderId = (e.parameter && e.parameter.folderId) || DEFAULT_ROOT_FOLDER_ID;
+      let targetFolder;
+      try {
+        targetFolder = DriveApp.getFolderById(folderId);
+      } catch (fErr) {
+        targetFolder = DriveApp.getFolderById(DEFAULT_ROOT_FOLDER_ID);
+      }
+      
+      const subfolders = [];
+      const iterator = targetFolder.getFolders();
+      while (iterator.hasNext()) {
+        const sub = iterator.next();
+        subfolders.push({
+          id: sub.getId(),
+          name: sub.getName(),
+          url: sub.getUrl()
+        });
+      }
+      
+      return responseJson({
+        status: "success",
+        courseFolder: targetFolder.getName(),
+        subfolders: subfolders
+      });
+    }
+
+  } catch (err) {
+    return responseJson({
+      status: "error",
+      message: err.toString()
+    });
+  }
+
   return responseJson({
     status: "active",
     message: "BAU MS Horticulture Drive Webhook is live and ready to accept file uploads."

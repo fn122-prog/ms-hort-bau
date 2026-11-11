@@ -431,7 +431,13 @@
         <!-- Step 2: Subfolder Selection & Creation -->
         <div class="p-3 bg-slate-50 border-2 border-slate-200 rounded-2xl space-y-2">
           <div class="flex items-center justify-between">
-            <label class="font-black text-slate-900">2. Folder Location:</label>
+            <div class="flex items-center space-x-2">
+              <label class="font-black text-slate-900">2. Folder Location:</label>
+              <button type="button" onclick="refreshCourseSubfolders()" title="Sync live folders from Google Drive" class="text-xs text-slate-500 hover:text-slate-900 font-bold flex items-center space-x-1 transition">
+                <span id="folderSyncIcon">🔄</span>
+                <span id="folderSyncIndicator" class="text-[11px] text-slate-500 font-bold"></span>
+              </button>
+            </div>
             <button type="button" onclick="toggleNewSubfolderInput()" id="btnToggleSubfolder" class="text-xs font-black text-botanical-900 hover:underline">
               ➕ Create New Folder
             </button>
@@ -443,9 +449,14 @@
           </select>
 
           <!-- New Subfolder Input (revealed when clicked) -->
-          <div id="newSubfolderContainer" class="hidden space-y-1 pt-1">
-            <input type="text" id="newSubfolderInput" oninput="updateUploadRenamePreview()" placeholder="Enter folder name (e.g. Lectures, Lab Manuals)" class="w-full px-3 py-2 border-2 border-botanical-600 rounded-xl font-bold text-slate-900 focus:outline-none text-xs sm:text-sm bg-white">
-            <p class="text-[11px] font-semibold text-slate-500">Will be created inside this course folder in Google Drive.</p>
+          <div id="newSubfolderContainer" class="hidden space-y-1.5 pt-1">
+            <div class="flex items-center space-x-2">
+              <input type="text" id="newSubfolderInput" oninput="updateUploadRenamePreview()" placeholder="Enter folder name (e.g. Lectures, Lab Manuals)" class="flex-1 px-3 py-2 border-2 border-botanical-600 rounded-xl font-bold text-slate-900 focus:outline-none text-xs sm:text-sm bg-white">
+              <button type="button" onclick="saveNewSubfolderManually()" class="px-3 py-2 bg-botanical-900 hover:bg-botanical-950 text-white rounded-xl text-xs font-black shrink-0 shadow-2xs">
+                Save
+              </button>
+            </div>
+            <p class="text-[11px] font-semibold text-slate-500">Will be created in Google Drive and saved to this dropdown.</p>
           </div>
         </div>
 
@@ -1311,22 +1322,119 @@
       onUploadCourseChange();
     }
 
+    function getCourseSubfolders(code) {
+      const folderObj = driveUploadFolders.find(f => f.code === code);
+      const subList = folderObj ? [...folderObj.subfolders] : [];
+      try {
+        const customMap = JSON.parse(localStorage.getItem('hort_custom_subfolders') || '{}');
+        const customSubs = customMap[code] || [];
+        customSubs.forEach(s => {
+          if (!subList.includes(s)) subList.push(s);
+        });
+      } catch (e) {}
+      return subList;
+    }
+
+    function addCourseSubfolder(code, newSubName) {
+      if (!code || !newSubName || !newSubName.trim()) return;
+      const trimmed = newSubName.trim();
+      try {
+        const customMap = JSON.parse(localStorage.getItem('hort_custom_subfolders') || '{}');
+        if (!customMap[code]) customMap[code] = [];
+        if (!customMap[code].includes(trimmed)) {
+          customMap[code].push(trimmed);
+          localStorage.setItem('hort_custom_subfolders', JSON.stringify(customMap));
+        }
+      } catch (e) {}
+
+      const folderObj = driveUploadFolders.find(f => f.code === code);
+      if (folderObj && !folderObj.subfolders.includes(trimmed)) {
+        folderObj.subfolders.push(trimmed);
+      }
+    }
+
+    function renderSubfolderOptions(code, selectValToPreserve = null) {
+      const subSelect = document.getElementById('uploadSubfolderSelect');
+      if (!subSelect) return;
+      const subList = getCourseSubfolders(code);
+      let opts = `<option value="">(Root folder of this course)</option>`;
+      subList.forEach(sub => {
+        opts += `<option value="${sub}">📁 ${sub}</option>`;
+      });
+      subSelect.innerHTML = opts;
+      if (selectValToPreserve && subList.includes(selectValToPreserve)) {
+        subSelect.value = selectValToPreserve;
+      }
+    }
+
+    async function syncDriveSubfolders(code, folderId) {
+      const webhookUrl = (document.getElementById('uploadWebhookUrlInput')?.value.trim()) || 
+                         localStorage.getItem('hort_drive_upload_webhook');
+      const syncIndicator = document.getElementById('folderSyncIndicator');
+      if (!webhookUrl || !folderId) {
+        if (syncIndicator) syncIndicator.innerText = "";
+        return;
+      }
+
+      if (syncIndicator) syncIndicator.innerText = "Syncing...";
+
+      try {
+        const res = await fetch(`${webhookUrl}?action=getSubfolders&folderId=${encodeURIComponent(folderId)}`);
+        const data = await res.json();
+        if (data && data.status === "success" && Array.isArray(data.subfolders)) {
+          data.subfolders.forEach(sub => {
+            if (sub.name) addCourseSubfolder(code, sub.name);
+          });
+          const currentVal = document.getElementById('uploadSubfolderSelect')?.value;
+          renderSubfolderOptions(code, currentVal);
+          if (syncIndicator) syncIndicator.innerText = `✓ Synced`;
+          setTimeout(() => { if (syncIndicator) syncIndicator.innerText = ""; }, 3000);
+        } else {
+          if (syncIndicator) syncIndicator.innerText = "";
+        }
+      } catch (err) {
+        if (syncIndicator) syncIndicator.innerText = "";
+      }
+    }
+
+    function refreshCourseSubfolders() {
+      const courseSelect = document.getElementById('uploadCourseSelect');
+      if (!courseSelect) return;
+      const code = courseSelect.value;
+      const selectedOption = courseSelect.selectedOptions[0];
+      const folderId = selectedOption ? selectedOption.getAttribute('data-folder-id') : null;
+      syncDriveSubfolders(code, folderId);
+    }
+
+    function saveNewSubfolderManually() {
+      const courseSelect = document.getElementById('uploadCourseSelect');
+      const input = document.getElementById('newSubfolderInput');
+      const name = input?.value.trim();
+      if (!name) {
+        alert("Please enter a folder name.");
+        input?.focus();
+        return;
+      }
+      const code = courseSelect?.value;
+      addCourseSubfolder(code, name);
+      toggleNewSubfolderInput();
+      renderSubfolderOptions(code, name);
+      updateUploadRenamePreview();
+    }
+
     function onUploadCourseChange() {
       const select = document.getElementById('uploadCourseSelect');
       if (!select) return;
       const code = select.value;
-      const folderObj = driveUploadFolders.find(f => f.code === code);
-      const subSelect = document.getElementById('uploadSubfolderSelect');
-      
-      if (subSelect && folderObj) {
-        let opts = `<option value="">(Root folder of this course)</option>`;
-        folderObj.subfolders.forEach(sub => {
-          opts += `<option value="${sub}">📁 ${sub}</option>`;
-        });
-        subSelect.innerHTML = opts;
-      }
+      const selectedOption = select.selectedOptions[0];
+      const folderId = selectedOption ? selectedOption.getAttribute('data-folder-id') : null;
 
+      renderSubfolderOptions(code);
       updateUploadRenamePreview();
+
+      if (folderId) {
+        syncDriveSubfolders(code, folderId);
+      }
     }
 
     function toggleNewSubfolderInput() {
@@ -1610,6 +1718,13 @@
             `;
           }
           statusBox.innerHTML = successHtml;
+
+          // If a new subfolder was created, save and select it in the dropdown
+          if (isNewSub && newSubfolderName) {
+            addCourseSubfolder(courseSelect.value, newSubfolderName);
+            toggleNewSubfolderInput();
+            renderSubfolderOptions(courseSelect.value, newSubfolderName);
+          }
 
           // Clear inputs
           document.getElementById('uploadTitleInput').value = '';

@@ -39,6 +39,13 @@ This Google Apps Script enables uploading study materials, lecture slides, books
 
 ---
 
+## 📁 Live Folder Synchronization
+* When you pick any course in the portal uploader, it automatically queries Google Drive (`doGet`) and displays all existing and newly created folders in the dropdown.
+* You can also click the **🔄** icon next to *Folder Location* to immediately sync all folders from Google Drive.
+* If you ever create a folder in Google Drive manually, clicking **🔄** brings it directly into the portal's dropdown.
+
+---
+
 ## 🔒 Batch Upload PIN: `262020`
 * Only classmates who know the PIN `262020` can upload files.
 * This prevents unauthorized internet traffic or web scrapers from adding spam to your Drive.
