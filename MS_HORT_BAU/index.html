@@ -353,6 +353,117 @@
     </div>
   </footer>
 
+  <!-- MODAL: ADD TO CALENDAR (GOOGLE / APPLE / OUTLOOK / ICS) -->
+  <div id="calendarModal" onclick="if (event.target === this) toggleCalendarModal(false)" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 sm:p-6 border-2 border-slate-300 shadow-2xl space-y-4 my-auto max-h-[95vh] overflow-y-auto custom-scroll">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-3 border-b-2 border-slate-100">
+        <div class="flex items-center space-x-2.5">
+          <span class="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-xl shrink-0 shadow-xs">📅</span>
+          <div>
+            <h3 class="font-black text-lg sm:text-xl text-slate-950">Add to Calendar</h3>
+            <p class="text-xs font-bold text-slate-600">Choose your calendar service</p>
+          </div>
+        </div>
+        <button type="button" onclick="toggleCalendarModal(false)" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 text-xl font-black flex items-center justify-center">&times;</button>
+      </div>
+
+      <!-- Event Summary Card -->
+      <div id="calEventSummary" class="bg-amber-50/80 rounded-2xl p-3.5 border-2 border-amber-200 space-y-1.5">
+        <!-- Rendered dynamically by openCalendarModal -->
+      </div>
+
+      <!-- Calendar Sync Options -->
+      <div class="space-y-2.5">
+        <!-- 1. Google Calendar (1-Click Sync) -->
+        <button type="button" onclick="syncToCalendar('google')" class="w-full flex items-center justify-between p-3.5 rounded-2xl border-2 border-blue-200 bg-blue-50/70 hover:bg-blue-100 text-slate-950 transition text-left group">
+          <div class="flex items-center space-x-3">
+            <span class="w-10 h-10 rounded-xl bg-white border border-blue-200 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition">
+              <svg class="w-5 h-5" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M19.5 3h-15C3.12 3 2 4.12 2 5.5v13C2 19.88 3.12 21 4.5 21h15c1.38 0 2.5-1.12 2.5-2.5v-13C22 4.12 20.88 3 19.5 3z"/>
+                <path fill="#FFFFFF" d="M7 17v-4h3v4H7zm4 0v-4h3v4h-3zm4 0v-4h3v4h-3zM7 11V7h3v4H7zm4 0V7h3v4h-3zm4 0V7h3v4h-3z"/>
+              </svg>
+            </span>
+            <div>
+              <p class="text-sm font-black text-blue-950 flex items-center gap-1.5">
+                <span>Google Calendar</span>
+                <span class="text-[10px] uppercase font-black px-1.5 py-0.5 rounded-md bg-blue-600 text-white tracking-wide">1-Click Sync</span>
+              </p>
+              <p class="text-xs font-semibold text-blue-800/80">Opens Google Calendar app / web directly</p>
+            </div>
+          </div>
+          <span class="text-blue-700 text-base font-black group-hover:translate-x-1 transition">↗</span>
+        </button>
+
+        <!-- 2. Apple Calendar (iOS / iPadOS / macOS) -->
+        <button type="button" onclick="syncToCalendar('apple')" class="w-full flex items-center justify-between p-3.5 rounded-2xl border-2 border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-950 transition text-left group">
+          <div class="flex items-center space-x-3">
+            <span class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-xl shrink-0 shadow-2xs group-hover:scale-105 transition">
+              🍎
+            </span>
+            <div>
+              <p class="text-sm font-black text-slate-950 flex items-center gap-1.5">
+                <span>Apple Calendar</span>
+                <span class="text-[10px] uppercase font-black px-1.5 py-0.5 rounded-md bg-slate-800 text-white tracking-wide">iPhone / Mac</span>
+              </p>
+              <p class="text-xs font-semibold text-slate-600">Downloads .ics event ready to import to Apple Calendar</p>
+            </div>
+          </div>
+          <span class="text-slate-700 text-base font-black group-hover:translate-x-1 transition">➔</span>
+        </button>
+
+        <!-- 3. Microsoft Outlook Calendar -->
+        <button type="button" onclick="syncToCalendar('outlook')" class="w-full flex items-center justify-between p-3.5 rounded-2xl border-2 border-sky-200 bg-sky-50/60 hover:bg-sky-100 text-slate-950 transition text-left group">
+          <div class="flex items-center space-x-3">
+            <span class="w-10 h-10 rounded-xl bg-white border border-sky-200 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition">
+              <svg class="w-5 h-5" viewBox="0 0 24 24">
+                <path fill="#0078D4" d="M22 6.5l-10-4-10 4 10 4 10-4zm-10 6l-10-4v7.5l10 4 10-4V8.5l-10 4z"/>
+              </svg>
+            </span>
+            <div>
+              <p class="text-sm font-black text-sky-950 flex items-center gap-1.5">
+                <span>Outlook Calendar</span>
+                <span class="text-[10px] uppercase font-black px-1.5 py-0.5 rounded-md bg-sky-700 text-white tracking-wide">Web & App</span>
+              </p>
+              <p class="text-xs font-semibold text-sky-800/80">Opens Outlook web event creator</p>
+            </div>
+          </div>
+          <span class="text-sky-700 text-base font-black group-hover:translate-x-1 transition">↗</span>
+        </button>
+
+        <!-- 4. Download .ICS File -->
+        <button type="button" onclick="syncToCalendar('ics')" class="w-full flex items-center justify-between p-3.5 rounded-2xl border-2 border-amber-200 bg-amber-50/50 hover:bg-amber-100/60 text-slate-950 transition text-left group">
+          <div class="flex items-center space-x-3">
+            <span class="w-10 h-10 rounded-xl bg-white border border-amber-200 flex items-center justify-center text-lg shrink-0 shadow-2xs group-hover:scale-105 transition">
+              📥
+            </span>
+            <div>
+              <p class="text-sm font-black text-amber-950">Download .ICS File</p>
+              <p class="text-xs font-semibold text-amber-800/80">Standard iCal file for Thunderbird or offline calendars</p>
+            </div>
+          </div>
+          <span class="text-amber-800 text-base font-black group-hover:translate-x-1 transition">⬇</span>
+        </button>
+      </div>
+
+      <!-- Quick Tips Box -->
+      <div id="calTipBox" class="bg-slate-50 p-3 rounded-2xl border border-slate-200 text-xs text-slate-600 space-y-1">
+        <p class="font-black text-slate-800 flex items-center gap-1.5">
+          <span>💡</span> <span>Quick Guide for Mobile Phones:</span>
+        </p>
+        <p class="text-[11px] leading-relaxed">
+          • <strong>Google Calendar:</strong> Opens the event instantly on Android or iPhone — just tap <em>"Save"</em>.<br>
+          • <strong>iPhone (Apple Calendar):</strong> Tap <em>Apple Calendar</em>. When Safari asks, tap <em>Download</em>, then tap the blue download icon <strong>⬇</strong> in Safari's address bar and tap the file to add directly to Apple Calendar.
+        </p>
+      </div>
+
+      <div class="pt-2 border-t border-slate-200 flex justify-end">
+        <button type="button" onclick="toggleCalendarModal(false)" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-950 text-white rounded-xl text-sm font-extrabold">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: FACULTY MEMBERS DIRECTORY -->
   <div id="facultyModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 border-2 border-slate-300 shadow-2xl space-y-4">
@@ -1097,9 +1208,9 @@
                 </span>
               </div>
 
-              <button onclick="downloadIcs('${item.id}')" class="px-4 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 border-2 border-amber-300 hover:border-amber-400 text-xs sm:text-sm font-black flex items-center justify-center space-x-1.5 transition shadow-2xs shrink-0">
+              <button onclick="openCalendarModal('${item.id}')" class="px-4 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 border-2 border-amber-300 hover:border-amber-400 text-xs sm:text-sm font-black flex items-center justify-center space-x-1.5 transition shadow-2xs shrink-0">
                 <span>📅</span>
-                <span>Add Reminder to Calendar</span>
+                <span>Add to Calendar</span>
               </button>
             </div>
 
@@ -1215,31 +1326,121 @@
       `).join('');
     }
 
-    // 1-Click .ICS Calendar Generator
-    function downloadIcs(id) {
+    // Calendar Integration (Google Calendar, Apple Calendar, Outlook, .ICS)
+    let activeCalendarItem = null;
+
+    function openCalendarModal(id) {
       const item = DEADLINES.find(d => d.id === id);
+      if (!item) return;
+      activeCalendarItem = item;
+
+      const dateObj = parseDeadlineDate(item.deadline);
+      const formattedDate = dateObj.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+      const formattedTime = dateObj.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      const summaryEl = document.getElementById('calEventSummary');
+      if (summaryEl) {
+        summaryEl.innerHTML = `
+          <div class="flex items-center justify-between gap-2">
+            <span class="px-2.5 py-0.5 rounded-lg bg-amber-200/80 border border-amber-300 font-black text-xs text-amber-950 font-mono tracking-wide">${item.course_code}</span>
+            <span class="text-xs font-bold text-slate-600">${item.category || 'Assignment'}</span>
+          </div>
+          <p class="font-black text-sm sm:text-base text-slate-950">${item.title}</p>
+          <div class="text-xs font-bold text-slate-700 flex flex-wrap items-center gap-x-3 gap-y-1 pt-1.5 border-t border-amber-200/70">
+            <span class="text-rose-700 font-black">⏰ DUE: ${formattedDate} at ${formattedTime}</span>
+            <span>👨‍🏫 ${item.submission_to || 'Faculty'}</span>
+          </div>
+        `;
+      }
+
+      // Reset tip box
+      const tipBox = document.getElementById('calTipBox');
+      if (tipBox) {
+        tipBox.innerHTML = `
+          <p class="font-black text-slate-800 flex items-center gap-1.5">
+            <span>💡</span> <span>Quick Guide for Mobile Phones:</span>
+          </p>
+          <p class="text-[11px] leading-relaxed">
+            • <strong>Google Calendar:</strong> Opens the event instantly on Android or iPhone — just tap <em>"Save"</em>.<br>
+            • <strong>iPhone (Apple Calendar):</strong> Tap <em>Apple Calendar</em>. When Safari asks, tap <em>Download</em>, then tap the blue download icon <strong>⬇</strong> in Safari's address bar and tap the file to add directly to Apple Calendar.
+          </p>
+        `;
+      }
+
+      toggleCalendarModal(true);
+    }
+
+    function toggleCalendarModal(show) {
+      const modal = document.getElementById('calendarModal');
+      if (!modal) return;
+      if (show === undefined) {
+        modal.classList.toggle('hidden');
+      } else if (show) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function syncToCalendar(provider) {
+      const item = activeCalendarItem;
       if (!item) return;
 
       const dateObj = parseDeadlineDate(item.deadline);
-      const startStr = dateObj.toISOString().replace(/-|:|\.\d+/g, "");
-      const endStr = new Date(dateObj.getTime() + 60 * 60 * 1000).toISOString().replace(/-|:|\.\d+/g, "");
+      // For deadline events, schedule 1 hour ending at due time
+      const startObj = new Date(dateObj.getTime() - 60 * 60 * 1000);
+      const startIso = startObj.toISOString().replace(/-|:|\.\d+/g, "");
+      const endIso = dateObj.toISOString().replace(/-|:|\.\d+/g, "");
 
+      const title = `[DEADLINE] ${item.course_code}: ${item.title}`;
+      const plainDesc = `Course: ${item.course_name || item.course_code}\nDue Date: ${dateObj.toLocaleString()}\nSubmission to: ${item.submission_to}\nInstructions: ${item.instructions || 'Follow official instructions.'}\n\nBAU MS in Horticulture Academic Portal: https://ms-hort-bau.vercel.app`;
+      const icsDesc = `Course: ${item.course_name || item.course_code}\\nDue Date: ${dateObj.toLocaleString()}\\nSubmission to: ${item.submission_to}\\nInstructions: ${item.instructions || 'Follow official instructions.'}\\n\\nBAU MS in Horticulture Academic Portal: https://ms-hort-bau.vercel.app`;
+      const location = `Department of Horticulture, BAU`;
+
+      if (provider === 'google') {
+        const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startIso}/${endIso}&details=${encodeURIComponent(plainDesc)}&location=${encodeURIComponent(location)}`;
+        window.open(googleUrl, '_blank');
+      } else if (provider === 'outlook') {
+        const outlookUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(title)}&startdt=${encodeURIComponent(startObj.toISOString())}&enddt=${encodeURIComponent(dateObj.toISOString())}&body=${encodeURIComponent(plainDesc)}&location=${encodeURIComponent(location)}`;
+        window.open(outlookUrl, '_blank');
+      } else if (provider === 'apple' || provider === 'ics') {
+        downloadIcsFile(item, startIso, endIso, title, icsDesc, location, provider);
+      }
+    }
+
+    function downloadIcsFile(item, startIso, endIso, title, description, location, provider) {
       const ics = [
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
         "PRODID:-//BAU Horticulture//MS Academic Portal//EN",
+        "CALSCALE:GREGORIAN",
+        "METHOD:PUBLISH",
         "BEGIN:VEVENT",
-        `UID:${item.id}@horticulture.bau.edu.bd`,
-        `DTSTAMP:${startStr}`,
-        `DTSTART:${startStr}`,
-        `DTEND:${endStr}`,
-        `SUMMARY:[DEADLINE] ${item.course_code}: ${item.title}`,
-        `DESCRIPTION:Submission to: ${item.submission_to}\\n\\n${item.instructions || ''}`,
+        `UID:${item.id || Date.now()}@horticulture.bau.edu.bd`,
+        `DTSTAMP:${startIso}`,
+        `DTSTART:${startIso}`,
+        `DTEND:${endIso}`,
+        `SUMMARY:${title.replace(/\n/g, ' ')}`,
+        `DESCRIPTION:${description}`,
+        `LOCATION:${location}`,
         "STATUS:CONFIRMED",
         "BEGIN:VALARM",
         "TRIGGER:-P1D",
         "ACTION:DISPLAY",
         "DESCRIPTION:Reminder: Assignment due tomorrow!",
+        "END:VALARM",
+        "BEGIN:VALARM",
+        "TRIGGER:-PT2H",
+        "ACTION:DISPLAY",
+        "DESCRIPTION:Reminder: Assignment due in 2 hours!",
         "END:VALARM",
         "END:VEVENT",
         "END:VCALENDAR"
@@ -1249,11 +1450,32 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${item.course_code}_deadline.ics`;
+      a.download = `${(item.course_code || 'Hort').replace(/[^a-zA-Z0-9]/g, '_')}_deadline.ics`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+
+      const tipBox = document.getElementById('calTipBox');
+      if (tipBox) {
+        tipBox.innerHTML = `
+          <div class="p-2.5 rounded-xl bg-emerald-50 border-2 border-emerald-300 text-emerald-950 font-bold space-y-1">
+            <p class="font-black text-emerald-900 flex items-center gap-1.5">
+              <span>✅</span> <span>File Downloaded!</span>
+            </p>
+            <p class="text-[11px] leading-relaxed text-emerald-900">
+              ${provider === 'apple' 
+                ? '<strong>On iPhone/iPad:</strong> Tap the blue <strong>⬇</strong> download icon in Safari\'s address bar (or check Downloads), then tap the file to open Apple Calendar and tap <em>"Add Event"</em>.' 
+                : 'Open the downloaded <code>.ics</code> file with your calendar app (Outlook, Thunderbird, etc.) to import.'}
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    // Backwards compatibility alias
+    function downloadIcs(id) {
+      openCalendarModal(id);
     }
 
     // Modals
