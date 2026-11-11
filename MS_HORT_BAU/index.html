@@ -56,6 +56,10 @@
       box-shadow: 0 4px 12px rgba(15, 61, 33, 0.25);
     }
 
+    .section-card {
+      transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
     .custom-scroll::-webkit-scrollbar {
       height: 6px;
       width: 6px;
@@ -148,18 +152,18 @@
 
     <!-- Dynamic Sub-Header Scrollspy Navigation Bar (Fits 100% of screen width with moving indicator bar) -->
     <nav class="border-t border-slate-200 px-3 py-2 bg-slate-50/95 backdrop-blur-md">
-      <div class="max-w-4xl mx-auto relative bg-slate-200/80 p-1 rounded-2xl flex items-center justify-between text-xs font-black shadow-inner">
+      <div class="max-w-4xl mx-auto relative bg-slate-200/90 p-1 rounded-2xl flex items-center justify-between text-xs sm:text-sm font-black shadow-inner">
         
-        <!-- Sliding Dynamic Indicator Bar -->
-        <div id="scrollspyIndicator" class="absolute top-1 bottom-1 rounded-xl transition-all duration-300 ease-out shadow-xs pointer-events-none bg-white border border-slate-300"></div>
+        <!-- Sliding Dynamic Indicator Bar (Dynamically changes position & accent color) -->
+        <div id="scrollspyIndicator" class="absolute top-1 bottom-1 rounded-xl transition-all duration-300 ease-out shadow-md pointer-events-none bg-emerald-700"></div>
 
-        <button onclick="scrollToSection('routine-section')" id="navTab-routine" class="relative z-10 flex-1 py-1.5 px-1 text-center font-black truncate transition-colors text-slate-950">
+        <button onclick="scrollToSection('routine-section')" id="navTab-routine" class="relative z-10 flex-1 py-1.5 px-1 text-center font-black truncate transition-all duration-200 text-white">
           Routine 📅
         </button>
-        <button onclick="scrollToSection('deadlines-section')" id="navTab-deadlines" class="relative z-10 flex-1 py-1.5 px-1 text-center font-black truncate transition-colors text-slate-500 hover:text-slate-900">
+        <button onclick="scrollToSection('deadlines-section')" id="navTab-deadlines" class="relative z-10 flex-1 py-1.5 px-1 text-center font-black truncate transition-all duration-200 text-slate-600 hover:text-slate-950">
           Deadlines 🚨
         </button>
-        <button onclick="scrollToSection('vault-section')" id="navTab-vault" class="relative z-10 flex-1 py-1.5 px-1 text-center font-black truncate transition-colors text-slate-500 hover:text-slate-900">
+        <button onclick="scrollToSection('vault-section')" id="navTab-vault" class="relative z-10 flex-1 py-1.5 px-1 text-center font-black truncate transition-all duration-200 text-slate-600 hover:text-slate-950">
           Materials 📚
         </button>
       </div>
@@ -198,11 +202,14 @@
     </div>
 
     <!-- SECTION 1: WEEKLY CLASS ROUTINE -->
-    <section id="routine-section" class="bg-white border-2 border-slate-300/80 rounded-3xl p-4 sm:p-6 shadow-sm space-y-5">
+    <section id="routine-section" class="section-card bg-white border-2 border-slate-300 rounded-3xl p-4 sm:p-6 shadow-sm space-y-5 transition-all duration-300">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b-2 border-slate-100">
         <div>
-          <h3 class="text-xl sm:text-2xl font-black text-slate-950">Weekly Class Routine</h3>
-          <p class="text-xs sm:text-sm font-bold text-slate-600">Select any day to preview timetable</p>
+          <div class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-950 border border-emerald-300 text-xs font-black uppercase tracking-wide mb-1.5 shadow-2xs">
+            <span>📅 Semester Timetable & Schedule</span>
+          </div>
+          <h3 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-emerald-950">Weekly Class Routine</h3>
+          <p class="text-xs sm:text-sm font-semibold text-emerald-900/80 mt-0.5">Select any day to preview timetable & lecture locations</p>
         </div>
 
         <!-- View Switcher -->
@@ -276,14 +283,14 @@
     </section>
 
     <!-- SECTION 2: ASSIGNMENTS & DEADLINES (DISTINCT URGENCY & ACTION THEME) -->
-    <section id="deadlines-section" class="bg-gradient-to-br from-rose-50/60 via-white to-amber-50/30 border-2 border-rose-300 rounded-3xl p-4 sm:p-6 shadow-sm space-y-4">
+    <section id="deadlines-section" class="section-card bg-gradient-to-br from-rose-50/60 via-white to-amber-50/30 border-2 border-rose-300 rounded-3xl p-4 sm:p-6 shadow-sm space-y-4 transition-all duration-300">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b-2 border-rose-100">
         <div>
-          <div class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-900 border border-rose-300 text-xs font-black uppercase tracking-wide mb-1.5 shadow-2xs">
+          <div class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-950 border border-rose-300 text-xs font-black uppercase tracking-wide mb-1.5 shadow-2xs">
             <span>🚨 Submissions & Tasks</span>
           </div>
-          <h3 class="text-xl sm:text-2xl font-black text-rose-950">Assignments & Deadlines</h3>
-          <p class="text-xs sm:text-sm font-bold text-rose-800/80">Track due dates, faculty recipients, and sync 1-click calendar alerts</p>
+          <h3 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-rose-950">Assignments & Deadlines</h3>
+          <p class="text-xs sm:text-sm font-semibold text-rose-900/80 mt-0.5">Track due dates, faculty recipients, and sync 1-click calendar alerts</p>
         </div>
 
         <!-- Filter Chips -->
@@ -300,14 +307,14 @@
     </section>
 
     <!-- SECTION 3: COURSE MATERIALS VAULT & BOOKS (DISTINCT ACADEMIC LIBRARY THEME) -->
-    <section id="vault-section" class="bg-gradient-to-br from-sky-50/70 via-white to-indigo-50/30 border-2 border-sky-300 rounded-3xl p-4 sm:p-6 shadow-sm space-y-4">
+    <section id="vault-section" class="section-card bg-gradient-to-br from-sky-50/70 via-white to-indigo-50/30 border-2 border-sky-300 rounded-3xl p-4 sm:p-6 shadow-sm space-y-4 transition-all duration-300">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b-2 border-sky-100">
         <div>
           <div class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-950 border border-sky-300 text-xs font-black uppercase tracking-wide mb-1.5 shadow-2xs">
             <span>📚 Digital Library & Question Bank</span>
           </div>
-          <h3 class="text-xl sm:text-2xl font-black text-slate-950">Materials Vault & Books</h3>
-          <p class="text-xs sm:text-sm font-bold text-sky-900/80">Direct Google Drive folders for syllabus, lectures, slides & past exams</p>
+          <h3 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-sky-950">Materials Vault & Books</h3>
+          <p class="text-xs sm:text-sm font-semibold text-sky-900/80 mt-0.5">Direct Google Drive folders for syllabus, lectures, slides & past exams</p>
         </div>
         <div class="flex items-center space-x-2 self-start sm:self-auto flex-wrap gap-2">
           <button onclick="toggleUploadModal()" class="px-3.5 py-2 bg-botanical-900 hover:bg-botanical-950 text-white rounded-xl text-xs sm:text-sm font-black transition flex items-center space-x-2 shadow-sm">
@@ -1792,13 +1799,31 @@
 
     function initScrollspy() {
       const sections = [
-        { id: 'routine-section', tabId: 'navTab-routine' },
-        { id: 'deadlines-section', tabId: 'navTab-deadlines' },
-        { id: 'vault-section', tabId: 'navTab-vault' }
+        { 
+          id: 'routine-section', 
+          tabId: 'navTab-routine',
+          indicatorClass: 'bg-emerald-700 shadow-emerald-900/25',
+          borderActive: '#10b981',
+          shadowActive: '0 12px 28px -6px rgba(16, 185, 129, 0.16), 0 0 0 4px rgba(16, 185, 129, 0.18)'
+        },
+        { 
+          id: 'deadlines-section', 
+          tabId: 'navTab-deadlines',
+          indicatorClass: 'bg-rose-600 shadow-rose-900/25',
+          borderActive: '#f43f5e',
+          shadowActive: '0 12px 28px -6px rgba(244, 63, 94, 0.18), 0 0 0 4px rgba(244, 63, 94, 0.18)'
+        },
+        { 
+          id: 'vault-section', 
+          tabId: 'navTab-vault',
+          indicatorClass: 'bg-sky-600 shadow-sky-900/25',
+          borderActive: '#0284c7',
+          shadowActive: '0 12px 28px -6px rgba(2, 132, 199, 0.18), 0 0 0 4px rgba(2, 132, 199, 0.18)'
+        }
       ];
 
       function updateActive() {
-        const scrollPos = window.pageYOffset + 180;
+        const scrollPos = window.pageYOffset + 200;
         let currentSec = sections[0].id;
 
         for (let i = 0; i < sections.length; i++) {
@@ -1810,30 +1835,38 @@
 
         const indicator = document.getElementById('scrollspyIndicator');
         const activeIdx = sections.findIndex(s => s.id === currentSec);
+        const activeConfig = sections[activeIdx] || sections[0];
 
-        sections.forEach((s, idx) => {
+        // 1. Update Navigation Tabs & Section Cards Dynamic Shift
+        sections.forEach((s) => {
           const tab = document.getElementById(s.tabId);
-          if (!tab) return;
+          const secEl = document.getElementById(s.id);
 
           if (s.id === currentSec) {
-            tab.className = "relative z-10 flex-1 py-1.5 px-1 text-center font-black truncate transition-colors text-slate-950";
+            if (tab) {
+              tab.className = "relative z-10 flex-1 py-1.5 px-1 text-center font-black truncate transition-all duration-200 text-white scale-[1.02]";
+            }
+            if (secEl) {
+              secEl.style.borderColor = s.borderActive;
+              secEl.style.boxShadow = s.shadowActive;
+            }
           } else {
-            tab.className = "relative z-10 flex-1 py-1.5 px-1 text-center font-black truncate transition-colors text-slate-500 hover:text-slate-800";
+            if (tab) {
+              tab.className = "relative z-10 flex-1 py-1.5 px-1 text-center font-bold truncate transition-all duration-200 text-slate-600 hover:text-slate-950";
+            }
+            if (secEl) {
+              secEl.style.borderColor = '';
+              secEl.style.boxShadow = '';
+            }
           }
         });
 
+        // 2. Slide and dynamically recolor the indicator bar
         if (indicator && activeIdx !== -1) {
           const widthPct = 100 / sections.length;
           indicator.style.width = `calc(${widthPct}% - 4px)`;
           indicator.style.left = `calc(${activeIdx * widthPct}% + 2px)`;
-
-          if (currentSec === 'deadlines-section') {
-            indicator.className = "absolute top-1 bottom-1 rounded-xl transition-all duration-300 ease-out shadow-xs pointer-events-none bg-rose-100 border border-rose-300";
-          } else if (currentSec === 'vault-section') {
-            indicator.className = "absolute top-1 bottom-1 rounded-xl transition-all duration-300 ease-out shadow-xs pointer-events-none bg-sky-100 border border-sky-300";
-          } else {
-            indicator.className = "absolute top-1 bottom-1 rounded-xl transition-all duration-300 ease-out shadow-xs pointer-events-none bg-white border border-slate-300";
-          }
+          indicator.className = `absolute top-1 bottom-1 rounded-xl transition-all duration-300 ease-out shadow-md pointer-events-none ${activeConfig.indicatorClass}`;
         }
       }
 
