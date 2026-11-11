@@ -484,22 +484,31 @@
           </div>
         </div>
 
-        <!-- Webhook & Batch Passcode Settings (Collapsible) -->
+        <!-- Step 6: Batch PIN Verification -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="font-black text-slate-900 flex items-center space-x-1.5">
+              <span>🔒 6. Batch PIN:</span>
+              <span class="text-[11px] font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-full">PIN: 262020</span>
+            </label>
+            <span class="text-[11px] font-semibold text-slate-500">Required to upload</span>
+          </div>
+          <input type="text" id="uploadPasscodeInput" value="262020" placeholder="Enter Batch PIN" maxlength="10" class="w-full px-3 py-2 border-2 border-slate-300 rounded-xl font-mono font-bold text-slate-900 focus:outline-none focus:border-botanical-800 bg-white tracking-widest text-sm" required>
+          <p class="text-[11px] font-semibold text-slate-500 mt-1">Shared PIN for BAU MS Horticulture batchmates to upload study materials.</p>
+        </div>
+
+        <!-- Webhook Connection Settings (Collapsible) -->
         <div class="pt-1">
           <details class="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
             <summary class="font-black text-slate-800 cursor-pointer hover:text-slate-950 flex items-center justify-between">
               <span>⚙️ Webhook Connection Settings</span>
-              <span class="text-[11px] font-normal text-slate-500">Tap to expand</span>
+              <span class="text-[11px] font-normal text-slate-500">Tap to expand / edit URL</span>
             </summary>
             <div class="mt-2.5 space-y-2 pt-2 border-t border-slate-200">
               <div>
                 <label class="block font-bold text-slate-800 mb-0.5">Google Apps Script Webhook URL:</label>
                 <input type="text" id="uploadWebhookUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-2.5 py-1.5 font-mono text-xs border border-slate-300 rounded-lg bg-white">
                 <p class="text-[11px] text-slate-500 mt-1">See <a href="https://github.com/fn122-prog/ms-hort-bau/tree/main/MS_HORT_BAU/google_apps_script" target="_blank" class="underline font-bold text-botanical-900">1-Minute Setup Guide</a> in repository to deploy your free Google webhook.</p>
-              </div>
-              <div>
-                <label class="block font-bold text-slate-800 mb-0.5">Batch Passcode (Optional):</label>
-                <input type="text" id="uploadPasscodeInput" value="bauhort2026" class="w-full px-2.5 py-1.5 font-mono text-xs border border-slate-300 rounded-lg bg-white">
               </div>
             </div>
           </details>
@@ -1284,6 +1293,11 @@
         webhookInput.value = localStorage.getItem('hort_drive_upload_webhook') || '';
       }
 
+      const pinInput = document.getElementById('uploadPasscodeInput');
+      if (pinInput && !pinInput.value) {
+        pinInput.value = localStorage.getItem('hort_batch_pin') || '262020';
+      }
+
       onUploadCourseChange();
     }
 
@@ -1416,7 +1430,14 @@
       const newSubfolderName = document.getElementById('newSubfolderInput')?.value.trim() || '';
       const selectedSubfolder = document.getElementById('uploadSubfolderSelect')?.value || '';
       const finalFileName = computeRenamedFileName();
-      const passcode = document.getElementById('uploadPasscodeInput')?.value.trim() || 'bauhort2026';
+      const passcode = document.getElementById('uploadPasscodeInput')?.value.trim() || '';
+
+      if (!passcode) {
+        alert("Please enter the Batch PIN (262020) to upload.");
+        document.getElementById('uploadPasscodeInput')?.focus();
+        return;
+      }
+      localStorage.setItem('hort_batch_pin', passcode);
 
       submitBtn.disabled = true;
       submitBtn.classList.add('opacity-70', 'cursor-not-allowed');

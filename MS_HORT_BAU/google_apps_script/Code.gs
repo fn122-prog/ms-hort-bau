@@ -20,8 +20,8 @@
  * ==============================================================================
  */
 
-// Optional Passcode to prevent unauthorized uploads (change as desired)
-const SECRET_PASSCODE = "bauhort2026";
+// Security PIN to prevent unauthorized uploads (Set to Batch PIN: 262020)
+const SECRET_PASSCODE = "262020";
 
 // Default Master Drive Folder ID (BAU_MS_Horticulture_Hub)
 const DEFAULT_ROOT_FOLDER_ID = "1VonkTL2XPoKiQ5Z4_qZnUFbNMuunMhbW";
@@ -34,9 +34,12 @@ function doPost(e) {
 
     const data = JSON.parse(e.postData.contents);
 
-    // 1. Security passcode check (if enabled)
-    if (SECRET_PASSCODE && data.passcode && data.passcode !== SECRET_PASSCODE) {
-      return responseJson({ status: "error", message: "Invalid batch passcode. Access denied." });
+    // 1. Security passcode check (Batch PIN)
+    if (SECRET_PASSCODE && (!data.passcode || data.passcode.toString().trim() !== SECRET_PASSCODE)) {
+      return responseJson({ 
+        status: "error", 
+        message: "Invalid batch PIN. Please enter the correct Batch PIN (262020) to upload." 
+      });
     }
 
     // 2. Resolve destination parent folder
