@@ -71,32 +71,32 @@
 
   <!-- TOP HEADER (App-like sticky bar) -->
   <header class="border-b-2 border-slate-200/80 bg-white/95 backdrop-blur-md sticky top-0 z-40 shadow-xs">
-    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="max-w-4xl mx-auto px-3.5 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2">
       
       <!-- Brand -->
-      <div class="flex items-center space-x-3">
-        <div class="w-11 h-11 rounded-2xl bg-botanical-900 text-white flex items-center justify-center text-2xl shadow-sm shrink-0">
+      <div class="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-botanical-900 text-white flex items-center justify-center text-xl sm:text-2xl shadow-sm shrink-0">
           🌿
         </div>
-        <div>
-          <div class="flex items-center space-x-2">
-            <h1 class="font-serif text-xl sm:text-2xl font-black text-slate-950 tracking-tight leading-none">MS Horticulture</h1>
-            <span class="px-2 py-0.5 rounded-md text-xs font-black bg-botanical-100 text-botanical-900 border border-botanical-300">BAU</span>
+        <div class="min-w-0">
+          <div class="flex items-center space-x-1.5 sm:space-x-2">
+            <h1 class="font-serif text-lg sm:text-2xl font-black text-slate-950 tracking-tight leading-none truncate">MS Horticulture</h1>
+            <span class="px-1.5 py-0.5 rounded text-[10px] sm:text-xs font-black bg-botanical-100 text-botanical-900 border border-botanical-300 shrink-0">BAU</span>
           </div>
-          <p class="text-xs sm:text-sm font-bold text-slate-700 mt-0.5">Bangladesh Agricultural University</p>
+          <p class="text-[11px] sm:text-sm font-bold text-slate-700 mt-0.5 truncate">Bangladesh Agricultural University</p>
         </div>
       </div>
 
-      <!-- Quick Action Buttons -->
-      <div class="flex items-center space-x-2">
+      <!-- Desktop Quick Action Buttons (Hidden on mobile) -->
+      <div class="hidden sm:flex items-center space-x-2 shrink-0">
         <button onclick="toggleUploadModal()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 border-2 border-slate-300 text-xs sm:text-sm font-extrabold transition flex items-center space-x-1.5 shadow-2xs">
           <span>📤</span>
-          <span class="hidden sm:inline">Upload</span>
+          <span>Upload</span>
         </button>
 
         <button onclick="toggleFacultyModal()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 border-2 border-slate-300 text-xs sm:text-sm font-extrabold transition flex items-center space-x-1.5 shadow-2xs">
           <span>👨‍🏫</span>
-          <span class="hidden sm:inline">Faculty</span>
+          <span>Faculty</span>
         </button>
 
         <a href="https://drive.google.com/drive/folders/1VonkTL2XPoKiQ5Z4_qZnUFbNMuunMhbW" target="_blank" rel="noopener" class="px-3.5 py-2 rounded-xl bg-botanical-900 hover:bg-botanical-950 text-white text-xs sm:text-sm font-extrabold transition flex items-center space-x-2 shadow-sm">
@@ -108,13 +108,59 @@
           <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
         </button>
       </div>
+
+      <!-- Mobile Action Bar: Quick Upload + Hamburger Menu (Fits completely within screen) -->
+      <div class="flex items-center space-x-1.5 sm:hidden shrink-0">
+        <button onclick="toggleUploadModal()" class="px-2.5 py-1.5 rounded-xl bg-botanical-900 text-white text-xs font-black shadow-xs flex items-center space-x-1" title="Upload Material">
+          <span>📤</span>
+          <span>Upload</span>
+        </button>
+        <button onclick="toggleMobileMenu()" id="btnMobileMenu" aria-label="Toggle Menu" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 border-2 border-slate-300 text-slate-900 transition flex items-center justify-center">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+
     </div>
 
-    <!-- Mobile Navigation Anchor Bar -->
-    <nav class="flex sm:hidden overflow-x-auto custom-scroll border-t border-slate-200 px-4 py-2 bg-slate-50 space-x-2 text-xs font-black">
-      <a href="#routine-section" class="px-3 py-1.5 rounded-lg bg-white border-2 border-slate-300 text-slate-900 shrink-0 shadow-2xs">Weekly Routine</a>
-      <a href="#deadlines-section" class="px-3 py-1.5 rounded-lg bg-rose-50 border-2 border-rose-300 text-rose-950 shrink-0 shadow-2xs">Deadlines 🚨</a>
-      <a href="#vault-section" class="px-3 py-1.5 rounded-lg bg-sky-50 border-2 border-sky-300 text-sky-950 shrink-0 shadow-2xs">Books & Materials 📚</a>
+    <!-- Mobile Dropdown Menu Drawer -->
+    <div id="mobileMenuDropdown" class="hidden sm:hidden border-t-2 border-slate-100 bg-white/98 backdrop-blur-md px-3.5 py-3 space-y-2 shadow-lg">
+      <div class="grid grid-cols-2 gap-2 text-xs font-black">
+        <button onclick="toggleUploadModal(); toggleMobileMenu();" class="p-2.5 rounded-xl bg-botanical-50 border-2 border-botanical-200 text-botanical-950 flex items-center space-x-2">
+          <span class="text-base">📤</span>
+          <span>Upload File</span>
+        </button>
+        <button onclick="toggleFacultyModal(); toggleMobileMenu();" class="p-2.5 rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 flex items-center space-x-2">
+          <span class="text-base">👨‍🏫</span>
+          <span>Faculty List</span>
+        </button>
+        <a href="https://drive.google.com/drive/folders/1VonkTL2XPoKiQ5Z4_qZnUFbNMuunMhbW" target="_blank" rel="noopener" class="p-2.5 rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 flex items-center space-x-2">
+          <svg class="w-4 h-4 shrink-0 inline-block" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg"><path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/><path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44c-.8 1.4-1.2 2.95-1.2 4.5h27.5z" fill="#00ac47"/><path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/><path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/><path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/><path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/></svg>
+          <span>Google Drive</span>
+        </a>
+        <button onclick="toggleSheetModal(); toggleMobileMenu();" class="p-2.5 rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 flex items-center space-x-2">
+          <span class="text-base">⚙️</span>
+          <span>Sheet Backend</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Dynamic Sub-Header Scrollspy Navigation Bar (Fits 100% of screen width with moving indicator bar) -->
+    <nav class="border-t border-slate-200 px-3 py-2 bg-slate-50/95 backdrop-blur-md">
+      <div class="max-w-4xl mx-auto relative bg-slate-200/80 p-1 rounded-2xl flex items-center justify-between text-xs font-black shadow-inner">
+        
+        <!-- Sliding Dynamic Indicator Bar -->
+        <div id="scrollspyIndicator" class="absolute top-1 bottom-1 rounded-xl transition-all duration-300 ease-out shadow-xs pointer-events-none bg-white border border-slate-300"></div>
+
+        <button onclick="scrollToSection('routine-section')" id="navTab-routine" class="relative z-10 flex-1 py-1.5 px-1 text-center font-black truncate transition-colors text-slate-950">
+          Routine 📅
+        </button>
+        <button onclick="scrollToSection('deadlines-section')" id="navTab-deadlines" class="relative z-10 flex-1 py-1.5 px-1 text-center font-black truncate transition-colors text-slate-500 hover:text-slate-900">
+          Deadlines 🚨
+        </button>
+        <button onclick="scrollToSection('vault-section')" id="navTab-vault" class="relative z-10 flex-1 py-1.5 px-1 text-center font-black truncate transition-colors text-slate-500 hover:text-slate-900">
+          Materials 📚
+        </button>
+      </div>
     </nav>
   </header>
 
@@ -134,10 +180,17 @@
           <p class="text-xs sm:text-sm font-medium text-slate-300 mt-1">Syllabus, class routines, teaching documents & deadlines in one place</p>
         </div>
 
-        <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-3 sm:p-4 text-center sm:text-right shrink-0">
-          <div class="text-[11px] font-black uppercase tracking-wider text-botanical-200" id="liveDayText">Tuesday</div>
-          <div class="font-mono text-xl sm:text-2xl font-black text-white" id="liveClockText">09:00 PM</div>
-          <span class="inline-block mt-1 text-[11px] font-black bg-emerald-400 text-slate-950 px-2.5 py-0.5 rounded-full">Routine: Active</span>
+        <!-- Enlarged Routine Active Status Card -->
+        <div class="bg-black/35 backdrop-blur-md border-2 border-emerald-400/50 rounded-3xl p-4 sm:p-5 text-center sm:text-right shrink-0 shadow-md space-y-2 flex flex-col items-center sm:items-end justify-center">
+          <div class="text-base sm:text-lg font-black uppercase tracking-wider text-emerald-200 flex items-center space-x-1.5" id="liveDayText">
+            <span>📅</span>
+            <span>Wednesday Routine</span>
+          </div>
+          <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-emerald-400 text-botanical-950 shadow-sm border border-emerald-300">
+            <span class="w-3 h-3 rounded-full bg-botanical-950 animate-pulse"></span>
+            <span class="text-xs sm:text-sm font-black uppercase tracking-wider">Routine: Active</span>
+          </div>
+          <p class="text-[11px] font-bold text-emerald-100/70">Semester Class Timetable</p>
         </div>
       </div>
     </div>
@@ -530,28 +583,20 @@
       renderCourseVault();
       renderFacultyModal();
       initUploadForm();
+      initScrollspy();
     });
 
-    // Clock and Day Resolver
+    // Day Resolver & Active Banner
     function initClock() {
       const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       const now = new Date();
       const currentDay = days[now.getDay()];
       selectedDay = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(currentDay) ? currentDay : 'Sunday';
 
-      const update = () => {
-        const d = new Date();
-        const dayStr = days[d.getDay()];
-        const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-        const dayEl = document.getElementById('liveDayText');
-        const clockEl = document.getElementById('liveClockText');
-
-        if (dayEl) dayEl.textContent = dayStr;
-        if (clockEl) clockEl.textContent = timeStr;
-      };
-      update();
-      setInterval(update, 1000 * 30);
+      const dayEl = document.getElementById('liveDayText');
+      if (dayEl) {
+        dayEl.innerHTML = `<span>📅</span> <span>${currentDay} Routine</span>`;
+      }
     }
 
     // Load Data
@@ -1443,6 +1488,74 @@
         submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
         btnText.innerHTML = `Upload to Google Drive`;
       }
+    }
+
+    // ==========================================
+    // MOBILE MENU & DYNAMIC SCROLLSPY BAR
+    // ==========================================
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenuDropdown');
+      if (menu) menu.classList.toggle('hidden');
+    }
+
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const yOffset = -130;
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+
+    function initScrollspy() {
+      const sections = [
+        { id: 'routine-section', tabId: 'navTab-routine' },
+        { id: 'deadlines-section', tabId: 'navTab-deadlines' },
+        { id: 'vault-section', tabId: 'navTab-vault' }
+      ];
+
+      function updateActive() {
+        const scrollPos = window.pageYOffset + 180;
+        let currentSec = sections[0].id;
+
+        for (let i = 0; i < sections.length; i++) {
+          const el = document.getElementById(sections[i].id);
+          if (el && el.offsetTop <= scrollPos) {
+            currentSec = sections[i].id;
+          }
+        }
+
+        const indicator = document.getElementById('scrollspyIndicator');
+        const activeIdx = sections.findIndex(s => s.id === currentSec);
+
+        sections.forEach((s, idx) => {
+          const tab = document.getElementById(s.tabId);
+          if (!tab) return;
+
+          if (s.id === currentSec) {
+            tab.className = "relative z-10 flex-1 py-1.5 px-1 text-center font-black truncate transition-colors text-slate-950";
+          } else {
+            tab.className = "relative z-10 flex-1 py-1.5 px-1 text-center font-black truncate transition-colors text-slate-500 hover:text-slate-800";
+          }
+        });
+
+        if (indicator && activeIdx !== -1) {
+          const widthPct = 100 / sections.length;
+          indicator.style.width = `calc(${widthPct}% - 4px)`;
+          indicator.style.left = `calc(${activeIdx * widthPct}% + 2px)`;
+
+          if (currentSec === 'deadlines-section') {
+            indicator.className = "absolute top-1 bottom-1 rounded-xl transition-all duration-300 ease-out shadow-xs pointer-events-none bg-rose-100 border border-rose-300";
+          } else if (currentSec === 'vault-section') {
+            indicator.className = "absolute top-1 bottom-1 rounded-xl transition-all duration-300 ease-out shadow-xs pointer-events-none bg-sky-100 border border-sky-300";
+          } else {
+            indicator.className = "absolute top-1 bottom-1 rounded-xl transition-all duration-300 ease-out shadow-xs pointer-events-none bg-white border border-slate-300";
+          }
+        }
+      }
+
+      window.addEventListener('scroll', updateActive, { passive: true });
+      window.addEventListener('resize', updateActive, { passive: true });
+      setTimeout(updateActive, 100);
     }
   </script>
 </body>
