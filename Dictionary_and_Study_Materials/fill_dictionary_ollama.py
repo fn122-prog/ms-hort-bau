@@ -180,7 +180,12 @@ COMMON_HORT_WORDS_IPA = {
     "plant": "plɑːnt",
     "tree": "triː",
     "root": "ruːt",
-    "stock": "stɒk"
+    "stock": "stɒk",
+    "micro": "ˈmaɪ.kroʊ",
+    "reserve": "rɪˈzɜːrv",
+    "reserves": "rɪˈzɜːrvz",
+    "micro-reserve": "ˌmaɪ.kroʊ.rɪˈzɜːrv",
+    "micro-reserves": "ˌmaɪ.kroʊ.rɪˈzɜːrvz"
 }
 
 KNOWN_SYNONYMS = {
@@ -195,6 +200,8 @@ KNOWN_SYNONYMS = {
     "germplasm": "genetic resources, hereditary material, gene pool",
     "grafting": "graftage, top-working",
     "horticulture": "garden cultivation, high-value crop science, intensive horticultural cultivation",
+    "micro-reserve": "plant micro-reserve (PMR), genetic micro-reserve, in-situ micro-refugium, botanical micro-sanctuary",
+    "micro-reserves": "plant micro-reserves (PMR), genetic micro-reserves, in-situ micro-refugia, botanical micro-sanctuaries",
     "mother culture": "master culture, foundation stock, axenic stock culture, primary culture",
     "natural thinning": "physiological fruit drop, self-thinning, June drop, fruitlet abscission",
     "orthodox seed": "desiccation-tolerant seed",
@@ -214,8 +221,8 @@ def clean_ipa_syntax(ipa_str):
     if not ipa_str:
         return ""
     t = ipa_str.strip()
-    # Remove non-standard British parenthetical markers like (ɹ)
-    t = t.replace("ə(ɹ)", "ər").replace("(ɹ)", "r").replace("(r)", "r")
+    # Normalize turned-r and British parenthetical markers
+    t = t.replace("ɹ", "r").replace("ə(ɹ)", "ər").replace("(ɹ)", "r").replace("(r)", "r")
     if not t.startswith("/"):
         t = "/" + t
     if not t.endswith("/"):
@@ -474,6 +481,58 @@ def apply_botanical_guardrails(item):
         item["Subfield"] = "Plant Physiology"
         item["Synonyms"] = "physiological ecology, environmental plant physiology"
 
+    # Micro-reserves: plant breeding / genetic resources in-situ conservation guardrail
+    if "micro-reserve" in term_lower or "micro reserve" in term_lower:
+        item["Subfield"] = "Plant Breeding"
+        item["Pronunciation (IPA)"] = "/ˌmaɪ.kroʊ.rɪˈzɜːrvz/" if "reserves" in term_lower else "/ˌmaɪ.kroʊ.rɪˈzɜːrv/"
+        item["Synonyms"] = "plant micro-reserves (PMR), genetic micro-reserves, in-situ micro-refugia, botanical micro-sanctuaries"
+        if not item.get("Definition") or "botany descriptor" in item.get("Synonyms", "") or len(item.get("Definition", "").strip()) < 15:
+            item["Definition"] = (
+                "Small, officially designated in-situ conservation sites (typically under 20 hectares) established "
+                "to protect, monitor, and manage small, localized populations of rare, endemic plant species or valuable "
+                "crop wild relatives (CWR) within their natural evolutionary habitats."
+            )
+            item["Example Sentence"] = (
+                "Agricultural researchers identified a five-hectare micro-reserve in the Chittagong Hill Tracts to conserve "
+                "the remaining natural stands of Mangifera sylvatica, a critical wild relative needed for mango rootstock breeding."
+            )
+            item["Etymology"] = (
+                "From Greek 'mikros' (small) + Latin 'reservare' (to keep back, save up, from 're-' back + 'servare' to guard, keep). "
+                "Formalized into the Plant Micro-Reserve (PMR) conservation framework by Spanish botanist Emilio Laguna in 1992."
+            )
+            item["See Also"] = "in-situ conservation, crop wild relatives, germplasm, gene pool, genetic vulnerability, landrace"
+        if not item.get("Conceptual Exposition") or len(item.get("Conceptual Exposition", "").strip()) < 50:
+            item["Conceptual Exposition"] = (
+                "A micro-reserve (or plant micro-reserve, PMR) is a specialized conservation parcel—rarely exceeding 10 to 20 hectares, "
+                "and often as small as a single hectare or hillock—legally established to protect critical populations of rare, localized, "
+                "or relict plant taxa and crop wild relatives (CWR) directly in their natural habitats. While macro-conservation schemes like "
+                "national parks and wildlife sanctuaries span thousands of square kilometers to protect broad ecosystems and megafauna, they "
+                "often overlook cryptic, highly localized plant species clinging to distinct micro-habitats. The micro-reserve model bridges this "
+                "gap, providing targeted micro-sanctuaries that safeguard micro-populations under continuous botanical monitoring without "
+                "requiring the massive land allocations of conventional national reserves.\n\n"
+                "Unlike ex-situ germplasm banks—where collected seeds or tissue accessions are essentially 'frozen' in evolutionary time at "
+                "sub-zero temperatures—micro-reserves maintain active, living evolutionary laboratories. In a micro-reserve, wild crop ancestors "
+                "remain exposed to fluctuating weather patterns, indigenous pollinators, and constantly mutating local pathogen and insect populations. "
+                "Consequently, natural selection continues to operate unabated, generating and refining novel defensive alleles, pathogen resistance traits, "
+                "and climate-resilience genes. For plant breeders, these small reserves serve as living genetic vaults, retaining dynamic allelic diversity "
+                "that would otherwise be permanently lost if a localized wild stand were cleared for intensive agriculture or human settlement.\n\n"
+                "In densely populated deltaic landscapes like Bangladesh, where vast wilderness expanses cannot be set aside without displacing "
+                "agriculture or rural livelihoods, micro-reserves represent the most pragmatic and urgent in-situ conservation strategy. Remnant evergreen "
+                "and semi-evergreen forest pockets in the Chittagong Hill Tracts (Bandarban and Rangamati), degraded sal forest fragments in Madhupur, and "
+                "the isolated hillocks and sacred groves of Sylhet and Moulvibazar function as de facto micro-refugia for critical horticultural wild relatives. "
+                "Notable examples include wild mango (Mangifera sylvatica), wild citrus relatives (Citrus macroptera and Citrus assamensis), wild jackfruit "
+                "relatives (Artocarpus chama), and wild eggplant species (Solanum torvum and Solanum viarum). Formalizing these sites into recognized "
+                "micro-reserves ensures that their irreplaceable disease- and drought-resistance genes remain preserved and accessible for future rootstock "
+                "breeding and horticultural cultivar development."
+            )
+        if not item.get("Infographic Recommendation") or "mechanism, anatomical" in item.get("Infographic Recommendation", ""):
+            item["Infographic Recommendation"] = (
+                "Field In-Situ Micro-Reserve Landscape Zonation: Multi-panel diagram showing: (1) Core Micro-Reserve Zone (<10 ha) protecting clustered "
+                "wild relatives (Mangifera sylvatica and wild Citrus); (2) Ecological Buffer Belt shielding the core from agricultural grazing, "
+                "deforestation, and herbicide drift; (3) Dynamic Genetic Linkage showing the dual pathway: natural evolutionary selection in-situ vs. "
+                "selective sample extraction into ex-situ breeding genebanks for rootstock introgression."
+            )
+
     # Map and normalize Conceptual Exposition & Infographic Recommendation
     if "conceptual_exposition" in item and not item.get("Conceptual Exposition"):
         item["Conceptual Exposition"] = item.pop("conceptual_exposition")
@@ -590,7 +649,17 @@ def query_ollama(term, model_name):
                 raw_text = raw_text.strip("`")
                 if raw_text.startswith("json"):
                     raw_text = raw_text[4:].strip()
-            return json.loads(raw_text)
+            parsed = json.loads(raw_text)
+            if parsed and isinstance(parsed, dict):
+                if "definition" not in parsed and "meaning" in parsed:
+                    parsed["definition"] = parsed["meaning"]
+                if "conceptual_exposition" not in parsed and "explanation" in parsed:
+                    parsed["conceptual_exposition"] = parsed["explanation"]
+                elif "conceptual_exposition" not in parsed and "exposition" in parsed:
+                    parsed["conceptual_exposition"] = parsed["exposition"]
+                if "infographic_recommendation" not in parsed and "infographic" in parsed:
+                    parsed["infographic_recommendation"] = parsed["infographic"]
+            return parsed
     except Exception as e:
         print(f"   [!] Error querying Ollama for '{term}': {e}")
         return None
@@ -622,10 +691,12 @@ def process_words(words, model_name):
                 "Part of Speech": entry.get("pos", "n."),
                 "Subfield": entry.get("subfield", "Botany"),
                 "Definition": entry.get("definition", ""),
+                "Conceptual Exposition": entry.get("conceptual_exposition", ""),
                 "Example Sentence": entry.get("example", ""),
                 "Etymology": entry.get("etymology", ""),
                 "Synonyms": entry.get("synonyms", ""),
                 "See Also": entry.get("see_also", ""),
+                "Infographic Recommendation": entry.get("infographic_recommendation", ""),
                 "Date Added": today,
                 "Status": "Needs review"
             }
@@ -638,16 +709,18 @@ def process_words(words, model_name):
                 item_dict["Part of Speech"],
                 item_dict["Subfield"],
                 item_dict["Definition"],
+                item_dict.get("Conceptual Exposition", ""),
                 item_dict["Example Sentence"],
                 item_dict["Etymology"],
                 item_dict["Synonyms"],
                 item_dict["See Also"],
+                item_dict.get("Infographic Recommendation", ""),
                 item_dict["Date Added"],
                 item_dict["Status"]
             ]
             print(f"   ✓ Success! [{item_dict['Subfield']}] {item_dict['Definition'][:70]}...")
         else:
-            row = [clean_word, "", "", "", "", "", "", "", "", today, "Not found"]
+            row = [clean_word, "", "", "", "", "", "", "", "", "", "", today, "Not found"]
             print(f"   ✗ Could not retrieve structured definition.")
 
         results.append(row)

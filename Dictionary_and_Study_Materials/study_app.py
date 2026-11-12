@@ -361,7 +361,12 @@ COMMON_HORT_WORDS_IPA = {
     "plant": "plɑːnt",
     "tree": "triː",
     "root": "ruːt",
-    "stock": "stɒk"
+    "stock": "stɒk",
+    "micro": "ˈmaɪ.kroʊ",
+    "reserve": "rɪˈzɜːrv",
+    "reserves": "rɪˈzɜːrvz",
+    "micro-reserve": "ˌmaɪ.kroʊ.rɪˈzɜːrv",
+    "micro-reserves": "ˌmaɪ.kroʊ.rɪˈzɜːrvz"
 }
 
 KNOWN_SYNONYMS = {
@@ -376,6 +381,8 @@ KNOWN_SYNONYMS = {
     "germplasm": "genetic resources, hereditary material, gene pool",
     "grafting": "graftage, top-working",
     "horticulture": "garden cultivation, high-value crop science, intensive horticultural cultivation",
+    "micro-reserve": "plant micro-reserve (PMR), genetic micro-reserve, in-situ micro-refugium, botanical micro-sanctuary",
+    "micro-reserves": "plant micro-reserves (PMR), genetic micro-reserves, in-situ micro-refugia, botanical micro-sanctuaries",
     "mother culture": "master culture, foundation stock, axenic stock culture, primary culture",
     "natural thinning": "physiological fruit drop, self-thinning, June drop, fruitlet abscission",
     "orthodox seed": "desiccation-tolerant seed",
@@ -395,8 +402,8 @@ def clean_ipa_syntax(ipa_str):
     if not ipa_str:
         return ""
     t = ipa_str.strip()
-    # Remove non-standard British parenthetical markers like (ɹ)
-    t = t.replace("ə(ɹ)", "ər").replace("(ɹ)", "r").replace("(r)", "r")
+    # Normalize turned-r and British parenthetical markers
+    t = t.replace("ɹ", "r").replace("ə(ɹ)", "ər").replace("(ɹ)", "r").replace("(r)", "r")
     if not t.startswith("/"):
         t = "/" + t
     if not t.endswith("/"):
