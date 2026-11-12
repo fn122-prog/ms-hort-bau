@@ -722,7 +722,8 @@ def mode_csv(model_name):
 def mode_interactive(model_name):
     """Interactive loop to quickly look up one or more terms."""
     today = date.today().strftime("%Y-%m-%d")
-    output_file = "local_dictionary.csv"
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    output_file = os.path.join(base_dir, "local_dictionary.csv")
     file_exists = os.path.exists(output_file)
 
     print(f"\n--- Interactive Horticulture Term Lookup ---")

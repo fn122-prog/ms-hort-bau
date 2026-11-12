@@ -16,7 +16,8 @@ import urllib.parse
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from datetime import date
 
-CSV_FILE = "local_dictionary.csv"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CSV_FILE = os.path.join(BASE_DIR, "local_dictionary.csv")
 OLLAMA_BASE = "http://localhost:11434"
 RECOMMENDED_MODELS = ["qwen2.5:14b", "qwen2.5:7b", "qwen2.5", "llama3.2:3b", "llama3.2", "mistral:7b", "mistral"]
 

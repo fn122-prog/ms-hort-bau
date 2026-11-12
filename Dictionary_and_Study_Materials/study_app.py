@@ -19,8 +19,9 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from datetime import date, datetime
 
 PORT = 8081
-DATA_FILE = "course_study_deck.json"
-DICTIONARY_CSV = "local_dictionary.csv"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_FILE = os.path.join(BASE_DIR, "course_study_deck.json")
+DICTIONARY_CSV = os.path.join(BASE_DIR, "local_dictionary.csv")
 OLLAMA_BASE = "http://localhost:11434"
 RECOMMENDED_MODELS = ["qwen2.5:14b", "qwen2.5:7b", "qwen2.5", "llama3.2:3b", "llama3.2", "mistral:7b"]
 
