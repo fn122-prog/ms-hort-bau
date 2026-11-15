@@ -761,7 +761,7 @@
           fetch('data/deadlines.json').then(r => r.json())
         ]);
         ROUTINE = rtnRes;
-        DEADLINES = dlnRes;
+        DEADLINES = sortDeadlines(dlnRes);
 
         const sheetId = localStorage.getItem('hort_google_sheet_id') || DEFAULT_SHEET_ID;
         if (sheetId) {
@@ -819,7 +819,7 @@
               }
             }
             if (newDeadlines.length > 0) {
-              DEADLINES = newDeadlines;
+              DEADLINES = sortDeadlines(newDeadlines);
             }
           }
         }
@@ -1141,6 +1141,33 @@
       tbody.innerHTML = html;
     }
 
+    // Dynamic Deadline Sorter: Closest upcoming deadlines (least time remaining) appear on top
+    function sortDeadlines(items) {
+      if (!Array.isArray(items)) return [];
+      const now = Date.now();
+      return [...items].sort((a, b) => {
+        const timeA = parseDeadlineDate(a.deadline).getTime();
+        const timeB = parseDeadlineDate(b.deadline).getTime();
+        const diffA = timeA - now;
+        const diffB = timeB - now;
+
+        const isPastA = diffA <= 0;
+        const isPastB = diffB <= 0;
+
+        // Active/upcoming deadlines always precede passed deadlines
+        if (!isPastA && isPastB) return -1;
+        if (isPastA && !isPastB) return 1;
+
+        // Both are active/upcoming: shortest time left appears first on top
+        if (!isPastA && !isPastB) {
+          return diffA - diffB;
+        }
+
+        // Both are passed: most recently passed appears higher among passed
+        return timeB - timeA;
+      });
+    }
+
     // Render Assignments & Deadlines (HERO FOCUS ON COURSE CODE & TITLE)
     function renderDeadlines() {
       const container = document.getElementById('deadlinesContainer');
@@ -1156,22 +1183,40 @@
         return;
       }
 
-      container.innerHTML = filtered.map(item => {
+      // Automatically sort with shortest time remaining on top
+      const sorted = sortDeadlines(filtered);
+
+      container.innerHTML = sorted.map(item => {
         const dueDate = parseDeadlineDate(item.deadline);
         const countdown = getCountdown(dueDate);
         const formattedDate = dueDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
         const isGroup = item.category.includes('Group');
         const cInfo = courseMap[item.course_code] || courseMap[item.course_code.replace('HORT', 'Hort. ')] || { title: item.course_name, icon: "🌱" };
 
+        let badgeClass = "bg-rose-600 text-white border-2 border-rose-700 shadow-2xs";
+        let cardClass = "bg-white border-2 border-rose-300 hover:border-rose-500 shadow-xs hover:shadow-md";
+        let dueClass = "bg-rose-50 text-rose-950 border-2 border-rose-600";
+        let pulseDot = `<span class="w-2.5 h-2.5 rounded-full bg-rose-600 animate-pulse shrink-0"></span>`;
+
+        if (countdown.isPast) {
+          badgeClass = "bg-slate-200 text-slate-700 border-2 border-slate-300";
+          cardClass = "bg-slate-50/70 border-2 border-slate-200 opacity-80 hover:opacity-100 shadow-2xs";
+          dueClass = "bg-slate-100 text-slate-600 border-2 border-slate-300";
+          pulseDot = `<span class="w-2.5 h-2.5 rounded-full bg-slate-400 shrink-0"></span>`;
+        } else if (countdown.isUrgent) {
+          badgeClass = "bg-rose-600 text-white border-2 border-rose-700 shadow-md animate-pulse";
+          cardClass = "bg-white border-2 border-rose-400 ring-2 ring-rose-200 shadow-sm hover:shadow-lg";
+        }
+
         return `
-          <div class="bg-white border-2 border-rose-300 hover:border-rose-500 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition">
+          <div class="${cardClass} rounded-2xl p-4 sm:p-5 transition">
             
             <!-- TOP HERO HEADER: COURSE CODE & TITLE (BIGGEST & BOLDEST) -->
             <div class="pb-3 border-b-2 border-rose-100">
               <div class="flex items-center justify-between gap-2">
                 <span class="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">${item.course_code}</span>
-                <span class="shrink-0 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl text-xs sm:text-sm font-black bg-rose-600 text-white border-2 border-rose-700 shadow-2xs whitespace-nowrap">
-                  ⏰ ${countdown.text}
+                <span class="shrink-0 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl text-xs sm:text-sm font-black ${badgeClass} whitespace-nowrap">
+                  ${countdown.isPast ? '⏳' : '⏰'} ${countdown.text}
                 </span>
               </div>
               <div class="flex items-center space-x-2 mt-1.5 flex-wrap gap-y-1">
@@ -1201,10 +1246,10 @@
                 </div>
                 
                 <!-- DISTINCT RED OUTLINE & FILL FOR DUE DATE -->
-                <span class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-rose-50 text-rose-950 border-2 border-rose-600 font-black text-xs sm:text-sm shadow-2xs">
-                  <span class="w-2.5 h-2.5 rounded-full bg-rose-600 animate-pulse shrink-0"></span>
-                  <span class="text-rose-700 font-black tracking-wider text-[11px] uppercase">DUE:</span>
-                  <span class="text-rose-950 font-black">${formattedDate}</span>
+                <span class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl ${dueClass} font-black text-xs sm:text-sm shadow-2xs">
+                  ${pulseDot}
+                  <span class="${countdown.isPast ? 'text-slate-500' : 'text-rose-700'} font-black tracking-wider text-[11px] uppercase">DUE:</span>
+                  <span class="${countdown.isPast ? 'text-slate-700' : 'text-rose-950'} font-black">${formattedDate}</span>
                 </span>
               </div>
 
@@ -1223,30 +1268,58 @@
       if (!dateStr) return new Date();
       if (dateStr instanceof Date) return dateStr;
       const str = String(dateStr).trim();
-      const dmyMatch = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
+
+      // Case 1: DD/MM/YYYY or DD-MM-YYYY
+      const dmyMatch = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:[T\s](\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
       if (dmyMatch) {
         const day = parseInt(dmyMatch[1], 10);
         const month = parseInt(dmyMatch[2], 10) - 1;
         const year = parseInt(dmyMatch[3], 10);
-        const hour = dmyMatch[4] ? parseInt(dmyMatch[4], 10) : 23;
-        const min = dmyMatch[5] ? parseInt(dmyMatch[5], 10) : 59;
-        const sec = dmyMatch[6] ? parseInt(dmyMatch[6], 10) : 0;
+        const hour = dmyMatch[4] !== undefined ? parseInt(dmyMatch[4], 10) : 23;
+        const min = dmyMatch[5] !== undefined ? parseInt(dmyMatch[5], 10) : 59;
+        const sec = dmyMatch[6] !== undefined ? parseInt(dmyMatch[6], 10) : 0;
         return new Date(year, month, day, hour, min, sec);
       }
-      const d = new Date(str);
-      return isNaN(d) ? new Date() : d;
+
+      // Case 2: YYYY-MM-DD or YYYY/MM/DD
+      const ymdMatch = str.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})(?:[T\s](\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
+      if (ymdMatch) {
+        const year = parseInt(ymdMatch[1], 10);
+        const month = parseInt(ymdMatch[2], 10) - 1;
+        const day = parseInt(ymdMatch[3], 10);
+        const hour = ymdMatch[4] !== undefined ? parseInt(ymdMatch[4], 10) : 23;
+        const min = ymdMatch[5] !== undefined ? parseInt(ymdMatch[5], 10) : 59;
+        const sec = ymdMatch[6] !== undefined ? parseInt(ymdMatch[6], 10) : 0;
+        return new Date(year, month, day, hour, min, sec);
+      }
+
+      // Fallback
+      const normalizedStr = str.replace(' ', 'T');
+      const d = new Date(normalizedStr);
+      if (!isNaN(d.getTime())) return d;
+      const dRaw = new Date(str);
+      return !isNaN(dRaw.getTime()) ? dRaw : new Date();
     }
 
     function getCountdown(target) {
       const now = new Date();
       const diff = target - now;
-      if (diff <= 0) return { text: "Passed", isNear: true };
+      if (diff <= 0) return { text: "Passed", isNear: false, isUrgent: false, isPast: true };
 
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
 
-      if (days === 0) return { text: `${hours}h left`, isNear: true };
-      return { text: `${days}d ${hours}h left`, isNear: days < 3 };
+      if (days === 0 && hours === 0) {
+        return { text: `${minutes}m left`, isNear: true, isUrgent: true, isPast: false };
+      }
+      if (days === 0) {
+        return { text: `${hours}h left`, isNear: true, isUrgent: true, isPast: false };
+      }
+      if (days === 1) {
+        return { text: `1d ${hours}h left`, isNear: true, isUrgent: true, isPast: false };
+      }
+      return { text: `${days}d ${hours}h left`, isNear: days < 3, isUrgent: days < 3, isPast: false };
     }
 
     function filterDeadlines(cat) {
