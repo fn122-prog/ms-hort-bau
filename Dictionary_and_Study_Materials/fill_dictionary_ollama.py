@@ -218,12 +218,27 @@ COMMON_HORT_WORDS_IPA = {
     "saturation": "ˌsætʃ.əˈreɪ.ʃən",
     "compensation": "ˌkɒm.pənˈseɪ.ʃən",
     "light saturation": "ˈlaɪt ˌsætʃ.əˈreɪ.ʃən",
-    "light compensation": "ˈlaɪt ˌkɒm.pənˈseɪ.ʃən"
+    "light compensation": "ˈlaɪt ˌkɒm.pənˈseɪ.ʃən",
+
+    # Photobiology, light ecology & photoperiodism
+    "day": "deɪ",
+    "neutral": "ˈnuː.trəl",
+    "day-neutral": "ˈdeɪˌnuː.trəl",
+    "day-neutral plant": "ˈdeɪˌnuː.trəl ˌplænt",
+    "halophyte": "ˈhæl.əˌfaɪt",
+    "heliophyte": "ˈhiː.li.oʊˌfaɪt",
+    "holophyte": "ˈhɒl.əˌfaɪt",
+    "sciophyte": "ˈsaɪ.əˌfaɪt",
+    "long-day": "ˈlɔːŋ.deɪ",
+    "long-day plant": "ˈlɔːŋ.deɪ ˌplænt",
+    "short-day": "ˈʃɔːrt.deɪ",
+    "short-day plant": "ˈʃɔːrt.deɪ ˌplænt"
 }
 
 KNOWN_SYNONYMS = {
     "air layering": "marcottage, Chinese layering, pot layering",
     "apomixis": "agamospermy",
+    "day-neutral plant": "photoperiod-insensitive plant, day-length indifferent plant, autonomous flowering plant, DNP",
     "ecophysiology": "physiological ecology, environmental plant physiology",
     "floral habit": "flowering habit, bearing habit, bloom pattern, inflorescence habit",
     "floral induction": "floral evocation, reproductive evocation, flower induction",
@@ -232,9 +247,13 @@ KNOWN_SYNONYMS = {
     "fruiting body": "sporocarp, basidiocarp, ascocarp, mushroom",
     "germplasm": "genetic resources, hereditary material, gene pool",
     "grafting": "graftage, top-working",
+    "halophyte": "salt-tolerant plant, euhalophyte, pseudohalophyte, saline-adapted flora",
+    "heliophyte": "sun plant, light-demanding plant, photo-heliophyte, sun-loving plant",
+    "holophyte": "photoautotroph, autotrophic plant, holotrophic organism",
     "horticulture": "garden cultivation, high-value crop science, intensive horticultural cultivation",
     "light compensation": "light compensation point (LCP), compensation irradiance, zero-carbon exchange point, photosynthetic compensation point",
     "light saturation": "light saturation point (LSP), photosynthetic saturation point, light-saturating irradiance, Ik (saturation irradiance)",
+    "long-day plant": "short-night plant, photoperiodic long-day species, LDP",
     "micro-reserve": "plant micro-reserve (PMR), genetic micro-reserve, in-situ micro-refugium, botanical micro-sanctuary",
     "micro-reserves": "plant micro-reserves (PMR), genetic micro-reserves, in-situ micro-refugia, botanical micro-sanctuaries",
     "mother culture": "master culture, foundation stock, axenic stock culture, primary culture",
@@ -247,6 +266,8 @@ KNOWN_SYNONYMS = {
     "phytochrome": "plant chromoprotein photoreceptor, red/far-red reversible photoreceptor, biliprotein photoreceptor",
     "pure culture": "axenic culture, monoxenic culture, isolated clone",
     "recalcitrant seed": "desiccation-sensitive seed, non-orthodox seed",
+    "sciophyte": "shade plant, shade-tolerant plant, skiophyte, ombrophyte, photophobous plant",
+    "short-day plant": "long-night plant, photoperiodic short-day species, SDP",
     "spawn culture": "mushroom spawn, grain spawn, vegetative inoculum, planting spawn",
     "surplus": "buffer units, guard-row surplus, sampling reserve, oversampling allowance",
     "t-budding": "shield budding, T-grafting",
@@ -671,6 +692,119 @@ def apply_botanical_guardrails(item):
             )
             item["See Also"] = "light saturation, dark respiration, net assimilation rate, light-response curve, shade tolerance, photoinhibition"
 
+    # Day-neutral plant guardrail
+    if "day-neutral" in term_lower or "day neutral" in term_lower:
+        item["Subfield"] = "Plant Physiology"
+        item["Pronunciation (IPA)"] = "/ˈdeɪˌnuː.trəl ˌplænt/"
+        item["Synonyms"] = "photoperiod-insensitive plant, day-length indifferent plant, autonomous flowering plant, DNP"
+        if "day length" in defn.lower() or "responding primarily to other" in defn.lower() or not item.get("Definition") or len(item.get("Definition", "").strip()) < 15:
+            item["Definition"] = (
+                "A plant whose floral initiation is not regulated by photoperiod (day or night length), "
+                "flowering autonomously upon reaching an internal juvenile-to-adult developmental threshold or in response to accumulated thermal units."
+            )
+        item["See Also"] = "short-day plant, long-day plant, photoperiodism, autonomous pathway, florigen, juvenility"
+
+    # Halophyte guardrail
+    if "halophyte" in term_lower:
+        item["Subfield"] = "Plant Physiology"
+        item["Pronunciation (IPA)"] = "/ˈhæl.əˌfaɪt/"
+        item["Synonyms"] = "salt-tolerant plant, euhalophyte, pseudohalophyte, saline-adapted flora"
+        if not item.get("Definition") or len(item.get("Definition", "").strip()) < 15:
+            item["Definition"] = (
+                "A specialized plant capable of completing its entire life cycle in saline environments containing high concentrations "
+                "of sodium chloride (typically exceeding 200 mM NaCl or ~4–8+ dS/m), utilizing anatomical and physiological mechanisms for salt exclusion, excretion, or vacuolar compartmentalization."
+            )
+        if "spartina" in example.lower():
+            item["Example Sentence"] = (
+                "Researchers in the coastal delta of Satkhira are screening wild halophytic rootstocks to graft high-yielding tomato scions, "
+                "preventing lethal sodium accumulation during the dry winter cropping season."
+            )
+        item["See Also"] = "glycophyte, osmotic stress, casparian strip, tonoplast antiporter, proline, sundarbans"
+
+    # Heliophyte guardrail
+    if "heliophyte" in term_lower:
+        item["Subfield"] = "Plant Physiology"
+        item["Pronunciation (IPA)"] = "/ˈhiː.li.oʊˌfaɪt/"
+        item["Synonyms"] = "sun plant, light-demanding plant, photo-heliophyte, sun-loving plant"
+        if not item.get("Definition") or len(item.get("Definition", "").strip()) < 15:
+            item["Definition"] = (
+                "A plant adapted to grow and thrive in full, unshaded sunlight, exhibiting thick sun-leaf anatomy, "
+                "high light compensation and saturation points, and robust photoprotective mechanisms to utilize high irradiance without suffering photoinhibition."
+            )
+        if "broad leaves" in exp.lower() or "broad leaves" in defn.lower():
+            exp = exp.replace("broad leaves", "thick, sun-adapted leaves with multi-layered palisade mesophyll")
+            item["Conceptual Exposition"] = exp
+        item["See Also"] = "sciophyte, light saturation, light compensation, photoinhibition, xanthophyll cycle, rubisco"
+
+    # Holophyte guardrail: eliminate "air plant/epiphyte" hallucination
+    if "holophyte" in term_lower:
+        item["Subfield"] = "Plant Physiology"
+        item["Pronunciation (IPA)"] = "/ˈhɒl.əˌfaɪt/"
+        item["Synonyms"] = "photoautotroph, autotrophic plant, holotrophic organism"
+        if "air plant" in defn.lower() or "epiphyt" in defn.lower() or "air and water" in defn.lower() or not item.get("Definition") or len(item.get("Definition", "").strip()) < 15:
+            item["Definition"] = (
+                "An organism that exhibits holophytic (photoautotrophic) nutrition, synthesizing its total organic nutritional requirements "
+                "from simple inorganic substances (carbon dioxide, water, and inorganic mineral ions) utilizing light energy through photosynthesis."
+            )
+            item["Example Sentence"] = (
+                "As typical holophytes, greenhouse tomato plants require only sunlight, atmospheric carbon dioxide, water, and balanced inorganic mineral salts to synthesize their entire vegetative and fruit biomass."
+            )
+            item["Etymology"] = (
+                "From Ancient Greek ὅλος ('holos', whole, complete, entirely) + φυτόν ('phyton', plant). "
+                "Coined in 19th-century biological classifications to designate organisms with 'complete plant-like' (autotrophic) nutrition in explicit contrast to 'holozoic' (animal-like) and 'saprophytic' modes."
+            )
+        item["See Also"] = "photoautotrophy, photosynthesis, phototrophic, saprophyte, holozoic, rubisco"
+
+    # Long-day plant guardrail: eliminate rice hallucination, enforce short-night reality
+    if "long-day plant" in term_lower or "long day plant" in term_lower:
+        item["Subfield"] = "Plant Physiology"
+        item["Pronunciation (IPA)"] = "/ˈlɔːŋ.deɪ ˌplænt/"
+        item["Synonyms"] = "short-night plant, photoperiodic long-day species, LDP"
+        if not item.get("Definition") or len(item.get("Definition", "").strip()) < 15:
+            item["Definition"] = (
+                "A photoperiodic plant that is induced to flower only when the photoperiod exceeds a critical day length—or more accurately, "
+                "when the continuous dark period falls below a critical night length—typically flowering during late spring or summer."
+            )
+        if "rice" in example.lower():
+            item["Example Sentence"] = (
+                "As natural day length increases in late February, spinach behaves as a typical long-day plant, rapidly bolting and setting seed, "
+                "which terminates the marketable vegetative harvest."
+            )
+        item["See Also"] = "short-day plant, day-neutral plant, photoperiodism, phytochrome, florigen, night break, bolting"
+
+    # Sciophyte guardrail: eliminate "mango is a sciophyte" error
+    if "sciophyte" in term_lower:
+        item["Subfield"] = "Plant Physiology"
+        item["Pronunciation (IPA)"] = "/ˈsaɪ.əˌfaɪt/"
+        item["Synonyms"] = "shade plant, shade-tolerant plant, skiophyte, ombrophyte, photophobous plant"
+        if not item.get("Definition") or len(item.get("Definition", "").strip()) < 15:
+            item["Definition"] = (
+                "A plant adapted to grow and thrive under low light intensities (shade), characterized by thin leaves with high specific leaf area, "
+                "low light compensation and saturation points, and high chlorophyll b content to capture diffuse understory radiation."
+            )
+        if "mango" in example.lower() or "litchi" in example.lower():
+            item["Example Sentence"] = (
+                "Under the multi-tier coconut agroforestry systems of southern Bangladesh, farmers cultivate ginger and elephant foot yam as high-value sciophytes beneath the shaded forest floor."
+            )
+        item["See Also"] = "heliophyte, light compensation, light saturation, shade tolerance, specific leaf area, photoinhibition"
+
+    # Short-day plant guardrail: eliminate "short-night plant" & "mango day length" error
+    if "short-day plant" in term_lower or "short day plant" in term_lower:
+        item["Subfield"] = "Plant Physiology"
+        item["Pronunciation (IPA)"] = "/ˈʃɔːrt.deɪ ˌplænt/"
+        item["Synonyms"] = "long-night plant, photoperiodic short-day species, SDP"
+        if not item.get("Definition") or len(item.get("Definition", "").strip()) < 15:
+            item["Definition"] = (
+                "A photoperiodic plant that is induced to flower only when the photoperiod is shorter than its critical day length—or strictly speaking, "
+                "when the continuous, uninterrupted dark period exceeds its critical night length—typically flowering in late summer, autumn, or winter."
+            )
+        if "mango" in example.lower() or "mango" in defn.lower():
+            item["Example Sentence"] = (
+                "Traditional Bangladeshi hyacinth bean (Shim) cultivars behave as obligate short-day plants, remaining strictly vegetative through the summer "
+                "and initiating flowers only when autumn night lengths exceed the critical threshold."
+            )
+        item["See Also"] = "long-day plant, day-neutral plant, photoperiodism, phytochrome, florigen, night break, lablab purpureus"
+
     # Map and normalize Conceptual Exposition & Infographic Recommendation
     if "conceptual_exposition" in item and not item.get("Conceptual Exposition"):
         item["Conceptual Exposition"] = item.pop("conceptual_exposition")
@@ -748,7 +882,12 @@ def query_ollama(term, model_name):
         f"11. Synonyms: You MUST provide 1 to 3 valid technical synonyms, alternative horticultural terms, or English/Latin equivalents (e.g. 'marcottage' for air layering; 'agamospermy' for apomixis; 'sporocarp' for fruiting body; 'grain spawn' for spawn culture; 'overcropping' for overbearing; 'physiological fruit drop' for natural thinning). DO NOT leave empty.\n"
         f"12. Standard Syllabic IPA: Provide exact phonetic transcription with syllable dots ('.') and stress marks ('ˈ', 'ˌ') covering EVERY word in the term. Roots ending in '-physiology' are transcribed strictly as /...ˌfɪz.iˈɑː.lə.dʒi/ (never 'zaɪ').\n"
         f"13. Balanced Scientific Storytelling (Bains Style): Provide a 'conceptual_exposition' of 2-3 structured paragraphs in lucid, natural, balanced scientific English. Explain: (a) the physical/structural basis; (b) the physiological/cellular/hormonal mechanism; (c) real-world agro-ecological context with Bangladeshi crops (e.g., mango, litchi, guava, brinjal, oyster mushroom, tea). Do NOT use childish or casual metaphors ('trick the plant', 'marathon with people on back'); do NOT use impenetrable, abstruse Ph.D. jargon ('pseudo-parenchymatous hyphal ontogeny'). Strike the golden mean of an articulate university professor.\n"
-        f"14. Infographic Blueprint: Provide an 'infographic_recommendation' containing a multi-step or multi-panel visual blueprint (e.g. 3-panel step-by-step nursery schematic, comparative anatomical cutaway, or hormonal feedback flow chart) suitable for future technical illustration.\n\n"
+        f"14. Infographic Blueprint: Provide an 'infographic_recommendation' containing a multi-step or multi-panel visual blueprint (e.g. 3-panel step-by-step nursery schematic, comparative anatomical cutaway, or hormonal feedback flow chart) suitable for future technical illustration.\n"
+        f"15. Photoperiodism & Dark-Length Rigor: Short-day plants (SDPs) are biologically LONG-NIGHT plants requiring continuous darkness exceeding critical night length; long-day plants (LDPs) are SHORT-NIGHT plants. NEVER call an SDP a 'short-night plant'. A brief night-break flash of red light disrupts SDP flowering and promotes LDP flowering.\n"
+        f"16. Photoperiodic Crop Congruence: Do NOT claim mango or litchi are short-day or photoperiodic plants (their floral induction is triggered by low winter temperatures/dormancy, not day length). Cite genuine tropical/subtropical SDPs (e.g. Lablab purpureus / country bean Shim, photoperiod-sensitive Aman rice, Chrysanthemum) and LDPs (cool-season bolting in spinach, radish, lettuce; photoperiod lighting in floriculture).\n"
+        f"17. Light Ecology Rigor: Heliophytes (sun plants) have thick leaves with multi-layer palisade cells, high LCP/LSP, and high NPQ (NEVER claim they have broad/thin shade leaves); Sciophytes (shade plants) have thin leaves, high specific leaf area, low Chl a/b ratio, and low LCP/LSP. NEVER claim orchard trees like mango or litchi are sciophytes! Cite genuine sciophytes: ginger, turmeric, cardamom, betel vine barouj, shade tea.\n"
+        f"18. Autotrophic / Holophytic Nutrition Rigor: A 'holophyte' is an organism exhibiting holophytic (photoautotrophic) nutrition, synthesizing its own food from inorganic precursors (CO2, H2O, salts) using light, in contrast to holozoic (animals) and saprophytic/parasitic organisms. NEVER claim a holophyte is an 'air plant' or epiphyte!\n"
+        f"19. Halophyte & Deltaic Salinity Rigor: Halophytes exclude, compartmentalize via NHX into vacuoles, or excrete salt; cite Sundarbans mangrove taxa (Heritiera fomes, Excoecaria agallocha) and coastal Bangladesh salinity belt (Satkhira, Khulna).\n\n"
         f"Return ONLY a valid JSON object (no markdown, no backticks, no introductory text) with these keys:\n"
         f"- \"ipa\": Standard IPA pronunciation enclosed in slashes (e.g. \"/ˈsaɪ.ən/\")\n"
         f"- \"pos\": Abbreviated part of speech (\"n.\", \"v.\", \"adj.\")\n"
