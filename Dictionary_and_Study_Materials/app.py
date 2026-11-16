@@ -7,6 +7,7 @@ Zero third-party dependencies (built with Python standard library).
 
 import os
 import sys
+import re
 import json
 import csv
 import socket
@@ -43,6 +44,30 @@ SUBFIELDS = [
     "Olericulture", "Floriculture", "Landscape Horticulture",
     "Postharvest", "Plant Breeding", "Botany"
 ]
+
+
+def split_terms(input_text_or_list):
+    """
+    Splits input into clean horticultural terms.
+    Supports comma-separated, semicolon-separated, or newline-separated strings and lists.
+    Preserves multi-word phrases (2-3 words) and hyphenated terms (e.g. 'air layering', 't-budding').
+    """
+    raw_terms = []
+    if isinstance(input_text_or_list, list):
+        for item in input_text_or_list:
+            raw_terms.extend(split_terms(item))
+    elif isinstance(input_text_or_list, str):
+        parts = re.split(r"[,;\n\r]+", input_text_or_list)
+        raw_terms.extend(parts)
+
+    cleaned = []
+    seen = set()
+    for t in raw_terms:
+        ct = re.sub(r"\s+", " ", t).strip()
+        if ct and ct.lower() not in seen:
+            seen.add(ct.lower())
+            cleaned.append(ct)
+    return cleaned
 
 
 # ==============================================================================
@@ -816,7 +841,7 @@ HTML_PAGE = """<!DOCTYPE html>
       display: flex;
       gap: 8px;
       flex: 1;
-      max-width: 520px;
+      max-width: 640px;
     }
     .add-input {
       flex: 1;
@@ -998,7 +1023,7 @@ HTML_PAGE = """<!DOCTYPE html>
 
   <div class="control-bar">
     <div class="add-form">
-      <input type="text" id="new-term" class="add-input" placeholder="Enter term (e.g., etiolation, scion, vernalization)..." onkeydown="if(event.key==='Enter') generateTerm()">
+      <input type="text" id="new-term" class="add-input" placeholder="Enter term(s), single or comma-separated (e.g., air layering, t-budding, micro-reserves)..." onkeydown="if(event.key==='Enter') generateTerm()">
       <button class="btn btn-primary" id="btn-generate" onclick="generateTerm()">
         <span id="btn-text">Generate (Qwen 2.5)</span>
       </button>
@@ -1159,36 +1184,90 @@ HTML_PAGE = """<!DOCTYPE html>
       }
     }
 
+    function splitTerms(str) {
+      if (!str) return [];
+      const raw = str.split(/[,;\n\r]+/);
+      const cleaned = [];
+      const seen = new Set();
+      for (let r of raw) {
+        const term = r.replace(/\\s+/g, ' ').trim();
+        if (term && !seen.has(term.toLowerCase())) {
+          seen.add(term.toLowerCase());
+          cleaned.push(term);
+        }
+      }
+      return cleaned;
+    }
+
     async function generateTerm() {
       const input = document.getElementById('new-term');
-      const word = input.value.trim();
-      if (!word) return;
+      const rawInput = input.value.trim();
+      if (!rawInput) return;
+
+      const termsToGen = splitTerms(rawInput);
+      if (termsToGen.length === 0) return;
 
       const btn = document.getElementById('btn-generate');
       const btnText = document.getElementById('btn-text');
 
       btn.disabled = true;
-      btnText.innerHTML = '<span class="loading-spinner"></span> Analyzing...';
+      input.disabled = true;
+
+      let successCount = 0;
+      let generatedNames = [];
 
       try {
-        const res = await fetch('/api/generate', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ word: word })
-        });
-        const newEntry = await res.json();
-        
-        // Add to local list and re-sort alphabetically
-        terms.push(newEntry);
-        terms.sort((a,b) => a.Word.toLowerCase().localeCompare(b.Word.toLowerCase()));
+        for (let i = 0; i < termsToGen.length; i++) {
+          const currentWord = termsToGen[i];
+          if (termsToGen.length > 1) {
+            btnText.innerHTML = `<span class="loading-spinner"></span> Analyzing (${i + 1}/${termsToGen.length}): ${escapeHtml(currentWord)}...`;
+          } else {
+            btnText.innerHTML = `<span class="loading-spinner"></span> Analyzing: ${escapeHtml(currentWord)}...`;
+          }
+
+          try {
+            const res = await fetch('/api/generate', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ word: currentWord })
+            });
+            const data = await res.json();
+            const newEntries = Array.isArray(data) ? data : (data.items || [data]);
+            
+            for (let entry of newEntries) {
+              if (entry && entry.Word) {
+                const existingIdx = terms.findIndex(t => t.Word.toLowerCase() === entry.Word.toLowerCase());
+                if (existingIdx >= 0) {
+                  terms[existingIdx] = entry;
+                } else {
+                  terms.push(entry);
+                }
+                generatedNames.push(entry.Word);
+                successCount++;
+              }
+            }
+
+            // Keep table sorted and re-render progressively
+            terms.sort((a,b) => a.Word.toLowerCase().localeCompare(b.Word.toLowerCase()));
+            renderTable();
+          } catch (itemErr) {
+            console.error(`Failed to generate "${currentWord}":`, itemErr);
+          }
+        }
 
         input.value = '';
-        renderTable();
-        showToast(`Generated: ${newEntry.Word}`);
+        if (successCount === 1) {
+          showToast(`Generated: ${generatedNames[0]}`);
+        } else if (successCount > 1) {
+          showToast(`✓ Generated ${successCount} terms: ${generatedNames.join(', ')}`);
+        } else {
+          showToast('Failed to generate term(s)');
+        }
       } catch (e) {
-        showToast('Failed to generate term');
+        showToast('Error during generation');
       } finally {
         btn.disabled = false;
+        input.disabled = false;
         btnText.textContent = 'Generate (Qwen 2.5)';
       }
     }
@@ -1311,51 +1390,63 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps({"status": "deleted"}).encode("utf-8"))
 
         elif path == "/api/generate":
-            word = payload.get("word", "").strip()
+            raw_words = payload.get("words") or payload.get("word", "")
+            terms_to_process = split_terms(raw_words)
+            if not terms_to_process:
+                self.send_response(400)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": "No valid terms provided."}).encode("utf-8"))
+                return
+
             model_name = check_ollama_model()
-
-            # Query Ollama
-            entry = query_ollama(word, model_name)
-            verified_ipa = fetch_verified_ipa(word)
-            final_ipa = verified_ipa if verified_ipa else (entry.get("ipa", "") if entry else "")
-
             today = date.today().strftime("%Y-%m-%d")
-            new_item = {
-                "Word": word,
-                "Pronunciation (IPA)": final_ipa,
-                "Part of Speech": entry.get("pos", "n.") if entry else "n.",
-                "Subfield": entry.get("subfield", "Botany") if entry else "Botany",
-                "Definition": entry.get("definition", "") if entry else "",
-                "Conceptual Exposition": entry.get("conceptual_exposition", "") if entry else "",
-                "Example Sentence": entry.get("example", "") if entry else "",
-                "Etymology": entry.get("etymology", "") if entry else "",
-                "Synonyms": entry.get("synonyms", "") if entry else "",
-                "See Also": entry.get("see_also", "") if entry else "",
-                "Infographic Recommendation": entry.get("infographic_recommendation", "") if entry else "",
-                "Date Added": today,
-                "Status": "Needs review"
-            }
-            # Run multi-layer botanical guardrail to enforce IPA accuracy and prevent hallucinations
-            new_item = apply_botanical_guardrails(new_item)
-
             terms = load_terms()
-            # Replace existing or append
-            replaced = False
-            for idx, t in enumerate(terms):
-                if t.get("Word", "").strip().lower() == word.lower():
-                    terms[idx] = new_item
-                    replaced = True
-                    break
-            if not replaced:
-                terms.append(new_item)
+            term_map = {t.get("Word", "").strip().lower(): t for t in terms}
 
-            terms.sort(key=lambda t: t.get("Word", "").lower())
-            save_terms(terms)
+            generated_items = []
+            for word in terms_to_process:
+                # Query Ollama
+                entry = query_ollama(word, model_name)
+                verified_ipa = fetch_verified_ipa(word)
+                final_ipa = verified_ipa if verified_ipa else (entry.get("ipa", "") if entry else "")
+
+                new_item = {
+                    "Word": word,
+                    "Pronunciation (IPA)": final_ipa,
+                    "Part of Speech": entry.get("pos", "n.") if entry else "n.",
+                    "Subfield": entry.get("subfield", "Botany") if entry else "Botany",
+                    "Definition": entry.get("definition", "") if entry else "",
+                    "Conceptual Exposition": entry.get("conceptual_exposition", "") if entry else "",
+                    "Example Sentence": entry.get("example", "") if entry else "",
+                    "Etymology": entry.get("etymology", "") if entry else "",
+                    "Synonyms": entry.get("synonyms", "") if entry else "",
+                    "See Also": entry.get("see_also", "") if entry else "",
+                    "Infographic Recommendation": entry.get("infographic_recommendation", "") if entry else "",
+                    "Date Added": today,
+                    "Status": "Needs review"
+                }
+                # Run multi-layer botanical guardrail to enforce IPA accuracy and prevent hallucinations
+                new_item = apply_botanical_guardrails(new_item)
+                term_map[word.lower()] = new_item
+                generated_items.append(new_item)
+
+            updated_terms = list(term_map.values())
+            updated_terms.sort(key=lambda t: t.get("Word", "").lower())
+            save_terms(updated_terms)
 
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
-            self.wfile.write(json.dumps(new_item).encode("utf-8"))
+            if len(generated_items) == 1:
+                self.wfile.write(json.dumps(generated_items[0]).encode("utf-8"))
+            else:
+                self.wfile.write(json.dumps({
+                    "status": "ok",
+                    "count": len(generated_items),
+                    "items": generated_items,
+                    "Word": generated_items[0]["Word"]
+                }).encode("utf-8"))
         else:
             self.send_error(404)
 

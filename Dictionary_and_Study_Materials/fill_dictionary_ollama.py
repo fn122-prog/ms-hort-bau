@@ -9,6 +9,7 @@ Runs 100% locally on your Mac (Apple Silicon M4).
 
 import os
 import sys
+import re
 import json
 import csv
 import urllib.request
@@ -41,6 +42,30 @@ SUBFIELDS = [
     "Olericulture", "Floriculture", "Landscape Horticulture",
     "Postharvest", "Plant Breeding", "Botany"
 ]
+
+
+def split_terms(input_text_or_list):
+    """
+    Splits input into clean horticultural terms.
+    Supports comma-separated, semicolon-separated, or newline-separated strings and lists.
+    Preserves multi-word phrases (2-3 words) and hyphenated terms (e.g. 'air layering', 't-budding').
+    """
+    raw_terms = []
+    if isinstance(input_text_or_list, list):
+        for item in input_text_or_list:
+            raw_terms.extend(split_terms(item))
+    elif isinstance(input_text_or_list, str):
+        parts = re.split(r"[,;\n\r]+", input_text_or_list)
+        raw_terms.extend(parts)
+
+    cleaned = []
+    seen = set()
+    for t in raw_terms:
+        ct = re.sub(r"\s+", " ", t).strip()
+        if ct and ct.lower() not in seen:
+            seen.add(ct.lower())
+            cleaned.append(ct)
+    return cleaned
 
 
 def _query_single_ipa(word):
@@ -792,71 +817,147 @@ def mode_csv(model_name):
     print(f"==========================================\n")
 
 
-def mode_interactive(model_name):
-    """Interactive loop to quickly look up one or more terms."""
+def save_or_update_terms_to_csv(new_rows, csv_path):
+    """
+    Saves or updates rows in local_dictionary.csv with all 13 columns,
+    preserving headers, keeping alphabetical sort, and writing atomically.
+    """
+    existing_rows = []
+    if os.path.exists(csv_path):
+        with open(csv_path, mode="r", encoding="utf-8") as f:
+            reader = csv.reader(f)
+            existing_rows = list(reader)
+
+    if existing_rows:
+        header = existing_rows[0]
+        data_rows = existing_rows[1:]
+    else:
+        header = HEADERS
+        data_rows = []
+
+    # Map by lowercase word for updating existing rows without duplicate entries
+    row_map = {r[0].strip().lower(): r for r in data_rows if r and len(r) > 0}
+    for nr in new_rows:
+        if nr and len(nr) >= 1:
+            row_map[nr[0].strip().lower()] = nr
+
+    combined = list(row_map.values())
+    combined.sort(key=lambda r: r[0].lower() if r and len(r) > 0 else "")
+
+    temp_file = csv_path + ".tmp"
+    with open(temp_file, mode="w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+        writer.writerows(combined)
+    os.replace(temp_file, csv_path)
+
+
+def batch_process_and_save(terms, model_name, output_file=None):
+    """
+    Processes a list of terms, applies multi-layer botanical guardrails,
+    enforces 13-column format, and updates local_dictionary.csv.
+    """
+    if not output_file:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        output_file = os.path.join(base_dir, "local_dictionary.csv")
+
     today = date.today().strftime("%Y-%m-%d")
+    total = len(terms)
+    print(f"\n=======================================================")
+    print(f"  Batch Processing {total} Horticultural Term(s) via Ollama")
+    print(f"  Model: {model_name} | Target: {os.path.basename(output_file)}")
+    print(f"=======================================================\n")
+
+    saved_rows = []
+    for i, term in enumerate(terms, 1):
+        print(f"[{i}/{total}] Analyzing: '{term}'...")
+        entry = query_ollama(term, model_name)
+        if not entry or not entry.get("definition"):
+            print(f"   [!] Could not generate structured definition for '{term}'.\n")
+            continue
+
+        verified_ipa = fetch_verified_ipa(term)
+        final_ipa = verified_ipa if verified_ipa else entry.get("ipa", "")
+
+        item_dict = {
+            "Word": term,
+            "Pronunciation (IPA)": final_ipa,
+            "Part of Speech": entry.get("pos", "n."),
+            "Subfield": entry.get("subfield", "Botany"),
+            "Definition": entry.get("definition", ""),
+            "Conceptual Exposition": entry.get("conceptual_exposition", ""),
+            "Example Sentence": entry.get("example", ""),
+            "Etymology": entry.get("etymology", ""),
+            "Synonyms": entry.get("synonyms", ""),
+            "See Also": entry.get("see_also", ""),
+            "Infographic Recommendation": entry.get("infographic_recommendation", ""),
+            "Date Added": today,
+            "Status": "Needs review"
+        }
+        item_dict = apply_botanical_guardrails(item_dict)
+
+        row = [
+            item_dict["Word"],
+            item_dict["Pronunciation (IPA)"],
+            item_dict["Part of Speech"],
+            item_dict["Subfield"],
+            item_dict["Definition"],
+            item_dict.get("Conceptual Exposition", ""),
+            item_dict["Example Sentence"],
+            item_dict["Etymology"],
+            item_dict["Synonyms"],
+            item_dict["See Also"],
+            item_dict.get("Infographic Recommendation", ""),
+            item_dict["Date Added"],
+            item_dict["Status"]
+        ]
+        saved_rows.append(row)
+
+        print(f"   ✓ Subfield:   {item_dict['Subfield']}")
+        print(f"   ✓ IPA:        {item_dict['Pronunciation (IPA)']}")
+        print(f"   ✓ Definition: {item_dict['Definition'][:75]}...")
+        if item_dict.get("Synonyms"):
+            print(f"   ✓ Synonyms:   {item_dict['Synonyms']}")
+        print()
+
+    if saved_rows:
+        save_or_update_terms_to_csv(saved_rows, output_file)
+        print(f"=======================================================")
+        print(f"✓ Saved {len(saved_rows)} of {total} term(s) to: {output_file}")
+        print(f"=======================================================\n")
+    else:
+        print("No new terms were saved.\n")
+
+
+def mode_interactive(model_name):
+    """Interactive loop to quickly look up single or multiple comma-separated terms."""
     base_dir = os.path.dirname(os.path.abspath(__file__))
     output_file = os.path.join(base_dir, "local_dictionary.csv")
-    file_exists = os.path.exists(output_file)
 
     print(f"\n--- Interactive Horticulture Term Lookup ---")
     print(f"Results will automatically be saved to '{output_file}'.")
-    print("Type a word and press Enter. Type 'q' to quit.\n")
+    print("Supports single terms or multiple terms separated by commas.")
+    print("Example: 'air layering, t-budding, rootstock-scion interaction'")
+    print("Type 'q' to return to menu.\n")
 
     while True:
         try:
-            term = input("Enter horticultural term: ").strip()
-            if not term:
+            raw_input_str = input("Enter term(s): ").strip()
+            if not raw_input_str:
                 continue
-            if term.lower() in ["q", "quit", "exit"]:
+            if raw_input_str.lower() in ["q", "quit", "exit"]:
                 break
 
-            entry = query_ollama(term, model_name)
-            if not entry or not entry.get("definition"):
-                print("Could not generate definition.\n")
+            terms = split_terms(raw_input_str)
+            if not terms:
                 continue
 
-            verified_ipa = fetch_verified_ipa(term)
-            final_ipa = verified_ipa if verified_ipa else entry.get("ipa", "")
+            batch_process_and_save(terms, model_name, output_file)
 
-            print("\n" + "=" * 60)
-            print(f"Word:         {term}")
-            print(f"IPA:          {final_ipa}")
-            print(f"Part Speech:  {entry.get('pos', '')}")
-            print(f"Subfield:     {entry.get('subfield', '')}")
-            print(f"Definition:   {entry.get('definition', '')}")
-            print(f"Example:      {entry.get('example', '')}")
-            print(f"Etymology:    {entry.get('etymology', '')}")
-            print(f"Synonyms:     {entry.get('synonyms', '')}")
-            print(f"See Also:     {entry.get('see_also', '')}")
-            print("=" * 60 + "\n")
-
-            row = [
-                term,
-                final_ipa,
-                entry.get("pos", ""),
-                entry.get("subfield", "Botany"),
-                entry.get("definition", ""),
-                entry.get("example", ""),
-                entry.get("etymology", ""),
-                entry.get("synonyms", ""),
-                entry.get("see_also", ""),
-                today,
-                "Needs review"
-            ]
-
-            with open(output_file, mode="a", newline="", encoding="utf-8") as f:
-                writer = csv.writer(f)
-                if not file_exists:
-                    writer.writerow(HEADERS)
-                    file_exists = True
-                writer.writerow(row)
-
-            print(f"✓ Saved to {output_file}\n")
         except (KeyboardInterrupt, EOFError):
             break
 
-    print("\nGoodbye!")
+    print("\nReturning to main menu.")
 
 
 def main():
@@ -886,9 +987,21 @@ def main():
     chosen_model = pick_best_model(installed)
     print(f"✓ Using model: {chosen_model} (Apple Silicon accelerated)")
 
+    # Direct terminal command-line batch mode:
+    # e.g.: python3 fill_dictionary_ollama.py "air layering, t-budding, rootstock-scion interaction"
+    # or:   python3 fill_dictionary_ollama.py "air layering" "t-budding" "micro-reserves"
+    if len(sys.argv) > 1:
+        raw_args = " ".join(sys.argv[1:])
+        terms = split_terms(raw_args)
+        if terms:
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            output_file = os.path.join(base_dir, "local_dictionary.csv")
+            batch_process_and_save(terms, chosen_model, output_file)
+            return
+
     print("\nChoose an option:")
     print("  1. Process Google Sheet CSV (reads 'Dictionary.csv' -> writes 'Dictionary_filled.csv')")
-    print("  2. Interactive lookup (type words one by one and view output)")
+    print("  2. Interactive lookup (type single or comma-separated terms)")
     print("  3. Exit")
 
     choice = input("\nEnter choice (1, 2, or 3): ").strip()
