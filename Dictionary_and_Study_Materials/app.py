@@ -1299,11 +1299,11 @@ HTML_PAGE = """<!DOCTYPE html>
 
     function splitTerms(str) {
       if (!str) return [];
-      const raw = str.split(/[,;\n\r]+/);
+      const raw = str.split(/[,;\\n\\r]+/);
       const cleaned = [];
       const seen = new Set();
       for (let r of raw) {
-        const term = r.replace(/\\s+/g, ' ').trim();
+        const term = r.trim().replace(/\\s+/g, ' ');
         if (term && !seen.has(term.toLowerCase())) {
           seen.add(term.toLowerCase());
           cleaned.push(term);
