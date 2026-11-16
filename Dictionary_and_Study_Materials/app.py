@@ -235,7 +235,15 @@ COMMON_HORT_WORDS_IPA = {
     "reserve": "rɪˈzɜːrv",
     "reserves": "rɪˈzɜːrvz",
     "micro-reserve": "ˌmaɪ.kroʊ.rɪˈzɜːrv",
-    "micro-reserves": "ˌmaɪ.kroʊ.rɪˈzɜːrvz"
+    "micro-reserves": "ˌmaɪ.kroʊ.rɪˈzɜːrvz",
+    "phototrophic": "ˌfoʊ.toʊˈtroʊ.fɪk",
+    "photomorphic": "ˌfoʊ.toʊˈmɔːr.fɪk",
+    "photomorphogenesis": "ˌfoʊ.toʊˌmɔːr.fəˈdʒɛn.ə.sɪs",
+    "phytochrome": "ˈfaɪ.toʊˌkroʊm",
+    "saturation": "ˌsætʃ.əˈreɪ.ʃən",
+    "compensation": "ˌkɒm.pənˈseɪ.ʃən",
+    "light saturation": "ˈlaɪt ˌsætʃ.əˈreɪ.ʃən",
+    "light compensation": "ˈlaɪt ˌkɒm.pənˈseɪ.ʃən"
 }
 
 KNOWN_SYNONYMS = {
@@ -250,12 +258,18 @@ KNOWN_SYNONYMS = {
     "germplasm": "genetic resources, hereditary material, gene pool",
     "grafting": "graftage, top-working",
     "horticulture": "garden cultivation, high-value crop science, intensive horticultural cultivation",
+    "light compensation": "light compensation point (LCP), compensation irradiance, zero-carbon exchange point, photosynthetic compensation point",
+    "light saturation": "light saturation point (LSP), photosynthetic saturation point, light-saturating irradiance, Ik (saturation irradiance)",
     "micro-reserve": "plant micro-reserve (PMR), genetic micro-reserve, in-situ micro-refugium, botanical micro-sanctuary",
     "micro-reserves": "plant micro-reserves (PMR), genetic micro-reserves, in-situ micro-refugia, botanical micro-sanctuaries",
     "mother culture": "master culture, foundation stock, axenic stock culture, primary culture",
     "natural thinning": "physiological fruit drop, self-thinning, June drop, fruitlet abscission",
     "orthodox seed": "desiccation-tolerant seed",
     "overbearing": "overcropping, excessive crop load, biennial bearing trigger",
+    "photomorphic": "photomorphogenic, photomorphogenesis, light-regulated development",
+    "photomorphogenesis": "photomorphic development, photomorphogenic response, light-regulated development, de-etiolation",
+    "phototrophic": "photoautotrophic, light-nourished, photosynthetic, holophytic",
+    "phytochrome": "plant chromoprotein photoreceptor, red/far-red reversible photoreceptor, biliprotein photoreceptor",
     "pure culture": "axenic culture, monoxenic culture, isolated clone",
     "recalcitrant seed": "desiccation-sensitive seed, non-orthodox seed",
     "spawn culture": "mushroom spawn, grain spawn, vegetative inoculum, planting spawn",
@@ -582,6 +596,105 @@ def apply_botanical_guardrails(item):
                 "deforestation, and herbicide drift; (3) Dynamic Genetic Linkage showing the dual pathway: natural evolutionary selection in-situ vs. "
                 "selective sample extraction into ex-situ breeding genebanks for rootstock introgression."
             )
+
+    # Phototrophic guardrail
+    if "phototroph" in term_lower:
+        item["Subfield"] = "Plant Physiology"
+        item["Pronunciation (IPA)"] = "/ˌfoʊ.toʊˈtroʊ.fɪk/"
+        item["Synonyms"] = "photoautotrophic, light-nourished, photosynthetic, holophytic"
+        if not item.get("Definition") or "descriptor" in item.get("Synonyms", "") or len(item.get("Definition", "").strip()) < 15:
+            item["Definition"] = (
+                "Describing organisms that synthesize their own biochemical energy from photons via light-driven reactions, "
+                "fundamentally encompassing photoautotrophs (such as green plants and cyanobacteria) that fix carbon dioxide into organic carbohydrates using solar radiation."
+            )
+            item["Example Sentence"] = (
+                "Horticultural greenhouse engineers install diffusing polyethylene films to maximize phototrophic light interception across the lower canopy leaves of indeterminate tomato crops."
+            )
+            item["Etymology"] = (
+                "From Ancient Greek φῶς / φωτός ('phōs', 'phōtos', light) + τροφικός ('trophikos', pertaining to nourishment, from τροφή, food or feeding). "
+                "Coined in microbiological and plant physiological texts to designate light-nourished organisms."
+            )
+            item["See Also"] = "photoautotrophy, photosynthesis, phototropism, photosystem, calvin cycle, chlorophyll"
+
+    # Photomorphogenesis / Photomorphic guardrail
+    if "photomorph" in term_lower:
+        item["Subfield"] = "Plant Physiology"
+        item["Pronunciation (IPA)"] = "/ˌfoʊ.toʊˌmɔːr.fəˈdʒɛn.ə.sɪs/" if "genesis" in term_lower else "/ˌfoʊ.toʊˈmɔːr.fɪk/"
+        item["Synonyms"] = "photomorphic development, photomorphogenic response, light-regulated development, de-etiolation"
+        if not item.get("Definition") or "descriptor" in item.get("Synonyms", "") or len(item.get("Definition", "").strip()) < 15:
+            item["Definition"] = (
+                "The light-mediated structural development, cellular differentiation, and morphological patterning of plants "
+                "throughout their lifecycle, operating independently of photosynthetic energy assimilation through specialized photoreceptors."
+            )
+            item["Example Sentence"] = (
+                "Commercial vegetable nurserymen remove shade netting at seedling emergence to activate phytochrome-mediated photomorphogenesis, "
+                "suppressing hypocotyl elongation and preventing leggy transplants."
+            )
+            item["Etymology"] = (
+                "From Ancient Greek φῶς ('phōs', light) + μορφή ('morphē', form or shape) + γένεσις ('genesis', origin, creation, or production). "
+                "Coined in modern plant ecophysiology to describe light-induced developmental anatomy."
+            )
+            item["See Also"] = "phytochrome, cryptochrome, etiolation, de-etiolation, shade avoidance response, photoperiodism"
+
+    # Phytochrome guardrail
+    if "phytochrome" in term_lower:
+        item["Subfield"] = "Plant Physiology"
+        item["Pronunciation (IPA)"] = "/ˈfaɪ.toʊˌkroʊm/"
+        item["Synonyms"] = "plant chromoprotein photoreceptor, red/far-red reversible photoreceptor, biliprotein photoreceptor"
+        if not item.get("Definition") or "descriptor" in item.get("Synonyms", "") or len(item.get("Definition", "").strip()) < 15:
+            item["Definition"] = (
+                "A soluble, dimeric chromoprotein photoreceptor in plants that reversibly photo-interconverts between a physiologically inactive "
+                "red-absorbing form (Pr) and an active far-red-absorbing form (Pfr), regulating germination, de-etiolation, shade avoidance, and photoperiodic flowering."
+            )
+            item["Example Sentence"] = (
+                "Orchardists prune dense interior mango branches to improve sunlight penetration and elevate the red to far-red ratio, "
+                "maintaining active Pfr phytochrome levels essential for floral bud initiation."
+            )
+            item["Etymology"] = (
+                "From Ancient Greek φυτόν ('phyton', plant) + χρῶμα ('chrōma', color or pigment). "
+                "Coined in 1959 by USDA agricultural researchers Warren Butler, Harry Borthwick, and Sterling Hendricks upon discovering the reversible plant pigment."
+            )
+            item["See Also"] = "photomorphogenesis, photoperiodism, shade avoidance response, phytochromobilin, florigen, pif transcription factors"
+
+    # Light Saturation guardrail
+    if "light sat" in term_lower:
+        item["Subfield"] = "Plant Physiology"
+        item["Pronunciation (IPA)"] = "/ˈlaɪt ˌsætʃ.əˈreɪ.ʃən/"
+        item["Synonyms"] = "light saturation point (LSP), photosynthetic saturation point, light-saturating irradiance, Ik (saturation irradiance)"
+        if not item.get("Definition") or "descriptor" in item.get("Synonyms", "") or len(item.get("Definition", "").strip()) < 15:
+            item["Definition"] = (
+                "The photosynthetically active radiation (PAR) irradiance level beyond which further increases in light intensity "
+                "yield no corresponding increase in the rate of photosynthetic carbon dioxide assimilation, determined by the maximum enzymatic turnover capacity of Rubisco and Calvin cycle intermediates."
+            )
+            item["Example Sentence"] = (
+                "In commercial strawberry polyhouses, supplemental LED grow-lights are adjusted to match the crop's light saturation point, "
+                "maximizing photosynthetic yield without causing wasteful heat accumulation."
+            )
+            item["Etymology"] = (
+                "From Old English 'lēoht' (light, illumination) + Latin 'saturatio' (a filling, glutting, or satisfying, from 'satur', full/sated). "
+                "Coined in 20th-century plant biophysics and gas-exchange physiology."
+            )
+            item["See Also"] = "light compensation, light-response curve, photoinhibition, rubisco, amax, photosystem ii"
+
+    # Light Compensation guardrail
+    if "light comp" in term_lower:
+        item["Subfield"] = "Plant Physiology"
+        item["Pronunciation (IPA)"] = "/ˈlaɪt ˌkɒm.pənˈseɪ.ʃən/"
+        item["Synonyms"] = "light compensation point (LCP), compensation irradiance, zero-carbon exchange point, photosynthetic compensation point"
+        if not item.get("Definition") or "descriptor" in item.get("Synonyms", "") or len(item.get("Definition", "").strip()) < 15:
+            item["Definition"] = (
+                "The irradiance level on a light-response curve at which the gross rate of photosynthetic carbon dioxide assimilation "
+                "exactly equals the total rate of respiratory carbon dioxide release (mitochondrial respiration plus photorespiration), resulting in zero net carbon exchange (A_net = 0)."
+            )
+            item["Example Sentence"] = (
+                "Orchardists prune low, heavily shaded interior mango branches that sit below their light compensation point, "
+                "eliminating parasitic sinks that exhaust stored carbohydrates without contributing to fruit yield."
+            )
+            item["Etymology"] = (
+                "From Old English 'lēoht' (light, brightness) + Latin 'compensatio' (a balancing, from 'compensare' to weigh together). "
+                "Applied to metabolic gas exchange in early 20th-century plant physiology."
+            )
+            item["See Also"] = "light saturation, dark respiration, net assimilation rate, light-response curve, shade tolerance, photoinhibition"
 
     # Map and normalize Conceptual Exposition & Infographic Recommendation
     if "conceptual_exposition" in item and not item.get("Conceptual Exposition"):

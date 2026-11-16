@@ -366,7 +366,15 @@ COMMON_HORT_WORDS_IPA = {
     "reserve": "rɪˈzɜːrv",
     "reserves": "rɪˈzɜːrvz",
     "micro-reserve": "ˌmaɪ.kroʊ.rɪˈzɜːrv",
-    "micro-reserves": "ˌmaɪ.kroʊ.rɪˈzɜːrvz"
+    "micro-reserves": "ˌmaɪ.kroʊ.rɪˈzɜːrvz",
+    "phototrophic": "ˌfoʊ.toʊˈtroʊ.fɪk",
+    "photomorphic": "ˌfoʊ.toʊˈmɔːr.fɪk",
+    "photomorphogenesis": "ˌfoʊ.toʊˌmɔːr.fəˈdʒɛn.ə.sɪs",
+    "phytochrome": "ˈfaɪ.toʊˌkroʊm",
+    "saturation": "ˌsætʃ.əˈreɪ.ʃən",
+    "compensation": "ˌkɒm.pənˈseɪ.ʃən",
+    "light saturation": "ˈlaɪt ˌsætʃ.əˈreɪ.ʃən",
+    "light compensation": "ˈlaɪt ˌkɒm.pənˈseɪ.ʃən"
 }
 
 KNOWN_SYNONYMS = {
@@ -381,12 +389,18 @@ KNOWN_SYNONYMS = {
     "germplasm": "genetic resources, hereditary material, gene pool",
     "grafting": "graftage, top-working",
     "horticulture": "garden cultivation, high-value crop science, intensive horticultural cultivation",
+    "light compensation": "light compensation point (LCP), compensation irradiance, zero-carbon exchange point, photosynthetic compensation point",
+    "light saturation": "light saturation point (LSP), photosynthetic saturation point, light-saturating irradiance, Ik (saturation irradiance)",
     "micro-reserve": "plant micro-reserve (PMR), genetic micro-reserve, in-situ micro-refugium, botanical micro-sanctuary",
     "micro-reserves": "plant micro-reserves (PMR), genetic micro-reserves, in-situ micro-refugia, botanical micro-sanctuaries",
     "mother culture": "master culture, foundation stock, axenic stock culture, primary culture",
     "natural thinning": "physiological fruit drop, self-thinning, June drop, fruitlet abscission",
     "orthodox seed": "desiccation-tolerant seed",
     "overbearing": "overcropping, excessive crop load, biennial bearing trigger",
+    "photomorphic": "photomorphogenic, photomorphogenesis, light-regulated development",
+    "photomorphogenesis": "photomorphic development, photomorphogenic response, light-regulated development, de-etiolation",
+    "phototrophic": "photoautotrophic, light-nourished, photosynthetic, holophytic",
+    "phytochrome": "plant chromoprotein photoreceptor, red/far-red reversible photoreceptor, biliprotein photoreceptor",
     "pure culture": "axenic culture, monoxenic culture, isolated clone",
     "recalcitrant seed": "desiccation-sensitive seed, non-orthodox seed",
     "spawn culture": "mushroom spawn, grain spawn, vegetative inoculum, planting spawn",
