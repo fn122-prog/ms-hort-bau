@@ -14,6 +14,7 @@ import socket
 import webbrowser
 import urllib.request
 import urllib.parse
+import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from datetime import date
 
@@ -1044,8 +1045,81 @@ def apply_botanical_guardrails(item):
     return item
 
 
+# ==============================================================================
+# GOLD-STANDARD FEW-SHOT BENCHMARK EXEMPLARS
+# ==============================================================================
+
+FEW_SHOT_POOL = {
+    "propagation": {
+        "term": "air layering",
+        "json": {
+            "ipa": "/ˈɛər ˌleɪ.ər.ɪŋ/",
+            "pos": "n.",
+            "subfield": "Plant Propagation",
+            "definition": "The asexual propagation technique of inducing adventitious roots on an aerial, woody shoot while it remains attached to the parent plant, achieved by girdling a ring of bark and enclosing the exposed cambium in a moist rooting medium.",
+            "conceptual_exposition": "Air layering is an asexual propagation technique that allows a grower to develop a well-rooted, independent new tree while the branch is still physically connected to the parent plant. In traditional stem cuttings, the propagule is severed immediately, leaving it vulnerable to moisture stress and death before adventitious roots can form. Air layering overcomes this vulnerability by keeping the water-conducting sapwood (xylem) intact while removing an outer ring of bark (phloem), maintaining continuous hydration from the roots.\n\nBecause sugars and natural growth hormones (chiefly auxins like indole-3-acetic acid) manufactured in the leaves travel downward through the phloem, their path is blocked at the cut ring. These substances accumulate at the upper cut margin, stimulating rapid cell division that forms a swollen callus, followed by the differentiation of vigorous adventitious root primordia. When this wound is enclosed in a moist substrate (such as sphagnum moss or rich compost) and wrapped tightly in polyethylene film, darkness and sustained moisture accelerate root development. Once a dense mass of roots is visible through the plastic, the branch is sawed off just below the wrap and potted as an established, true-to-type tree.\n\nIn Bangladesh, air layering is the standard commercial method for propagating fruit crops that root poorly from ordinary cuttings, notably Litchi (Litchi chinensis cvs. China-3, Bedana, and Bombay in Dinajpur and Ishwardi) and Guava (Psidium guajava cv. Kazi Peyara). Propagation is executed during the humid monsoon months (Asharh–Sraban; June to August) when high humidity protects the moss from drying. For success, the green cambium ring must be completely scraped away; if any cambial tissue bridges the girdle, the wound simply heals over without forming roots.",
+            "example": "Commercial fruit nurserymen in Ishwardi propagate elite 'China-3' litchi cultivars via air layering in July, using moist sphagnum moss wrapped in polyethylene film to induce adventitious rooting.",
+            "etymology": "Compound term from Middle English 'air' (via Old French from Greek ἀήρ, 'aēr', atmosphere) and 'layering' (from Middle English 'leyere', an established shoot laid down for rooting, from Old English 'lecgan', to lay).",
+            "synonyms": "marcottage, Chinese layering, pot layering",
+            "see_also": "layering, adventitious roots, girdling, sphagnum moss, clonal propagation",
+            "infographic_recommendation": "3-Step Field Layering Schematic: (1) Pencil-thick branch with a 2.5 cm bark ring stripped clean down to the white xylem, showing downward auxin accumulation at the upper cut lip; (2) Fist-sized ball of moist sphagnum moss molded around the wound, tightly sealed in 200-gauge transparent polyethylene and tied at both ends like a toffee wrapper; (3) Dense white adventitious roots radiating throughout the substrate inside the plastic, with an arrow indicating the harvesting cut below the basal tie."
+        }
+    },
+    "breeding": {
+        "term": "apomixis",
+        "json": {
+            "ipa": "/ˌæp.əˈmɪk.sɪs/",
+            "pos": "n.",
+            "subfield": "Plant Breeding",
+            "definition": "The asexual formation and development of a viable seed without female meiosis (apomeiosis) and without fertilization (parthenogenesis), producing progeny that are maternal genetic clones of the seed parent.",
+            "conceptual_exposition": "Apomixis is a specialized reproductive phenomenon in flowering plants where viable seeds are produced completely without sexual fertilization. In normal sexual reproduction, male and female gametes undergo meiosis to halve their chromosome numbers and fuse at fertilization to generate a genetically unique embryo. In apomictic plants, this entire sexual cycle is bypassed: the embryo arises directly from unreduced maternal ovular cells, producing seeds that are exact genetic clones of the mother plant.\n\nThis asexual seed formation occurs through two primary pathways. In gametophytic apomixis (apospory or diplospory), an unreduced embryo sac develops without meiosis, and the egg cell initiates embryo development spontaneously (parthenogenesis) without pollen union. In adventitious (sporophytic) embryony, somatic cells of the nucellus or integument directly proliferate into multiple embryos inside the seed, often coexisting with a single sexual zygote. For plant breeders, apomixis represents the 'holy grail' of crop genetics because it permanently locks in hybrid vigor (heterosis) across successive generations without the genetic segregation that normally destroys hybrid traits in subsequent seed crops.\n\nIn horticultural practice, apomixis is most famously exploited in citrus production (such as Rangpur lime, Citrus limonia, and Mandarin, Citrus reticulata). Polyembryonic citrus seeds contain multiple nucellar embryos that emerge as exceptionally uniform, virus-free rootstocks that match the maternal parent with 100% genetic fidelity. Researchers must strictly distinguish apomixis (seed production without fertilization) from parthenocarpy (fruit development without seed formation).",
+            "example": "Citrus breeders rely on natural nucellar apomixis to propagate genetically identical, virus-free rootstock seedlings directly from seed.",
+            "etymology": "Coined in 1908 by German botanist Hans Winkler from Greek ἀπό ('apo-', without/away from) and μῖξις ('mixis', mingling or sexual union).",
+            "synonyms": "agamospermy",
+            "see_also": "parthenogenesis, apospory, diplospory, adventitious embryony, polyembryony, parthenocarpy",
+            "infographic_recommendation": "Comparative Ovule Embryogeny Diagram: Left panel showing standard sexual fertilization (meiotic egg cell + pollen sperm = single genetically variable zygote); Right panel showing sporophytic apomixis in Citrus (maternal nucellar cells budding around embryo sac to yield multiple identical clonal embryos alongside the central zygote)."
+        }
+    },
+    "physiology": {
+        "term": "halophyte",
+        "json": {
+            "ipa": "/ˈhæl.əˌfaɪt/",
+            "pos": "n.",
+            "subfield": "Plant Physiology",
+            "definition": "A specialized plant capable of completing its entire life cycle in saline environments containing high concentrations of sodium chloride (typically exceeding 200 mM NaCl or ~4–8+ dS/m), utilizing anatomical and physiological mechanisms for salt exclusion, excretion, or vacuolar compartmentalization.",
+            "conceptual_exposition": "Halophytes are specialized plants evolved to survive, grow, and reproduce in soils or waters characterized by high concentrations of soluble salts—predominantly sodium chloride (NaCl)—at concentrations that would induce lethal osmotic stress and ion toxicity in glycophytes (normal non-tolerant plants). In saline substrates, low external soil water potential restricts water uptake (physiological drought), while excessive cytosolic accumulation of sodium (Na+) and chloride (Cl-) disrupts enzymatic function, displaces potassium (K+), and destroys cellular membranes.\n\nTo overcome these dual biophysical challenges, halophytes deploy three coordinated physiological strategies. First, they synthesize and accumulate compatible organic osmolytes (such as proline, glycine betaine, and pinitol) in the cytosol to maintain osmotic equilibrium without perturbing enzyme kinetics. Second, they actively compartmentalize Na+ and Cl- ions into large central vacuoles using ATP-powered tonoplast Na+/H+ antiporters (NHX family), isolating toxic ions away from active metabolic machinery in the cytoplasm while using them for cellular turgor. Third, many halophytes feature anatomical specializations, such as epidermal salt glands or bladder cells that actively secrete or sequestrate excess salt onto the leaf surface, and thickened suberized Casparian strips in root endodermal layers that strictly exclude apoplastic salt entry.\n\nIn Bangladesh, halophytic physiology is of paramount agricultural significance across the southern coastal belt (Satkhira, Khulna, and Bagerhat), where tidal saline ingress restricts conventional crop production. The Sundarbans mangrove forest exemplifies natural halophytic flora, dominated by species such as Sundari (Heritiera fomes), Gewa (Excoecaria agallocha), and Keora (Sonneratia apetala). In horticultural research, scientists at BARI and BINA investigate halophytic mechanisms in wild relatives to breed or graft salt-tolerant tomato, brinjal, and watermelon crops suitable for dry-season coastal cultivation.",
+            "example": "Researchers in the coastal delta of Satkhira are screening wild halophytic rootstocks to graft high-yielding tomato scions, preventing lethal sodium accumulation during the dry winter cropping season.",
+            "etymology": "From Ancient Greek ἅλς ('hals', genitive 'halos', salt or the sea) + φυτόν ('phyton', plant). Coined in 19th-century plant geography by Danish botanist Eugenius Warming to classify flora adapted to saline soils.",
+            "synonyms": "salt-tolerant plant, euhalophyte, pseudohalophyte, saline-adapted flora",
+            "see_also": "glycophyte, osmotic stress, casparian strip, tonoplast antiporter, proline, sundarbans",
+            "infographic_recommendation": "Comparative Salinity Tolerance & Cellular Ion Partitioning: Left panel shows root Casparian strip salt exclusion barrier; Center panel shows mesophyll cell vacuolar Na+ compartmentalization via tonoplast NHX antiporter with cytosolic proline osmoregulation; Right panel shows leaf salt gland secretion on a Sundarbans mangrove leaf."
+        }
+    }
+}
+
+
+def select_few_shot_exemplar(term):
+    """
+    Selects the most domain-congruent gold-standard exemplar from the verified pool.
+    Returns (exemplar_term, exemplar_dict).
+    """
+    t_lower = term.lower()
+    breeding_kw = ["breed", "gene", "cross", "pollin", "steril", "ploid", "embryo", "allele", "hybrid", "male steril", "incompatib"]
+    if any(k in t_lower for k in breeding_kw):
+        return FEW_SHOT_POOL["breeding"]["term"], FEW_SHOT_POOL["breeding"]["json"]
+
+    phys_kw = ["light", "photo", "salt", "water", "stress", "respir", "hormone", "phyto", "chlor", "osmoti", "saturat", "compensat", "senesc", "dorm"]
+    if any(k in t_lower for k in phys_kw):
+        return FEW_SHOT_POOL["physiology"]["term"], FEW_SHOT_POOL["physiology"]["json"]
+
+    return FEW_SHOT_POOL["propagation"]["term"], FEW_SHOT_POOL["propagation"]["json"]
+
+
 def query_ollama(term, model_name):
-    """Queries local Ollama instance with balanced Bains-style scientific prompt and guardrails."""
+    """Queries local Ollama instance with automated domain-matched few-shot exemplar and guardrails."""
+    exemplar_word, exemplar_data = select_few_shot_exemplar(term)
+    exemplar_json_str = json.dumps(exemplar_data, indent=2)
+
     prompt = (
         f"You are an authoritative botanical and horticultural lexicographer building a specialized, "
         f"university-level reference dictionary for an MS/BS in Horticulture.\n"
@@ -1074,7 +1148,12 @@ def query_ollama(term, model_name):
         f"21. Underground Organs (Geophytes) Rigor: Strictly distinguish true bulbs (flattened basal plate + fleshy concentric scale leaves, e.g. Allium cepa), corms (solid swollen subterranean stem tissue with distinct nodes/internodes, e.g. Gladiolus, Colocasia), and tubers (swollen stoloniferous stems or storage roots, e.g. Solanum tuberosum). NEVER list bulb, corm, and tuber as synonyms of each other!\n"
         f"22. Velamen Anatomy Rigor: Velamen radicum is a multi-layered spongy mantle of DEAD cells at functional maturity surrounding aerial roots of epiphytic orchids and aroids; velamen cells DO NOT contain chloroplasts (when hydrated they turn transparent, revealing the underlying green living cortex).\n"
         f"23. Saprophyte vs. Plant: Non-photosynthetic plants are mycoheterotrophs, not saprophytes; true saprobes in horticulture are saprotrophic fungi (e.g. Agaricus, Pleurotus) and bacteria secreting extracellular enzymes to decompose organic matter.\n\n"
-        f"Return ONLY a valid JSON object (no markdown, no backticks, no introductory text) with these keys:\n"
+        f"--- GOLD-STANDARD BENCHMARK EXEMPLAR ---\n"
+        f"Study the exact depth, tone, syllabic IPA formatting, 3-paragraph structure, and authentic Bangladeshi crop context in this verified benchmark entry for \"{exemplar_word}\":\n\n"
+        f"{exemplar_json_str}\n\n"
+        f"--- YOUR TASK ---\n"
+        f"Now generate an entry of identical caliber, academic rigor, and JSON schema for the target term: \"{term}\".\n"
+        f"Return ONLY a valid JSON object (no markdown, no backticks, no introductory text) matching the schema of the benchmark example above, with keys:\n"
         f"- \"ipa\": Standard IPA pronunciation enclosed in slashes (e.g. \"/ˈsaɪ.ən/\")\n"
         f"- \"pos\": Abbreviated part of speech (\"n.\", \"v.\", \"adj.\")\n"
         f"- \"subfield\": One of: {', '.join(SUBFIELDS)}\n"
@@ -1865,7 +1944,9 @@ class DashboardHandler(BaseHTTPRequestHandler):
             term_map = {t.get("Word", "").strip().lower(): t for t in terms}
 
             generated_items = []
-            for word in terms_to_process:
+            for idx_word, word in enumerate(terms_to_process):
+                if idx_word > 0:
+                    time.sleep(2.5)  # Thermal pacing cooldown for fanless Apple Silicon M4
                 # Query Ollama
                 entry = query_ollama(word, model_name)
                 verified_ipa = fetch_verified_ipa(word)
