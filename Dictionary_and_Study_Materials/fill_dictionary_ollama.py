@@ -44,11 +44,27 @@ SUBFIELDS = [
 ]
 
 
+TERM_NORMALIZATIONS = {
+    "apomixix": "apomixis",
+    "epiphytes": "epiphyte",
+    "plant-breeding": "plant breeding",
+    "micro reserves": "micro-reserve",
+    "micro-reserves": "micro-reserve",
+    "lithophytes": "lithophyte",
+    "saprophytes": "saprophyte",
+    "bulbs": "bulb",
+    "corms": "corm",
+    "tubers": "tuber",
+    "habitats": "habitat",
+}
+
+
 def split_terms(input_text_or_list):
     """
     Splits input into clean horticultural terms.
     Supports comma-separated, semicolon-separated, or newline-separated strings and lists.
     Preserves multi-word phrases (2-3 words) and hyphenated terms (e.g. 'air layering', 't-budding').
+    Normalizes common typos and plural/hyphenation variations to canonical dictionary headwords.
     """
     raw_terms = []
     if isinstance(input_text_or_list, list):
@@ -62,9 +78,12 @@ def split_terms(input_text_or_list):
     seen = set()
     for t in raw_terms:
         ct = re.sub(r"\s+", " ", t).strip()
-        if ct and ct.lower() not in seen:
-            seen.add(ct.lower())
-            cleaned.append(ct)
+        if not ct:
+            continue
+        ct_canonical = TERM_NORMALIZATIONS.get(ct.lower(), ct.lower())
+        if ct_canonical and ct_canonical not in seen:
+            seen.add(ct_canonical)
+            cleaned.append(ct_canonical)
     return cleaned
 
 
@@ -232,14 +251,44 @@ COMMON_HORT_WORDS_IPA = {
     "long-day": "ˈlɔːŋ.deɪ",
     "long-day plant": "ˈlɔːŋ.deɪ ˌplænt",
     "short-day": "ˈʃɔːrt.deɪ",
-    "short-day plant": "ˈʃɔːrt.deɪ ˌplænt"
+    "short-day plant": "ˈʃɔːrt.deɪ ˌplænt",
+
+    # Organography, genetics & postharvest
+    "bulb": "bʌlb",
+    "corm": "kɔːrm",
+    "pollination": "ˌpɒl.əˈneɪ.ʃən",
+    "cross-pollination": "ˈkrɒs.pɒl.əˌneɪ.ʃən",
+    "epiphyte": "ˈɛp.ɪˌfaɪt",
+    "epiphytes": "ˈɛp.ɪˌfaɪts",
+    "habitat": "ˈhæb.ɪ.tæt",
+    "lithophyte": "ˈlɪθ.əˌfaɪt",
+    "breeding": "ˈbriː.dɪŋ",
+    "plant breeding": "ˈplænt ˌbriː.dɪŋ",
+    "plant-breeding": "ˈplænt ˌbriː.dɪŋ",
+    "polyembryony": "ˌpɒl.iˈɛm.bri.ə.ni",
+    "polygenic": "ˌpɒl.iˈdʒɛn.ɪk",
+    "polyploid": "ˈpɒl.iˌplɔɪd",
+    "saprophyte": "ˈsæp.rəˌfaɪt",
+    "incompatibility": "ɪn.kəmˌpæt.əˈbɪl.ə.ti",
+    "self-incompatibility": "ˌsɛlf.ɪn.kəmˌpæt.əˈbɪl.ə.ti",
+    "self-pollination": "ˌsɛlf.pɒl.əˈneɪ.ʃən",
+    "senescence": "sɪˈnɛs.əns",
+    "shelf-life": "ˈʃɛlf.laɪf",
+    "sterility": "stəˈrɪl.ə.ti",
+    "tuber": "ˈtjuː.bər",
+    "velamen": "vəˈleɪ.mən"
 }
 
 KNOWN_SYNONYMS = {
     "air layering": "marcottage, Chinese layering, pot layering",
     "apomixis": "agamospermy",
+    "bulb": "tunicate bulb, scaly bulb, geophytic bulb, true bulb",
+    "corm": "solid bulb (historical), bulbo-tuber, cormous stem",
+    "cross-pollination": "allogamy, xenogamy, outcrossing, inter-plant pollination",
     "day-neutral plant": "photoperiod-insensitive plant, day-length indifferent plant, autonomous flowering plant, DNP",
     "ecophysiology": "physiological ecology, environmental plant physiology",
+    "epiphyte": "air plant, epiphytic flora, bark-dweller, phorophytic epiphyte",
+    "epiphytes": "air plant, epiphytic flora, bark-dweller, phorophytic epiphyte",
     "floral habit": "flowering habit, bearing habit, bloom pattern, inflorescence habit",
     "floral induction": "floral evocation, reproductive evocation, flower induction",
     "flowering phase": "anthesis, bloom stage, floral stage, blooming period",
@@ -247,12 +296,14 @@ KNOWN_SYNONYMS = {
     "fruiting body": "sporocarp, basidiocarp, ascocarp, mushroom",
     "germplasm": "genetic resources, hereditary material, gene pool",
     "grafting": "graftage, top-working",
+    "habitat": "natural provenance, ecological niche, native range, biotope",
     "halophyte": "salt-tolerant plant, euhalophyte, pseudohalophyte, saline-adapted flora",
     "heliophyte": "sun plant, light-demanding plant, photo-heliophyte, sun-loving plant",
     "holophyte": "photoautotroph, autotrophic plant, holotrophic organism",
     "horticulture": "garden cultivation, high-value crop science, intensive horticultural cultivation",
     "light compensation": "light compensation point (LCP), compensation irradiance, zero-carbon exchange point, photosynthetic compensation point",
     "light saturation": "light saturation point (LSP), photosynthetic saturation point, light-saturating irradiance, Ik (saturation irradiance)",
+    "lithophyte": "epilithic plant, rupicolous flora, rock plant, saxicolous organism",
     "long-day plant": "short-night plant, photoperiodic long-day species, LDP",
     "micro-reserve": "plant micro-reserve (PMR), genetic micro-reserve, in-situ micro-refugium, botanical micro-sanctuary",
     "micro-reserves": "plant micro-reserves (PMR), genetic micro-reserves, in-situ micro-refugia, botanical micro-sanctuaries",
@@ -264,14 +315,27 @@ KNOWN_SYNONYMS = {
     "photomorphogenesis": "photomorphic development, photomorphogenic response, light-regulated development, de-etiolation",
     "phototrophic": "photoautotrophic, light-nourished, photosynthetic, holophytic",
     "phytochrome": "plant chromoprotein photoreceptor, red/far-red reversible photoreceptor, biliprotein photoreceptor",
+    "plant breeding": "crop improvement, cultivar development, genetic crop enhancement, plant genetic breeding",
+    "plant-breeding": "crop improvement, cultivar development, genetic crop enhancement, plant genetic breeding",
+    "polyembryony": "nucellar polyembryony, adventitious polyembryony, multiple embryony",
+    "polygenic": "quantitative, multigenic, polyfactorial, QTL-controlled",
+    "polyploid": "polyploid cultivar, euploid, gigas plant, chromosome-doubled cultivar",
     "pure culture": "axenic culture, monoxenic culture, isolated clone",
     "recalcitrant seed": "desiccation-sensitive seed, non-orthodox seed",
+    "saprophyte": "saprotroph, saprobe, detritivore, necrotrophic decomposer",
     "sciophyte": "shade plant, shade-tolerant plant, skiophyte, ombrophyte, photophobous plant",
+    "self-incompatibility": "SI, physiological self-sterility, genetic incompatibility, allogamy enforcer",
+    "self-pollination": "autogamy, selfing, self-fertilization, idiogamy",
+    "senescence": "programmed cell death (PCD), physiological aging, leaf yellowing, organ senescence",
+    "shelf-life": "storage life, postharvest longevity, marketable lifespan, keeping quality",
     "short-day plant": "long-night plant, photoperiodic short-day species, SDP",
     "spawn culture": "mushroom spawn, grain spawn, vegetative inoculum, planting spawn",
+    "sterility": "male sterility, reproductive barrenness, gametic abortion, ovule/pollen sterility",
     "surplus": "buffer units, guard-row surplus, sampling reserve, oversampling allowance",
     "t-budding": "shield budding, T-grafting",
     "true seed": "botanical seed",
+    "tuber": "stem tuber, starchy underground tuber, seed potato (production term)",
+    "velamen": "velamen radicum, aerial root mantle, epiphytic root sheath",
     "vernalization": "yarovization (historical), low-temperature floral induction"
 }
 
@@ -805,6 +869,131 @@ def apply_botanical_guardrails(item):
             )
         item["See Also"] = "long-day plant, day-neutral plant, photoperiodism, phytochrome, florigen, night break, lablab purpureus"
 
+    # Bulb guardrail
+    if term_lower == "bulb":
+        item["Subfield"] = "Plant Propagation"
+        item["Pronunciation (IPA)"] = "/bʌlb/"
+        item["Synonyms"] = "tunicate bulb, scaly bulb, geophytic bulb, true bulb"
+        if "swollen stem" in defn.lower() and "scale" not in defn.lower():
+            item["Definition"] = (
+                "A specialized, underground modified storage organ consisting of a flattened basal stem plate bearing "
+                "a central growing point or floral primordium, tightly enveloped by fleshy, concentric scale leaves (cataphylls) "
+                "that store reserve carbohydrates and water."
+            )
+        item["See Also"] = "corm, tuber, rhizome, cataphyll, geophyte, allium cepa"
+
+    # Corm guardrail
+    if term_lower == "corm":
+        item["Subfield"] = "Plant Propagation"
+        item["Pronunciation (IPA)"] = "/kɔːrm/"
+        item["Synonyms"] = "solid bulb (historical), bulbo-tuber, cormous stem"
+        if "scale leaves" in defn.lower() and "solid" not in defn.lower():
+            item["Definition"] = (
+                "A solid, swollen vertical subterranean stem axis that functions as a carbohydrate storage and perennating organ, "
+                "distinguished by distinct nodes, internodes, and dry papery tunics derived from dead leaf bases, lacking internal fleshy scales."
+            )
+        item["See Also"] = "bulb, tuber, rhizome, tunic, cormel, gladiolus, colocasia esculenta"
+
+    # Tuber guardrail
+    if term_lower == "tuber":
+        item["Subfield"] = "Plant Propagation"
+        item["Pronunciation (IPA)"] = "/ˈtuː.bər/"
+        item["Synonyms"] = "stem tuber, root tuber, stoloniferous storage organ, hypogeous swollen axis"
+        item["See Also"] = "stolon, eye bud, adventitious root, bulb, corm, solanum tuberosum, ipomoea batatas"
+
+    # Velamen guardrail
+    if "velamen" in term_lower:
+        item["Subfield"] = "Floriculture"
+        item["Pronunciation (IPA)"] = "/vəˈleɪ.mən/"
+        item["Synonyms"] = "velamen radicum, multiple root epidermis, aerial root mantle"
+        if "chloroplast" in defn.lower() or "photosynthes" in defn.lower():
+            item["Definition"] = (
+                "A specialized, multiple-layered spongy epidermis enveloping the aerial roots of epiphytic orchids and aroids, "
+                "composed of dead, empty, spirally reinforced cells that absorb atmospheric moisture and condense vapor."
+            )
+        item["See Also"] = "epiphyte, aerial root, orchidaceae, cortex, pneumathode, vanda"
+
+    # Saprophyte guardrail
+    if "saprophyte" in term_lower:
+        item["Subfield"] = "Botany"
+        item["Pronunciation (IPA)"] = "/ˈsæp.rəˌfaɪt/"
+        item["Synonyms"] = "saprotroph, saprobe, extracellular decomposer, detritivore"
+        if "plant that derives" in defn.lower() or "plant that feeds" in defn.lower():
+            item["Definition"] = (
+                "An organism—historically classified as a plant but in modern taxonomy referring strictly to fungi and bacteria—that "
+                "obtains organic nutrients directly from dead and decaying organic matter via extracellular enzymatic digestion and absorption."
+            )
+        item["See Also"] = "saprotroph, mycoheterotrophy, decomposition, pleurotus ostreatus, holophyte, parasite"
+
+    # Polyembryony guardrail
+    if "polyembryony" in term_lower:
+        item["Subfield"] = "Plant Breeding"
+        item["Pronunciation (IPA)"] = "/ˌpɑː.liˈɛm.bri.ə.ni/"
+        item["Synonyms"] = "nucellar embryony, multiple embryo formation, adventitious polyembryony"
+        item["See Also"] = "apomixis, nucellus, adventitious embryony, citrus, mangifera indica, clonal propagation"
+
+    # Polyploid guardrail
+    if "polyploid" in term_lower:
+        item["Subfield"] = "Plant Breeding"
+        item["Pronunciation (IPA)"] = "/ˈpɑː.liˌplɔɪd/"
+        item["Synonyms"] = "euploid, whole-genome duplication (WGD), gigas-type cytotype"
+        item["See Also"] = "autopolyploid, allopolyploid, colchicine, triploid, aneuploid, citrullus lanatus"
+
+    # Self-Incompatibility guardrail
+    if "self-incompatibility" in term_lower or "self incompatibility" in term_lower:
+        item["Subfield"] = "Plant Breeding"
+        item["Pronunciation (IPA)"] = "/ˌsɛlf.ɪn.kəmˌpæt̬.əˈbɪl.ə.ti/"
+        item["Synonyms"] = "SI, self-sterility, S-allele rejection, pre-zygotic breeding barrier"
+        item["See Also"] = "cross-pollination, s-locus, gametophytic si, sporophytic si, pollinizer, brassica oleracea"
+
+    # Senescence guardrail
+    if "senescence" in term_lower:
+        item["Subfield"] = "Postharvest"
+        item["Pronunciation (IPA)"] = "/sɪˈnɛs.əns/"
+        item["Synonyms"] = "programmed organ death, developmental PCD, postharvest deterioration, catabolic leaf yellowing"
+        item["See Also"] = "abscission, ethylene, chlorophyll degradation, 1-mcp, programmed cell death, postharvest"
+
+    # Shelf-Life guardrail
+    if "shelf-life" in term_lower or "shelf life" in term_lower:
+        item["Subfield"] = "Postharvest"
+        item["Pronunciation (IPA)"] = "/ˈʃɛlfˌlaɪf/"
+        item["Synonyms"] = "storage longevity, marketable postharvest life, keeping quality, commercial postharvest duration"
+        item["See Also"] = "respiration rate, climacteric, ethylene, cold chain, modified atmosphere packaging, 1-mcp"
+
+    # Sterility guardrail
+    if "sterility" in term_lower:
+        item["Subfield"] = "Plant Breeding"
+        item["Pronunciation (IPA)"] = "/stəˈrɪl.ə.ti/"
+        item["Synonyms"] = "male sterility, cytoplasmic male sterility (CMS), genetic male sterility (GMS), gametic abortion"
+        item["See Also"] = "cytoplasmic male sterility, restorer gene, f1 hybrid, emasculation, allium cepa"
+
+    # Lithophyte guardrail
+    if "lithophyte" in term_lower:
+        item["Subfield"] = "Botany"
+        item["Pronunciation (IPA)"] = "/ˈlɪθ.əˌfaɪt/"
+        item["Synonyms"] = "epilithic plant, rupicolous plant, saxicole, rock-dwelling flora"
+        item["See Also"] = "epiphyte, saxicolous, micro-habitat, poikilohydric, bryophyte, rupicolous"
+
+    # Epiphyte guardrail
+    if "epiphyte" in term_lower:
+        item["Subfield"] = "Floriculture"
+        item["Pronunciation (IPA)"] = "/ˈɛp.əˌfaɪt/"
+        item["Synonyms"] = "air plant, phorophytic epiphyte, bark-dwelling plant, pseudoparasite (historical)"
+        item["See Also"] = "phorophyte, velamen, lithophyte, commensalism, orchidaceae, aerophyte"
+
+    # Anti-Mango Overfitting check
+    if "mango" in example.lower() and term_lower in ["self-incompatibility", "sterility", "sciophyte", "saprophyte", "velamen", "corm", "bulb"]:
+        if term_lower == "self-incompatibility":
+            item["Example Sentence"] = (
+                "Commercial sweet cherry and Brassica seed producers interplant compatible cross-pollinizing cultivars "
+                "and deploy honeybee hives to overcome genetic self-incompatibility and ensure high fruit and seed set."
+            )
+        elif term_lower == "sterility":
+            item["Example Sentence"] = (
+                "Commercial onion breeders utilize Cytoplasmic Male Sterility (CMS-S) lines as female seed parents, "
+                "eliminating the need for labor-intensive manual emasculation in F1 hybrid seed production."
+            )
+
     # Map and normalize Conceptual Exposition & Infographic Recommendation
     if "conceptual_exposition" in item and not item.get("Conceptual Exposition"):
         item["Conceptual Exposition"] = item.pop("conceptual_exposition")
@@ -887,7 +1076,11 @@ def query_ollama(term, model_name):
         f"16. Photoperiodic Crop Congruence: Do NOT claim mango or litchi are short-day or photoperiodic plants (their floral induction is triggered by low winter temperatures/dormancy, not day length). Cite genuine tropical/subtropical SDPs (e.g. Lablab purpureus / country bean Shim, photoperiod-sensitive Aman rice, Chrysanthemum) and LDPs (cool-season bolting in spinach, radish, lettuce; photoperiod lighting in floriculture).\n"
         f"17. Light Ecology Rigor: Heliophytes (sun plants) have thick leaves with multi-layer palisade cells, high LCP/LSP, and high NPQ (NEVER claim they have broad/thin shade leaves); Sciophytes (shade plants) have thin leaves, high specific leaf area, low Chl a/b ratio, and low LCP/LSP. NEVER claim orchard trees like mango or litchi are sciophytes! Cite genuine sciophytes: ginger, turmeric, cardamom, betel vine barouj, shade tea.\n"
         f"18. Autotrophic / Holophytic Nutrition Rigor: A 'holophyte' is an organism exhibiting holophytic (photoautotrophic) nutrition, synthesizing its own food from inorganic precursors (CO2, H2O, salts) using light, in contrast to holozoic (animals) and saprophytic/parasitic organisms. NEVER claim a holophyte is an 'air plant' or epiphyte!\n"
-        f"19. Halophyte & Deltaic Salinity Rigor: Halophytes exclude, compartmentalize via NHX into vacuoles, or excrete salt; cite Sundarbans mangrove taxa (Heritiera fomes, Excoecaria agallocha) and coastal Bangladesh salinity belt (Satkhira, Khulna).\n\n"
+        f"19. Halophyte & Deltaic Salinity Rigor: Halophytes exclude, compartmentalize via NHX into vacuoles, or excrete salt; cite Sundarbans mangrove taxa (Heritiera fomes, Excoecaria agallocha) and coastal Bangladesh salinity belt (Satkhira, Khulna).\n"
+        f"20. Anti-Mango Overfitting: Do NOT default to 'In a mango orchard' for unrelated biological mechanisms (e.g. self-incompatibility, apomixis, dormancy, shelf-life, senescence, sterility, sciophytes, velamen). Use the authentic crop for each concept: brassicas/onion for sterility and self-incompatibility; banana/tomato for climacteric postharvest shelf-life and senescence; citrus for nucellar polyembryony; epiphytic orchids for velamen; potato/yam for tubers; onion/garlic/lily for bulbs; gladiolus/taro for corms; oyster/button mushrooms for saprophytes.\n"
+        f"21. Underground Organs (Geophytes) Rigor: Strictly distinguish true bulbs (flattened basal plate + fleshy concentric scale leaves, e.g. Allium cepa), corms (solid swollen subterranean stem tissue with distinct nodes/internodes, e.g. Gladiolus, Colocasia), and tubers (swollen stoloniferous stems or storage roots, e.g. Solanum tuberosum). NEVER list bulb, corm, and tuber as synonyms of each other!\n"
+        f"22. Velamen Anatomy Rigor: Velamen radicum is a multi-layered spongy mantle of DEAD cells at functional maturity surrounding aerial roots of epiphytic orchids and aroids; velamen cells DO NOT contain chloroplasts (when hydrated they turn transparent, revealing the underlying green living cortex).\n"
+        f"23. Saprophyte vs. Plant: Non-photosynthetic plants are mycoheterotrophs, not saprophytes; true saprobes in horticulture are saprotrophic fungi (e.g. Agaricus, Pleurotus) and bacteria secreting extracellular enzymes to decompose organic matter.\n\n"
         f"Return ONLY a valid JSON object (no markdown, no backticks, no introductory text) with these keys:\n"
         f"- \"ipa\": Standard IPA pronunciation enclosed in slashes (e.g. \"/ˈsaɪ.ən/\")\n"
         f"- \"pos\": Abbreviated part of speech (\"n.\", \"v.\", \"adj.\")\n"
