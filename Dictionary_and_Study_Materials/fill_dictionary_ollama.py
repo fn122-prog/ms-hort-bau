@@ -1344,6 +1344,131 @@ def mode_csv(model_name):
     print(f"==========================================\n")
 
 
+def parse_csv_field(val):
+    """Parses a comma-separated string into a list of clean, unique items."""
+    if not val:
+        return []
+    items = []
+    seen = set()
+    for part in str(val).split(","):
+        cleaned = re.sub(r"\s+", " ", part).strip()
+        cleaned = re.sub(r"^(?:see\s+also\s*:\s*)+", "", cleaned, flags=re.IGNORECASE).strip()
+        if cleaned and cleaned.lower() not in seen:
+            seen.add(cleaned.lower())
+            items.append(cleaned)
+    return items
+
+
+def format_csv_field(items):
+    """Formats a list of strings into a clean, comma-separated string without duplicates."""
+    seen = set()
+    cleaned = []
+    for it in items:
+        clean_it = re.sub(r"\s+", " ", str(it)).strip()
+        clean_it = re.sub(r"^(?:see\s+also\s*:\s*)+", "", clean_it, flags=re.IGNORECASE).strip()
+        if clean_it and clean_it.lower() not in seen:
+            seen.add(clean_it.lower())
+            cleaned.append(clean_it)
+    return ", ".join(cleaned)
+
+
+def link_bidirectional_see_also(item, term_map, known_synonyms=None):
+    """
+    Ensures bidirectional 'See Also' relationships between `item` and any existing terms in `term_map`.
+    
+    1. If `item` lists existing terms in its 'See Also', those existing terms will have `item['Word']`
+       added to their 'See Also'.
+    2. If `item` is a synonym or shares strong similarity with an existing term (via Synonyms, KNOWN_SYNONYMS,
+       or compound base matching), both terms will link to each other in 'See Also'.
+    3. If any existing term already listed `item['Word']` in its 'See Also', `item['See Also']` will include that term.
+    
+    Updates `item` in-place and updates corresponding dicts in `term_map` in-place.
+    Returns list of linked terms.
+    """
+    if known_synonyms is None:
+        known_synonyms = KNOWN_SYNONYMS if "KNOWN_SYNONYMS" in globals() else {}
+
+    item_word = item.get("Word", "").strip()
+    if not item_word:
+        return []
+    item_word_lower = item_word.lower()
+
+    # Parse current item's See Also and Synonyms
+    item_see_also = parse_csv_field(item.get("See Also", ""))
+    item_see_lowers = {s.lower(): s for s in item_see_also}
+
+    item_synonyms = parse_csv_field(item.get("Synonyms", ""))
+    item_syn_lowers = {s.lower() for s in item_synonyms}
+
+    # Include known synonyms for item_word
+    if item_word_lower in known_synonyms:
+        for ks in parse_csv_field(known_synonyms[item_word_lower]):
+            item_syn_lowers.add(ks.lower())
+
+    linked_terms = []
+
+    # Iterate over all existing terms
+    for exist_word_lower, exist_item in term_map.items():
+        if exist_word_lower == item_word_lower:
+            continue
+
+        exist_word = exist_item.get("Word", "").strip()
+        if not exist_word:
+            continue
+
+        exist_see_also = parse_csv_field(exist_item.get("See Also", ""))
+        exist_see_lowers = {s.lower(): s for s in exist_see_also}
+
+        exist_synonyms = parse_csv_field(exist_item.get("Synonyms", ""))
+        exist_syn_lowers = {s.lower() for s in exist_synonyms}
+        if exist_word_lower in known_synonyms:
+            for ks in parse_csv_field(known_synonyms[exist_word_lower]):
+                exist_syn_lowers.add(ks.lower())
+
+        should_link = False
+
+        # Condition 1: Already explicitly mentioned in item's See Also
+        if exist_word_lower in item_see_lowers:
+            should_link = True
+
+        # Condition 2: item is explicitly mentioned in exist_item's See Also
+        if item_word_lower in exist_see_lowers:
+            should_link = True
+
+        # Condition 3: One is a synonym of the other
+        if exist_word_lower in item_syn_lowers or item_word_lower in exist_syn_lowers:
+            should_link = True
+
+        # Condition 4: Shared non-trivial synonym
+        common_synonyms = item_syn_lowers.intersection(exist_syn_lowers)
+        if any(len(cs) >= 4 and cs not in {"plant", "tree", "crop", "leaf", "root", "stem", "seed"} for cs in common_synonyms):
+            should_link = True
+
+        # Condition 5: Compound / morphological base match (e.g. grafting & whip grafting, tuber & stem tuber)
+        generic_stems = {"plant", "flora", "crop", "tree", "fruit", "seed", "leaf", "soil", "stress"}
+        if item_word_lower not in generic_stems and exist_word_lower not in generic_stems:
+            pat1 = r"(?:^|[\s\-])" + re.escape(item_word_lower) + r"(?:$|[\s\-])"
+            pat2 = r"(?:^|[\s\-])" + re.escape(exist_word_lower) + r"(?:$|[\s\-])"
+            if len(item_word_lower) >= 5 and re.search(pat1, exist_word_lower):
+                should_link = True
+            elif len(exist_word_lower) >= 5 and re.search(pat2, item_word_lower):
+                should_link = True
+
+        if should_link:
+            # 1. Ensure exist_word is in item's See Also
+            if exist_word_lower not in [s.lower() for s in item_see_also]:
+                item_see_also.append(exist_word)
+                linked_terms.append(exist_word)
+
+            # 2. Ensure item_word is in exist_item's See Also (RECIPROCAL LINK)
+            if item_word_lower not in [s.lower() for s in exist_see_also]:
+                exist_see_also.append(item_word)
+                exist_item["See Also"] = format_csv_field(exist_see_also)
+
+    item["See Also"] = format_csv_field(item_see_also)
+    return linked_terms
+
+
 def save_or_update_terms_to_csv(new_rows, csv_path):
     """
     Saves or updates rows in local_dictionary.csv with all 13 columns,
@@ -1381,22 +1506,61 @@ def save_or_update_terms_to_csv(new_rows, csv_path):
 
 def batch_process_and_save(terms, model_name, output_file=None):
     """
-    Processes a list of terms, applies multi-layer botanical guardrails,
-    enforces 13-column format, and updates local_dictionary.csv.
+    Processes a list of terms, ignores duplicate words already in the dictionary,
+    applies multi-layer botanical guardrails, connects relevant synonyms and similar
+    words bidirectionally via 'See Also', enforces 13-column format, and updates local_dictionary.csv.
     """
     if not output_file:
         base_dir = os.path.dirname(os.path.abspath(__file__))
         output_file = os.path.join(base_dir, "local_dictionary.csv")
 
     today = date.today().strftime("%Y-%m-%d")
-    total = len(terms)
+
+    # Load existing terms to check duplicates and support bidirectional linking
+    existing_items = []
+    if os.path.exists(output_file):
+        with open(output_file, mode="r", encoding="utf-8") as f:
+            reader = csv.reader(f)
+            rows = list(reader)
+            if rows:
+                for r in rows[1:]:
+                    if r and any(r):
+                        item = {}
+                        for i, h in enumerate(HEADERS):
+                            item[h] = r[i].strip() if i < len(r) else ""
+                        existing_items.append(item)
+
+    term_map = {t.get("Word", "").strip().lower(): t for t in existing_items}
+
+    # Filter out duplicate terms
+    terms_to_generate = []
+    ignored_count = 0
+    for t in terms:
+        t_clean = t.strip()
+        t_lower = t_clean.lower()
+        t_canonical = TERM_NORMALIZATIONS.get(t_lower, t_lower) if "TERM_NORMALIZATIONS" in globals() else t_lower
+        if t_lower in term_map or t_canonical in term_map:
+            print(f"   [!] Ignored: '{t_clean}' already exists in dictionary. Skipping.")
+            ignored_count += 1
+        else:
+            terms_to_generate.append(t_clean)
+
+    if not terms_to_generate:
+        print(f"\n[!] All {len(terms)} term(s) already exist in the dictionary. No actions performed.\n")
+        return
+
+    total = len(terms_to_generate)
     print(f"\n=======================================================")
     print(f"  Batch Processing {total} Horticultural Term(s) via Ollama")
+    if ignored_count > 0:
+        print(f"  (Ignored {ignored_count} duplicate term(s) already in dictionary)")
     print(f"  Model: {model_name} | Target: {os.path.basename(output_file)}")
     print(f"=======================================================\n")
 
-    saved_rows = []
-    for i, term in enumerate(terms, 1):
+    saved_count = 0
+    for i, term in enumerate(terms_to_generate, 1):
+        if i > 1:
+            time.sleep(2.5)  # Thermal pacing cooldown for Apple Silicon M4
         print(f"[{i}/{total}] Analyzing: '{term}'...")
         entry = query_ollama(term, model_name)
         if not entry or not entry.get("definition"):
@@ -1423,34 +1587,33 @@ def batch_process_and_save(terms, model_name, output_file=None):
         }
         item_dict = apply_botanical_guardrails(item_dict)
 
-        row = [
-            item_dict["Word"],
-            item_dict["Pronunciation (IPA)"],
-            item_dict["Part of Speech"],
-            item_dict["Subfield"],
-            item_dict["Definition"],
-            item_dict.get("Conceptual Exposition", ""),
-            item_dict["Example Sentence"],
-            item_dict["Etymology"],
-            item_dict["Synonyms"],
-            item_dict["See Also"],
-            item_dict.get("Infographic Recommendation", ""),
-            item_dict["Date Added"],
-            item_dict["Status"]
-        ]
-        saved_rows.append(row)
+        # Enforce bidirectional See Also links with existing dictionary terms
+        linked = link_bidirectional_see_also(item_dict, term_map)
+        term_map[term.lower()] = item_dict
+        saved_count += 1
 
         print(f"   ✓ Subfield:   {item_dict['Subfield']}")
         print(f"   ✓ IPA:        {item_dict['Pronunciation (IPA)']}")
         print(f"   ✓ Definition: {item_dict['Definition'][:75]}...")
         if item_dict.get("Synonyms"):
             print(f"   ✓ Synonyms:   {item_dict['Synonyms']}")
+        if linked:
+            print(f"   ✓ Linked (See Also): {', '.join(linked)}")
         print()
 
-    if saved_rows:
-        save_or_update_terms_to_csv(saved_rows, output_file)
+    if saved_count > 0:
+        all_terms = list(term_map.values())
+        all_terms.sort(key=lambda t: t.get("Word", "").lower())
+        temp_file = output_file + ".tmp"
+        with open(temp_file, mode="w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(HEADERS)
+            for t in all_terms:
+                row = [t.get(h, "") for h in HEADERS]
+                writer.writerow(row)
+        os.replace(temp_file, output_file)
         print(f"=======================================================")
-        print(f"✓ Saved {len(saved_rows)} of {total} term(s) to: {output_file}")
+        print(f"✓ Saved {saved_count} new term(s) (with reciprocal See Also links) to: {output_file}")
         print(f"=======================================================\n")
     else:
         print("No new terms were saved.\n")

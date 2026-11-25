@@ -1245,6 +1245,155 @@ def save_terms(terms):
             writer.writerow(row)
 
 
+def parse_csv_field(val):
+    """Parses a comma-separated string into a list of clean, unique items."""
+    if not val:
+        return []
+    items = []
+    seen = set()
+    for part in str(val).split(","):
+        cleaned = re.sub(r"\s+", " ", part).strip()
+        cleaned = re.sub(r"^(?:see\s+also\s*:\s*)+", "", cleaned, flags=re.IGNORECASE).strip()
+        if cleaned and cleaned.lower() not in seen:
+            seen.add(cleaned.lower())
+            items.append(cleaned)
+    return items
+
+
+def format_csv_field(items):
+    """Formats a list of strings into a clean, comma-separated string without duplicates."""
+    seen = set()
+    cleaned = []
+    for it in items:
+        clean_it = re.sub(r"\s+", " ", str(it)).strip()
+        clean_it = re.sub(r"^(?:see\s+also\s*:\s*)+", "", clean_it, flags=re.IGNORECASE).strip()
+        if clean_it and clean_it.lower() not in seen:
+            seen.add(clean_it.lower())
+            cleaned.append(clean_it)
+    return ", ".join(cleaned)
+
+
+def link_bidirectional_see_also(item, term_map, known_synonyms=None):
+    """
+    Ensures bidirectional 'See Also' relationships between `item` and any existing terms in `term_map`.
+    
+    1. If `item` lists existing terms in its 'See Also', those existing terms will have `item['Word']`
+       added to their 'See Also'.
+    2. If `item` is a synonym or shares strong similarity with an existing term (via Synonyms, KNOWN_SYNONYMS,
+       or compound base matching), both terms will link to each other in 'See Also'.
+    3. If any existing term already listed `item['Word']` in its 'See Also', `item['See Also']` will include that term.
+    
+    Updates `item` in-place and updates corresponding dicts in `term_map` in-place.
+    Returns list of linked terms.
+    """
+    if known_synonyms is None:
+        known_synonyms = KNOWN_SYNONYMS if "KNOWN_SYNONYMS" in globals() else {}
+
+    item_word = item.get("Word", "").strip()
+    if not item_word:
+        return []
+    item_word_lower = item_word.lower()
+
+    # Parse current item's See Also and Synonyms
+    item_see_also = parse_csv_field(item.get("See Also", ""))
+    item_see_lowers = {s.lower(): s for s in item_see_also}
+
+    item_synonyms = parse_csv_field(item.get("Synonyms", ""))
+    item_syn_lowers = {s.lower() for s in item_synonyms}
+
+    # Include known synonyms for item_word
+    if item_word_lower in known_synonyms:
+        for ks in parse_csv_field(known_synonyms[item_word_lower]):
+            item_syn_lowers.add(ks.lower())
+
+    linked_terms = []
+
+    # Iterate over all existing terms
+    for exist_word_lower, exist_item in term_map.items():
+        if exist_word_lower == item_word_lower:
+            continue
+
+        exist_word = exist_item.get("Word", "").strip()
+        if not exist_word:
+            continue
+
+        exist_see_also = parse_csv_field(exist_item.get("See Also", ""))
+        exist_see_lowers = {s.lower(): s for s in exist_see_also}
+
+        exist_synonyms = parse_csv_field(exist_item.get("Synonyms", ""))
+        exist_syn_lowers = {s.lower() for s in exist_synonyms}
+        if exist_word_lower in known_synonyms:
+            for ks in parse_csv_field(known_synonyms[exist_word_lower]):
+                exist_syn_lowers.add(ks.lower())
+
+        should_link = False
+
+        # Condition 1: Already explicitly mentioned in item's See Also
+        if exist_word_lower in item_see_lowers:
+            should_link = True
+
+        # Condition 2: item is explicitly mentioned in exist_item's See Also
+        if item_word_lower in exist_see_lowers:
+            should_link = True
+
+        # Condition 3: One is a synonym of the other
+        if exist_word_lower in item_syn_lowers or item_word_lower in exist_syn_lowers:
+            should_link = True
+
+        # Condition 4: Shared non-trivial synonym
+        common_synonyms = item_syn_lowers.intersection(exist_syn_lowers)
+        if any(len(cs) >= 4 and cs not in {"plant", "tree", "crop", "leaf", "root", "stem", "seed"} for cs in common_synonyms):
+            should_link = True
+
+        # Condition 5: Compound / morphological base match (e.g. grafting & whip grafting, tuber & stem tuber)
+        generic_stems = {"plant", "flora", "crop", "tree", "fruit", "seed", "leaf", "soil", "stress"}
+        if item_word_lower not in generic_stems and exist_word_lower not in generic_stems:
+            pat1 = r"(?:^|[\s\-])" + re.escape(item_word_lower) + r"(?:$|[\s\-])"
+            pat2 = r"(?:^|[\s\-])" + re.escape(exist_word_lower) + r"(?:$|[\s\-])"
+            if len(item_word_lower) >= 5 and re.search(pat1, exist_word_lower):
+                should_link = True
+            elif len(exist_word_lower) >= 5 and re.search(pat2, item_word_lower):
+                should_link = True
+
+        if should_link:
+            # 1. Ensure exist_word is in item's See Also
+            if exist_word_lower not in [s.lower() for s in item_see_also]:
+                item_see_also.append(exist_word)
+                linked_terms.append(exist_word)
+
+            # 2. Ensure item_word is in exist_item's See Also (RECIPROCAL LINK)
+            if item_word_lower not in [s.lower() for s in exist_see_also]:
+                exist_see_also.append(item_word)
+                exist_item["See Also"] = format_csv_field(exist_see_also)
+
+    item["See Also"] = format_csv_field(item_see_also)
+    return linked_terms
+
+
+def sync_all_bidirectional_see_also(term_map):
+    """
+    Scans the entire dictionary term_map and reconciles all one-way 'See Also' links
+    so every single link is bidirectional. Returns the number of reciprocal links added.
+    """
+    total_added = 0
+    for word_lower, item in list(term_map.items()):
+        current_word = item.get("Word", "").strip()
+        if not current_word:
+            continue
+        see_also_items = parse_csv_field(item.get("See Also", ""))
+        for target_name in see_also_items:
+            target_lower = target_name.lower()
+            if target_lower in term_map and target_lower != word_lower:
+                target_item = term_map[target_lower]
+                target_see = parse_csv_field(target_item.get("See Also", ""))
+                target_see_lowers = [s.lower() for s in target_see]
+                if word_lower not in target_see_lowers:
+                    target_see.append(current_word)
+                    target_item["See Also"] = format_csv_field(target_see)
+                    total_added += 1
+    return total_added
+
+
 # ==============================================================================
 # EMBEDDED DASHBOARD (HTML, CSS, JS) - ZERO EXTERNAL NETWORK DEPENDENCY
 # ==============================================================================
@@ -1706,8 +1855,23 @@ HTML_PAGE = """<!DOCTYPE html>
     async function updateField(idx, field, val) {
       const cleanVal = val.trim();
       if (terms[idx][field] === cleanVal) return;
+
+      if (field === 'Word') {
+        const lowerVal = cleanVal.toLowerCase();
+        const exists = terms.some((t, i) => i !== idx && t.Word.toLowerCase() === lowerVal);
+        if (exists) {
+          showToast(`Cannot rename: "${cleanVal}" already exists in dictionary.`);
+          renderTable();
+          return;
+        }
+      }
+
       terms[idx][field] = cleanVal;
       await saveTermToServer(terms[idx]);
+
+      if (field === 'See Also' || field === 'Synonyms' || field === 'Word') {
+        await loadTerms(); // Re-sync reciprocal links if relationships changed
+      }
       showToast(`Updated ${field}`);
     }
 
@@ -1753,11 +1917,21 @@ HTML_PAGE = """<!DOCTYPE html>
       input.disabled = true;
 
       let successCount = 0;
+      let ignoredCount = 0;
       let generatedNames = [];
 
       try {
         for (let i = 0; i < termsToGen.length; i++) {
           const currentWord = termsToGen[i];
+
+          // Check client-side if word already exists in dictionary
+          const isDuplicate = terms.some(t => t.Word.toLowerCase() === currentWord.toLowerCase());
+          if (isDuplicate) {
+            showToast(`Ignored: "${currentWord}" already exists in dictionary.`);
+            ignoredCount++;
+            continue;
+          }
+
           if (termsToGen.length > 1) {
             btnText.innerHTML = `<span class="loading-spinner"></span> Analyzing (${i + 1}/${termsToGen.length}): ${escapeHtml(currentWord)}...`;
           } else {
@@ -1771,7 +1945,14 @@ HTML_PAGE = """<!DOCTYPE html>
               body: JSON.stringify({ word: currentWord })
             });
             const data = await res.json();
-            const newEntries = Array.isArray(data) ? data : (data.items || [data]);
+
+            if (data.status === 'ignored') {
+              showToast(data.message || `Ignored: "${currentWord}" already exists in dictionary.`);
+              ignoredCount++;
+              continue;
+            }
+
+            const newEntries = Array.isArray(data) ? data : (data.items || (data.Word ? [data] : []));
             
             for (let entry of newEntries) {
               if (entry && entry.Word) {
@@ -1794,11 +1975,18 @@ HTML_PAGE = """<!DOCTYPE html>
           }
         }
 
+        // Re-sync all terms from server to ensure all reciprocal See Also updates appear immediately
+        if (successCount > 0) {
+          await loadTerms();
+        }
+
         input.value = '';
         if (successCount === 1) {
           showToast(`Generated: ${generatedNames[0]}`);
         } else if (successCount > 1) {
           showToast(`✓ Generated ${successCount} terms: ${generatedNames.join(', ')}`);
+        } else if (ignoredCount > 0) {
+          showToast(`No new terms generated (${ignoredCount} already existed).`);
         } else {
           showToast('Failed to generate term(s)');
         }
@@ -1905,14 +2093,18 @@ class DashboardHandler(BaseHTTPRequestHandler):
         if path == "/api/update":
             word_target = payload.get("Word", "").strip().lower()
             terms = load_terms()
+            term_map = {t.get("Word", "").strip().lower(): t for t in terms}
             updated = False
-            for t in terms:
-                if t.get("Word", "").strip().lower() == word_target:
-                    t.update(payload)
-                    updated = True
-                    break
+            if word_target in term_map:
+                target_item = term_map[word_target]
+                target_item.update(payload)
+                # Enforce bidirectional See Also links if relationships were modified
+                link_bidirectional_see_also(target_item, term_map)
+                updated = True
             if updated:
-                save_terms(terms)
+                updated_terms = list(term_map.values())
+                updated_terms.sort(key=lambda t: t.get("Word", "").lower())
+                save_terms(updated_terms)
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
@@ -1938,13 +2130,41 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 self.wfile.write(json.dumps({"error": "No valid terms provided."}).encode("utf-8"))
                 return
 
-            model_name = check_ollama_model()
-            today = date.today().strftime("%Y-%m-%d")
             terms = load_terms()
             term_map = {t.get("Word", "").strip().lower(): t for t in terms}
 
+            # Duplicate Check: filter out terms that already exist in the dictionary
+            new_terms = []
+            ignored_terms = []
+            for w in terms_to_process:
+                w_lower = w.strip().lower()
+                w_canonical = TERM_NORMALIZATIONS.get(w_lower, w_lower)
+                if w_lower in term_map or w_canonical in term_map:
+                    ignored_terms.append(w)
+                else:
+                    new_terms.append(w)
+
+            # If all requested terms already exist, ignore and return without running Ollama
+            if not new_terms:
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                existing_items = [term_map.get(w.lower()) or term_map.get(TERM_NORMALIZATIONS.get(w.lower(), w.lower())) for w in ignored_terms]
+                existing_items = [x for x in existing_items if x]
+                self.wfile.write(json.dumps({
+                    "status": "ignored",
+                    "ignored": ignored_terms,
+                    "message": f"Term(s) already exist in dictionary and were ignored: {', '.join(ignored_terms)}",
+                    "items": existing_items,
+                    "Word": existing_items[0]["Word"] if existing_items else ignored_terms[0]
+                }).encode("utf-8"))
+                return
+
+            model_name = check_ollama_model()
+            today = date.today().strftime("%Y-%m-%d")
+
             generated_items = []
-            for idx_word, word in enumerate(terms_to_process):
+            for idx_word, word in enumerate(new_terms):
                 if idx_word > 0:
                     time.sleep(2.5)  # Thermal pacing cooldown for fanless Apple Silicon M4
                 # Query Ollama
@@ -1969,6 +2189,10 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 }
                 # Run multi-layer botanical guardrail to enforce IPA accuracy and prevent hallucinations
                 new_item = apply_botanical_guardrails(new_item)
+
+                # Link relevant synonyms and similar words in 'See Also' bidirectionally
+                link_bidirectional_see_also(new_item, term_map)
+
                 term_map[word.lower()] = new_item
                 generated_items.append(new_item)
 
@@ -1979,15 +2203,19 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
-            if len(generated_items) == 1:
+            if len(generated_items) == 1 and not ignored_terms:
                 self.wfile.write(json.dumps(generated_items[0]).encode("utf-8"))
             else:
-                self.wfile.write(json.dumps({
+                resp_payload = {
                     "status": "ok",
                     "count": len(generated_items),
                     "items": generated_items,
-                    "Word": generated_items[0]["Word"]
-                }).encode("utf-8"))
+                    "ignored": ignored_terms,
+                    "Word": generated_items[0]["Word"] if generated_items else ""
+                }
+                if ignored_terms:
+                    resp_payload["message"] = f"Generated {len(generated_items)} term(s). Ignored duplicate(s): {', '.join(ignored_terms)}"
+                self.wfile.write(json.dumps(resp_payload).encode("utf-8"))
         else:
             self.send_error(404)
 

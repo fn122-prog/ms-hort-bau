@@ -1,0 +1,36 @@
+============================================================
+LINKEDIN POST PREVIEW: Polygenic
+Post ID: #1 | Subfield: Plant Breeding | Type: term_of_the_day
+Verification: Verified by Flash | Style Status: original
+Generated At: 2026-11-25 13:41:10
+Character Count: 1285 / 1300 chars (Optimal engagement)
+============================================================
+
+🌱 Horticulture Concept: Polygenic
+
+Pertaining to a phenotypic trait whose inheritance and expression are controlled by the cumulative, additive action of multiple independent genes at different loci (quantitative trait loci or QTLs), each contributing a small fractional effect.
+
+🔬 Structural & Conceptual Basis:
+Unlike monogenic (qualitative) traits—which follow simple Mendelian inheritance and exhibit discrete, discontinuous phenotypic classes (such as yellow vs. green cotyledons, or single-gene vertical disease resistance)—polygenic traits display continuous variation across a population, forming a classic bell-shaped Gaussian distribution curve.
+
+⚙️ Physiological Mechanism:
+Physiologically and statistically, the phenotypic value (P) of a polygenic trait is the cumulative product of the genotypic value (G), the environmental variance (E), and the genotype-by-environment interaction (G × E).
+
+🌾 Field & Crop Context:
+In Bangladeshi horticultural breeding programs, mastering polygenic inheritance is essential for developing climate-resilient cultivars.
+
+💬 Your Turn:
+For breeders and seed scientists: where do you see polygenic creating the biggest practical impact in cultivar development or seed quality?
+
+#Horticulture #PlantScience #Botany #PlantBreeding #Agriculture
+
+VISUAL / CAROUSEL IDEA:
+Tri-Panel Polygenic Inheritance Architecture: (1) Monogenic (bimodal/discrete) vs. Polygenic (bell-shaped continuous curve) frequency distribution in F2 populations; (2) Additive gene model (AABBCC) illustrating cumulative enzyme/pigment dosage; (3) QTL Mapping chromosome schematic highlighting multiple loci governing fruit yield and °Brix in Tomato.
+
+============================================================
+INSTRUCTIONS TO PUBLISH:
+1. Copy the text block above.
+2. Paste directly into your LinkedIn post composer.
+3. Review line breaks on mobile view.
+4. Mark as posted: python3 post_generator.py --mark-posted 1
+============================================================
